@@ -564,7 +564,9 @@
         <div class="form-group">
           <label for="event_url">Event URL *</label>
           <input type="url" id="event_url" name="event_url" placeholder="https://" required>
-          <small>Link to event page or registration</small>
+          <small>Paste event URL and we'll try to auto-fill details</small>
+          <button type="button" class="btn btn-secondary" id="fetchEventBtn" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;">📥 Fetch Event Details</button>
+          <div id="fetchStatus" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
         </div>
 
         <div class="form-group">
@@ -624,6 +626,78 @@
       </div>
     </div>
   </div>
+
+  <!-- Report issue modal -->
+  <div class="modal" id="reportModal">
+    <div class="modal-content">
+      <span class="modal-close" id="reportModalClose">&times;</span>
+      <h2>Report an Issue</h2>
+      <p style="color: var(--text-light); margin-bottom: 1.5rem;">Found incorrect information? Let us know so we can fix it.</p>
+
+      <form name="event-issues" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="reportForm">
+        <input type="hidden" name="form-name" value="event-issues">
+        <input type="hidden" id="report_event_id" name="event_id">
+        <input type="hidden" id="report_event_title" name="event_title">
+        <input type="hidden" id="report_event_url" name="event_url">
+        <p style="display: none;">
+          <label>Don't fill this out if you're human: <input name="bot-field"></label>
+        </p>
+
+        <div class="form-group">
+          <label>Event</label>
+          <p id="reportEventName" style="font-weight: 600; color: var(--primary);"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="issue_type">What's wrong? *</label>
+          <select id="issue_type" name="issue_type" required>
+            <option value="">Select issue type...</option>
+            <option value="wrong_date">Wrong date</option>
+            <option value="wrong_time">Wrong time</option>
+            <option value="wrong_location">Wrong location</option>
+            <option value="wrong_organizer">Wrong organizer</option>
+            <option value="broken_link">Broken/wrong link</option>
+            <option value="event_cancelled">Event cancelled</option>
+            <option value="duplicate">Duplicate event</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="issue_details">Details *</label>
+          <textarea id="issue_details" name="issue_details" rows="4" placeholder="Please describe the issue and provide the correct information if known..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="reporter_email">Your Email (optional)</label>
+          <input type="email" id="reporter_email" name="reporter_email" placeholder="In case we have questions">
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Submit Report</button>
+          <button type="button" class="btn btn-secondary" id="cancelReport">Cancel</button>
+        </div>
+      </form>
+
+      <div id="reportSuccess" style="display: none; text-align: center; padding: 2rem;">
+        <h3 style="color: var(--secondary); margin-bottom: 1rem;">✓ Thank you!</h3>
+        <p>Your issue report has been submitted. We'll review and correct the information.</p>
+        <button class="btn" id="closeReportSuccess" style="margin-top: 1rem;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden form for Netlify detection -->
+  <form name="event-issues" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="event_id">
+    <input type="text" name="event_title">
+    <input type="text" name="event_url">
+    <select name="issue_type">
+      <option value="wrong_date">Wrong date</option>
+    </select>
+    <textarea name="issue_details"></textarea>
+    <input type="email" name="reporter_email">
+  </form>
 
   <!-- FullCalendar JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
@@ -796,6 +870,94 @@
           console.error('Form submission error:', error);
         });
       });
+
+      // Fetch event details button
+      const fetchEventBtn = document.getElementById('fetchEventBtn');
+      const fetchStatus = document.getElementById('fetchStatus');
+
+      fetchEventBtn.addEventListener('click', async function() {
+        const url = document.getElementById('event_url').value;
+        if (!url) {
+          fetchStatus.innerHTML = '<span style="color: red;">Please enter a URL first</span>';
+          return;
+        }
+
+        fetchStatus.innerHTML = '<span style="color: var(--primary);">⏳ Fetching...</span>';
+        fetchEventBtn.disabled = true;
+
+        try {
+          const response = await fetch(url, { mode: 'no-cors' });
+          // Note: Due to CORS, we can't actually read the response
+          // This is just a UI placeholder - actual implementation would need a backend
+          fetchStatus.innerHTML = '<span style="color: var(--text-light);">ℹ️ Please fill in details manually (auto-fill not available due to browser restrictions)</span>';
+        } catch (error) {
+          fetchStatus.innerHTML = '<span style="color: var(--text-light);">ℹ️ Please fill in details manually</span>';
+        }
+
+        fetchEventBtn.disabled = false;
+      });
+
+      // Report issue modal handlers
+      const reportModal = document.getElementById('reportModal');
+      const reportModalClose = document.getElementById('reportModalClose');
+      const cancelReport = document.getElementById('cancelReport');
+      const reportForm = document.getElementById('reportForm');
+      const reportSuccess = document.getElementById('reportSuccess');
+      const closeReportSuccess = document.getElementById('closeReportSuccess');
+
+      reportModalClose.addEventListener('click', function() {
+        reportModal.classList.remove('active');
+      });
+
+      cancelReport.addEventListener('click', function() {
+        reportModal.classList.remove('active');
+        reportForm.reset();
+      });
+
+      closeReportSuccess.addEventListener('click', function() {
+        reportModal.classList.remove('active');
+        reportSuccess.style.display = 'none';
+        reportForm.style.display = 'block';
+        reportForm.reset();
+      });
+
+      reportModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('active');
+        }
+      });
+
+      reportForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(reportForm);
+
+        fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString()
+        })
+        .then(() => {
+          reportForm.style.display = 'none';
+          reportSuccess.style.display = 'block';
+        })
+        .catch((error) => {
+          alert('Error submitting report. Please try again.');
+          console.error('Form submission error:', error);
+        });
+      });
+    }
+
+    // Global function for report issue button
+    function reportIssue(eventId, eventTitle, eventUrl) {
+      document.getElementById('report_event_id').value = eventId;
+      document.getElementById('report_event_title').value = eventTitle;
+      document.getElementById('report_event_url').value = eventUrl;
+      document.getElementById('reportEventName').textContent = eventTitle;
+
+      // Close event modal and open report modal
+      document.getElementById('eventModal').classList.remove('active');
+      document.getElementById('reportModal').classList.add('active');
     }
 
     function applyFilters() {
@@ -917,10 +1079,15 @@
         ` : ''}
 
         ${event.registration_url ? `
-        <div class="modal-field" style="margin-top: 1.5rem;">
+        <div class="modal-field" style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
           <a href="${event.registration_url}" target="_blank" class="btn" style="display: inline-block;">Register / Details →</a>
+          <button class="btn btn-secondary" onclick="reportIssue('${event.id}', '${event.title.replace(/'/g, "\\'")}', '${event.registration_url}')" style="display: inline-block;">⚠️ Report Issue</button>
         </div>
-        ` : ''}
+        ` : `
+        <div class="modal-field" style="margin-top: 1.5rem;">
+          <button class="btn btn-secondary" onclick="reportIssue('${event.id}', '${event.title.replace(/'/g, "\\'")}', '')" style="display: inline-block;">⚠️ Report Issue</button>
+        </div>
+        `}
       `;
 
       modal.classList.add('active');
