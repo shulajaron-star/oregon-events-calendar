@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+site/events.json
+site/events.ics
+
+# Temporary files
+data/events-pending.json
+*.log
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

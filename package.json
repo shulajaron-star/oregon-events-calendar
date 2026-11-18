@@ -1,0 +1,34 @@
+{
+  "name": "oregon-events-calendar",
+  "version": "1.0.0",
+  "description": "A 12-month rolling calendar of startup, entrepreneurship, and bioscience events in Oregon and Southwest Washington",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate.js",
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js && python3 -m http.server 8000 --directory site",
+    "harvest": "node scripts/harvest-ics-feeds.js",
+    "harvest:html": "node scripts/harvest-html-pages.js",
+    "harvest:all": "npm run harvest && npm run harvest:html",
+    "deduplicate": "node scripts/deduplicate-events.js",
+    "qc:review": "node scripts/qc-review.js",
+    "qc:approve": "node scripts/qc-approve.js && npm run deduplicate && npm run validate && npm run build"
+  },
+  "keywords": [
+    "oregon",
+    "startups",
+    "bioscience",
+    "events",
+    "calendar"
+  ],
+  "author": "Shula Nema",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.21.1",
+    "cheerio": "^1.2.0",
+    "ical-generator": "^7.1.0",
+    "ical.js": "^2.2.1",
+    "node-ical": "^0.27.6",
+    "playwright": "^1.65.1"
+  }
+}
