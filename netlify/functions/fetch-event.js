@@ -1,6 +1,3 @@
-const https = require('https');
-const http = require('http');
-
 exports.handler = async (event, context) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -31,8 +28,18 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Fetch the page
-    const html = await fetchPage(parsedUrl);
+    // Fetch the page using native fetch API
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; OregonEventsBot/1.0)'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const html = await response.text();
 
     // Parse the HTML to extract event information
     const eventData = parseEventData(html, parsedUrl.hostname);
@@ -56,44 +63,6 @@ exports.handler = async (event, context) => {
     };
   }
 };
-
-function fetchPage(url) {
-  return new Promise((resolve, reject) => {
-    const protocol = url.protocol === 'https:' ? https : http;
-
-    const options = {
-      hostname: url.hostname,
-      path: url.pathname + url.search,
-      method: 'GET',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; OregonEventsBot/1.0)'
-      }
-    };
-
-    const req = protocol.request(options, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        resolve(data);
-      });
-    });
-
-    req.on('error', (error) => {
-      reject(error);
-    });
-
-    req.setTimeout(10000, () => {
-      req.destroy();
-      reject(new Error('Request timeout'));
-    });
-
-    req.end();
-  });
-}
 
 function parseEventData(html, hostname) {
   const eventData = {
