@@ -882,16 +882,74 @@
           return;
         }
 
-        fetchStatus.innerHTML = '<span style="color: var(--primary);">⏳ Fetching...</span>';
+        fetchStatus.innerHTML = '<span style="color: var(--primary);">⏳ Fetching event details...</span>';
         fetchEventBtn.disabled = true;
 
         try {
-          const response = await fetch(url, { mode: 'no-cors' });
-          // Note: Due to CORS, we can't actually read the response
-          // This is just a UI placeholder - actual implementation would need a backend
-          fetchStatus.innerHTML = '<span style="color: var(--text-light);">ℹ️ Please fill in details manually (auto-fill not available due to browser restrictions)</span>';
+          const response = await fetch('/.netlify/functions/fetch-event', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch event details');
+          }
+
+          const eventData = await response.json();
+
+          // Auto-fill form fields with extracted data
+          if (eventData.title) {
+            document.getElementById('event_name').value = eventData.title;
+          }
+          if (eventData.date) {
+            // Try to parse and format the date
+            try {
+              const dateObj = new Date(eventData.date);
+              if (!isNaN(dateObj.getTime())) {
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                document.getElementById('event_date').value = `${year}-${month}-${day}`;
+              }
+            } catch (e) {
+              console.log('Could not parse date:', eventData.date);
+            }
+          }
+          if (eventData.time) {
+            // Try to parse time to 24-hour format
+            try {
+              const timeMatch = eventData.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+              if (timeMatch) {
+                let hours = parseInt(timeMatch[1]);
+                const minutes = timeMatch[2];
+                const period = timeMatch[3].toUpperCase();
+
+                if (period === 'PM' && hours !== 12) hours += 12;
+                if (period === 'AM' && hours === 12) hours = 0;
+
+                document.getElementById('event_time').value = `${String(hours).padStart(2, '0')}:${minutes}`;
+              }
+            } catch (e) {
+              console.log('Could not parse time:', eventData.time);
+            }
+          }
+          if (eventData.organizer) {
+            document.getElementById('organizer').value = eventData.organizer;
+          }
+          if (eventData.location) {
+            document.getElementById('location').value = eventData.location;
+          }
+          if (eventData.description) {
+            document.getElementById('description').value = eventData.description;
+          }
+
+          fetchStatus.innerHTML = '<span style="color: var(--secondary);">✓ Details filled! Please review and adjust as needed.</span>';
         } catch (error) {
-          fetchStatus.innerHTML = '<span style="color: var(--text-light);">ℹ️ Please fill in details manually</span>';
+          console.error('Fetch error:', error);
+          fetchStatus.innerHTML = '<span style="color: var(--text-light);">⚠️ Could not fetch details. Please fill in manually.</span>';
         }
 
         fetchEventBtn.disabled = false;
