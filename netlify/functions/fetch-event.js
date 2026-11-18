@@ -118,8 +118,9 @@ function parseEventData(html, hostname) {
     /<meta\s+property="event:start_date"\s+content="([^"]+)"/i,
     /<time[^>]*datetime="([^"]+)"/i,
     /<meta\s+itemprop="startDate"\s+content="([^"]+)"/i,
-    /\b(\d{4}-\d{2}-\d{2})\b/,
-    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b/i
+    /takes place (?:on |from )?(\w+ \d{1,2}, \d{4})/i,
+    /\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}\b/i,
+    /\b(\d{4}-\d{2}-\d{2})\b/
   ];
 
   for (const pattern of datePatterns) {
@@ -142,6 +143,7 @@ function parseEventData(html, hostname) {
     /<meta\s+property="event:location"\s+content="([^"]+)"/i,
     /<meta\s+itemprop="location"\s+content="([^"]+)"/i,
     /<span[^>]*class="[^"]*location[^"]*"[^>]*>([^<]+)</i,
+    /\bat ([^.]+(?:Portland|Corvallis|Eugene|Salem|Bend|Vancouver)[^.]*)\./i,
     /Location:\s*([^\n<]+)/i
   ];
 
