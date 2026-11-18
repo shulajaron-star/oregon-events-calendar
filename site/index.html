@@ -43,18 +43,37 @@
     header {
       background: var(--primary);
       color: white;
-      padding: 2rem 0;
-      margin-bottom: 2rem;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
     }
 
-    header h1 {
-      font-size: 1.75rem;
-      margin-bottom: 0.5rem;
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    header p {
+    .header-left h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header-left p {
       color: rgba(255, 255, 255, 0.9);
-      font-size: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .header-actions .btn {
+      font-size: 0.8125rem;
+      padding: 0.5rem 1rem;
     }
 
     .actions {
@@ -93,7 +112,7 @@
 
     .filters {
       background: white;
-      padding: 1.25rem;
+      padding: 1rem;
       border-radius: 0.5rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -107,11 +126,14 @@
       margin-bottom: 0.75rem;
     }
 
-    .filter-group {
+    .filter-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
       margin-bottom: 1rem;
     }
 
-    .filter-group:last-child {
+    .filter-group {
       margin-bottom: 0;
     }
 
@@ -129,6 +151,14 @@
       border-radius: 0.375rem;
       font-size: 0.875rem;
       background: white;
+    }
+
+    .filter-group-full {
+      margin-bottom: 1rem;
+    }
+
+    .filter-group-full:last-child {
+      margin-bottom: 0;
     }
 
     .filter-tags {
@@ -395,16 +425,26 @@
     }
 
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-
-      .actions {
+      .header-content {
         flex-direction: column;
         align-items: stretch;
       }
 
-      .btn {
+      .header-left h1 {
+        font-size: 1.25rem;
+      }
+
+      .header-left p {
+        font-size: 0.8125rem;
+      }
+
+      .header-actions {
+        justify-content: stretch;
+      }
+
+      .header-actions .btn,
+      .header-actions .subscribe-dropdown {
+        flex: 1;
         text-align: center;
       }
 
@@ -412,40 +452,48 @@
         left: auto;
         right: 0;
       }
+
+      .filter-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="container">
-      <h1>Oregon Startup & Bioscience Events</h1>
-      <p>12-month rolling calendar for Oregon and Southwest Washington</p>
+      <div class="header-content">
+        <div class="header-left">
+          <h1>Oregon Startup & Bioscience Events</h1>
+          <p>12-month rolling calendar for Oregon and Southwest Washington</p>
+        </div>
+        <div class="header-actions">
+          <div class="subscribe-dropdown">
+            <button class="btn" id="subscribeBtn">📅 Subscribe ▼</button>
+            <div class="subscribe-menu" id="subscribeMenu">
+              <a href="#" id="googleCalendarLink" target="_blank">
+                📧 Subscribe in Google Calendar
+                <small>Auto-updates when new events are added</small>
+              </a>
+              <a href="events.ics" download>
+                📥 Download for Outlook/Apple
+                <small>Import the .ics file into your calendar app</small>
+              </a>
+            </div>
+          </div>
+          <a href="#about" class="btn btn-secondary">ℹ️ About</a>
+          <button class="btn btn-secondary" id="suggestBtn">💡 Suggest Event</button>
+        </div>
+      </div>
     </div>
   </header>
 
   <div class="container">
-    <div class="actions">
-      <div class="subscribe-dropdown">
-        <button class="btn" id="subscribeBtn">📅 Subscribe to Calendar ▼</button>
-        <div class="subscribe-menu" id="subscribeMenu">
-          <a href="#" id="googleCalendarLink" target="_blank">
-            📧 Subscribe in Google Calendar
-            <small>Auto-updates when new events are added</small>
-          </a>
-          <a href="events.ics" download>
-            📥 Download for Outlook/Apple
-            <small>Import the .ics file into your calendar app</small>
-          </a>
-        </div>
-      </div>
-      <a href="#about" class="btn btn-secondary">ℹ️ About This Calendar</a>
-      <button class="btn btn-secondary" id="suggestBtn">💡 Suggest an Event</button>
-    </div>
 
     <div class="filters">
       <h3>Filter Events</h3>
 
-      <div class="filter-group">
+      <div class="filter-group-full">
         <label>Category</label>
         <div class="filter-tags" id="categoryFilters">
           <span class="filter-tag" data-category="startup">Startup</span>
@@ -458,30 +506,32 @@
         </div>
       </div>
 
-      <div class="filter-group">
-        <label for="regionFilter">Region</label>
-        <select id="regionFilter">
-          <option value="">All Regions</option>
-          <option value="Portland Metro">Portland Metro</option>
-          <option value="Southwest Washington">Southwest Washington</option>
-          <option value="Willamette Valley">Willamette Valley</option>
-          <option value="Eugene/Lane">Eugene/Lane</option>
-          <option value="Central Oregon">Central Oregon</option>
-          <option value="Southern Oregon">Southern Oregon</option>
-          <option value="Coast">Coast</option>
-          <option value="Eastern Oregon">Eastern Oregon</option>
-          <option value="Statewide/Virtual">Statewide/Virtual</option>
-        </select>
-      </div>
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="regionFilter">Region</label>
+          <select id="regionFilter">
+            <option value="">All Regions</option>
+            <option value="Portland Metro">Portland Metro</option>
+            <option value="Southwest Washington">Southwest Washington</option>
+            <option value="Willamette Valley">Willamette Valley</option>
+            <option value="Eugene/Lane">Eugene/Lane</option>
+            <option value="Central Oregon">Central Oregon</option>
+            <option value="Southern Oregon">Southern Oregon</option>
+            <option value="Coast">Coast</option>
+            <option value="Eastern Oregon">Eastern Oregon</option>
+            <option value="Statewide/Virtual">Statewide/Virtual</option>
+          </select>
+        </div>
 
-      <div class="filter-group">
-        <label for="formatFilter">Format</label>
-        <select id="formatFilter">
-          <option value="">All Formats</option>
-          <option value="in_person">In Person</option>
-          <option value="virtual">Virtual</option>
-          <option value="hybrid">Hybrid</option>
-        </select>
+        <div class="filter-group">
+          <label for="formatFilter">Format</label>
+          <select id="formatFilter">
+            <option value="">All Formats</option>
+            <option value="in_person">In Person</option>
+            <option value="virtual">Virtual</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
       </div>
     </div>
 

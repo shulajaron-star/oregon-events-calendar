@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Oregon Events Calendar</title>
+  <style>
+    :root {
+      --primary: #1a472a;
+      --primary-dark: #0f2818;
+      --secondary: #2e7d47;
+      --accent: #f39c12;
+      --text: #2c3e50;
+      --text-light: #7f8c8d;
+      --bg: #f8f9fa;
+      --border: #dee2e6;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 0.875rem;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .btn-success:hover {
+      background: #229954;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 4rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .login-container h2 {
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: var(--primary);
+    }
+
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .submission-card {
+      background: white;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--accent);
+    }
+
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .submission-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .submission-date {
+      font-size: 0.8125rem;
+      color: var(--text-light);
+    }
+
+    .submission-field {
+      margin-bottom: 0.75rem;
+    }
+
+    .submission-field label {
+      display: inline-block;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      color: var(--text);
+      min-width: 120px;
+    }
+
+    .submission-field span {
+      color: var(--text);
+    }
+
+    .submission-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .edit-form {
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 0.25rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .edit-form.active {
+      display: block;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .empty-state h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    #admin-content {
+      display: none;
+    }
+
+    #admin-content.active {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .submission-header {
+        flex-direction: column;
+      }
+
+      .submission-actions {
+        flex-direction: column;
+      }
+
+      .submission-actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-container">
+      <h2>🔐 Admin Login</h2>
+      <div id="login-error" class="alert alert-error" style="display: none;"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Content -->
+  <div id="admin-content">
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <h1>🛠️ Oregon Events Admin</h1>
+          <div>
+            <a href="index.html" class="btn btn-sm">← Back to Calendar</a>
+            <button class="btn btn-sm" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('suggestions')">
+          Event Suggestions (<span id="suggestions-count">0</span>)
+        </button>
+        <button class="tab" onclick="switchTab('issues')">
+          Issue Reports (<span id="issues-count">0</span>)
+        </button>
+      </div>
+
+      <!-- Event Suggestions Tab -->
+      <div id="suggestions-tab" class="tab-content active">
+        <div id="suggestions-loading" class="loading">
+          <p>Loading event suggestions...</p>
+        </div>
+        <div id="suggestions-list"></div>
+      </div>
+
+      <!-- Issue Reports Tab -->
+      <div id="issues-tab" class="tab-content">
+        <div id="issues-loading" class="loading">
+          <p>Loading issue reports...</p>
+        </div>
+        <div id="issues-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple password protection (in production, use proper authentication)
+    const ADMIN_PASSWORD = 'oregon-events-2026'; // Change this!
+
+    // Check if already logged in
+    if (sessionStorage.getItem('admin-logged-in') === 'true') {
+      showAdmin();
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem('admin-logged-in', 'true');
+        showAdmin();
+      } else {
+        const errorDiv = document.getElementById('login-error');
+        errorDiv.textContent = 'Incorrect password. Please try again.';
+        errorDiv.style.display = 'block';
+      }
+    });
+
+    function showAdmin() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-content').classList.add('active');
+      loadSubmissions();
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin-logged-in');
+      location.reload();
+    }
+
+    function switchTab(tab) {
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tab + '-tab').classList.add('active');
+    }
+
+    async function loadSubmissions() {
+      try {
+        const response = await fetch('/.netlify/functions/get-submissions');
+        const data = await response.json();
+
+        // Load event suggestions
+        const suggestions = data.suggestions || [];
+        document.getElementById('suggestions-count').textContent = suggestions.length;
+        document.getElementById('suggestions-loading').style.display = 'none';
+
+        if (suggestions.length === 0) {
+          document.getElementById('suggestions-list').innerHTML = `
+            <div class="empty-state">
+              <h3>No event suggestions</h3>
+              <p>When users submit event suggestions, they will appear here.</p>
+            </div>
+          `;
+        } else {
+          document.getElementById('suggestions-list').innerHTML = suggestions.map(renderSuggestion).join('');
+        }
+
+        // Load issue reports
+        const issues = data.issues || [];
+        document.getElementById('issues-count').textContent = issues.length;
+        document.getElementById('issues-loading').style.display = 'none';
+
+        if (issues.length === 0) {
+          document.getElementById('issues-list').innerHTML = `
+            <div class="empty-state">
+              <h3>No issue reports</h3>
+              <p>When users report issues with events, they will appear here.</p>
+            </div>
+          `;
+        } else {
+          document.getElementById('issues-list').innerHTML = issues.map(renderIssue).join('');
+        }
+      } catch (error) {
+        console.error('Error loading submissions:', error);
+        document.getElementById('suggestions-loading').innerHTML = `
+          <div class="alert alert-error">
+            Failed to load submissions. Make sure the get-submissions function is deployed.
+          </div>
+        `;
+        document.getElementById('issues-loading').innerHTML = `
+          <div class="alert alert-error">
+            Failed to load submissions. Make sure the get-submissions function is deployed.
+          </div>
+        `;
+      }
+    }
+
+    function renderSuggestion(submission) {
+      const data = submission.data;
+      const id = submission.id;
+
+      return `
+        <div class="submission-card">
+          <div class="submission-header">
+            <div>
+              <div class="submission-title">${escapeHtml(data.event_name || 'Untitled Event')}</div>
+              <div class="submission-date">Submitted: ${new Date(submission.created_at).toLocaleString()}</div>
+            </div>
+          </div>
+
+          <div class="submission-field">
+            <label>URL:</label>
+            <span><a href="${escapeHtml(data.event_url || '')}" target="_blank">${escapeHtml(data.event_url || 'N/A')}</a></span>
+          </div>
+
+          <div class="submission-field">
+            <label>Date:</label>
+            <span>${escapeHtml(data.event_date || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Time:</label>
+            <span>${escapeHtml(data.event_time || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Organizer:</label>
+            <span>${escapeHtml(data.organizer || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Location:</label>
+            <span>${escapeHtml(data.location || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Category:</label>
+            <span>${escapeHtml(data.category || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Description:</label>
+            <span>${escapeHtml(data.description || 'N/A')}</span>
+          </div>
+
+          ${data.submitter_email ? `
+          <div class="submission-field">
+            <label>Submitter:</label>
+            <span>${escapeHtml(data.submitter_email)}</span>
+          </div>
+          ` : ''}
+
+          <div class="submission-actions">
+            <button class="btn btn-sm btn-success" onclick="approveSuggestion('${id}')">
+              ✓ Approve & Add to Calendar
+            </button>
+            <button class="btn btn-sm" onclick="toggleEdit('suggestion-${id}')">
+              ✏️ Edit Before Approving
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="rejectSubmission('${id}', 'suggestion')">
+              ✕ Reject
+            </button>
+          </div>
+
+          <div id="suggestion-${id}" class="edit-form">
+            <div class="alert alert-info">
+              Edit the event details below, then click "Approve Edited Event" to add it to the calendar.
+            </div>
+            <!-- Edit form would go here - for now, just approve/reject -->
+            <p><em>Edit functionality coming soon. For now, approve to add as-is or reject.</em></p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderIssue(submission) {
+      const data = submission.data;
+      const id = submission.id;
+
+      return `
+        <div class="submission-card">
+          <div class="submission-header">
+            <div>
+              <div class="submission-title">Issue: ${escapeHtml(data.event_title || 'Unknown Event')}</div>
+              <div class="submission-date">Reported: ${new Date(submission.created_at).toLocaleString()}</div>
+            </div>
+          </div>
+
+          <div class="submission-field">
+            <label>Event ID:</label>
+            <span>${escapeHtml(data.event_id || 'N/A')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Event URL:</label>
+            <span><a href="${escapeHtml(data.event_url || '')}" target="_blank">${escapeHtml(data.event_url || 'N/A')}</a></span>
+          </div>
+
+          <div class="submission-field">
+            <label>Issue Type:</label>
+            <span style="color: var(--danger); font-weight: 600;">${formatIssueType(data.issue_type)}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Details:</label>
+            <span>${escapeHtml(data.issue_details || 'N/A')}</span>
+          </div>
+
+          ${data.reporter_email ? `
+          <div class="submission-field">
+            <label>Reporter:</label>
+            <span>${escapeHtml(data.reporter_email)}</span>
+          </div>
+          ` : ''}
+
+          <div class="submission-actions">
+            <button class="btn btn-sm btn-success" onclick="resolveIssue('${id}', '${escapeHtml(data.event_id)}')">
+              ✓ Fix & Mark Resolved
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="rejectSubmission('${id}', 'issue')">
+              ✕ Dismiss
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function formatIssueType(type) {
+      const types = {
+        'wrong_date': 'Wrong Date',
+        'wrong_time': 'Wrong Time',
+        'wrong_location': 'Wrong Location',
+        'wrong_organizer': 'Wrong Organizer',
+        'broken_link': 'Broken Link',
+        'event_cancelled': 'Event Cancelled',
+        'duplicate': 'Duplicate Event',
+        'other': 'Other Issue'
+      };
+      return types[type] || type;
+    }
+
+    function toggleEdit(id) {
+      const form = document.getElementById(id);
+      form.classList.toggle('active');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function approveSuggestion(submissionId) {
+      if (!confirm('Add this event to the calendar?')) return;
+
+      // In a real implementation, this would:
+      // 1. Call a Netlify Function to add event to events.json
+      // 2. Run validation and deduplication
+      // 3. Rebuild the calendar
+      // 4. Delete the form submission
+
+      alert('Event approval functionality coming soon!\n\nThis will:\n- Add event to data/events.json\n- Run validation\n- Rebuild calendar\n- Delete submission');
+
+      // For now, just remove the card from view
+      // event.target.closest('.submission-card').remove();
+    }
+
+    async function resolveIssue(submissionId, eventId) {
+      if (!confirm('Mark this issue as resolved?')) return;
+
+      alert('Issue resolution functionality coming soon!\n\nFor now, please manually update the event in data/events.json');
+
+      // For now, just remove the card from view
+      // event.target.closest('.submission-card').remove();
+    }
+
+    async function rejectSubmission(submissionId, type) {
+      if (!confirm('Reject this submission? This action cannot be undone.')) return;
+
+      // In a real implementation, this would delete the submission via Netlify API
+      alert('Reject functionality coming soon!\n\nThis will delete the submission from Netlify Forms.');
+
+      // For now, just remove the card from view
+      // event.target.closest('.submission-card').remove();
+    }
+  </script>
+</body>
+</html>
