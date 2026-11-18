@@ -528,6 +528,21 @@
     </div>
   </div>
 
+  <!-- Hidden form for Netlify detection -->
+  <form name="event-suggestions" netlify netlify-honeypot="bot-field" hidden>
+    <input type="text" name="event_name">
+    <input type="url" name="event_url">
+    <input type="date" name="event_date">
+    <input type="time" name="event_time">
+    <input type="text" name="organizer">
+    <input type="text" name="location">
+    <select name="category">
+      <option value="startup">Startup</option>
+    </select>
+    <textarea name="description"></textarea>
+    <input type="email" name="submitter_email">
+  </form>
+
   <!-- Suggest event modal -->
   <div class="modal" id="suggestModal">
     <div class="modal-content">
