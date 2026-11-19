@@ -12,7 +12,8 @@
     "harvest:all": "npm run harvest && npm run harvest:html",
     "deduplicate": "node scripts/deduplicate-events.js",
     "qc:review": "node scripts/qc-review.js",
-    "qc:approve": "node scripts/qc-approve.js && npm run deduplicate && npm run validate && npm run build"
+    "qc:approve": "node scripts/qc-approve.js && npm run deduplicate && npm run validate && npm run build",
+    "qc:dates": "node scripts/qc-date-check.js"
   },
   "keywords": [
     "oregon",
