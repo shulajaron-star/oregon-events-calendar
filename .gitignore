@@ -6,7 +6,6 @@ site/events.json
 site/events.ics
 
 # Temporary files
-data/events-pending.json
 *.log
 .DS_Store
 
