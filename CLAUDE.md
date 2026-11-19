@@ -2,6 +2,114 @@
 
 This project maintains a 12-month rolling calendar of startup, entrepreneurship, and bioscience industry events in Oregon and Southwest Washington.
 
+## Technical Overview
+
+### What This Project Is
+A static website with an admin interface that:
+- Displays a public calendar of Oregon startup and bioscience events
+- Allows users to suggest new events via forms
+- Provides an admin dashboard for managing events, reviewing suggestions, and tracking changes
+- Automatically syncs with GitHub and rebuilds on Netlify when changes are made
+
+### Folder Structure
+```
+oregon-events-calendar/
+├── data/
+│   ├── events.json              # Master event data (source of truth)
+│   ├── changelog.json           # History of all changes
+│   ├── sources.json             # Approved event sources
+│   ├── sources_pending.json     # Sources awaiting approval
+│   ├── sources_rejected.json    # Rejected sources with reasons
+│   └── archive/                 # Past events by year (YYYY.json)
+├── site/
+│   ├── index.html              # Public calendar page
+│   ├── admin.html              # Admin dashboard
+│   ├── events.json             # Generated: filtered events for display
+│   └── events.ics              # Generated: iCalendar feed
+├── netlify/functions/
+│   ├── approve-event.js        # Approve event suggestions
+│   ├── delete-submission.js    # Delete form submissions
+│   ├── fetch-event.js          # Fetch event data
+│   ├── get-changelog.js        # Get change log
+│   ├── get-events.js           # Get events from GitHub
+│   ├── get-pending.js          # Get pending items
+│   ├── get-submissions.js      # Get form submissions
+│   ├── manage-event.js         # Add/edit/delete events
+│   └── run-weekly-harvest.js   # Scheduled event harvesting
+├── scripts/
+│   ├── build.js                # Build script: generates site/events.json and site/events.ics
+│   └── validate.js             # Validates data/events.json schema
+└── netlify.toml                # Netlify configuration
+
+```
+
+### How to Run Locally
+
+**Prerequisites:**
+- Node.js (v18+)
+- Python 3 (for local server)
+
+**Steps:**
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Build the site: `npm run build`
+4. Start local server: `cd site && python3 -m http.server 8000`
+5. Open browser to `http://localhost:8000`
+
+**Local Limitations:**
+- Netlify Functions won't work (forms, event approval, changelog)
+- Admin features require the deployed site
+- Use deployed site for testing full functionality
+
+### How Deploys to Netlify Work
+
+**Automatic Deployment:**
+1. Changes pushed to `main` branch on GitHub
+2. GitHub webhook triggers Netlify build
+3. Netlify runs `npm run build` (generates site/events.json and site/events.ics)
+4. Netlify deploys site/ folder
+5. Site goes live at https://oregonstartupeventscalendar.netlify.app/
+
+**Build Process:**
+- `scripts/build.js` reads `data/events.json`
+- Filters events to 12-month rolling window (today → today + 12 months)
+- Generates `site/events.json` (for web display)
+- Generates `site/events.ics` (iCalendar subscription feed)
+
+**Functions:**
+- Netlify Functions are serverless and deployed automatically
+- Functions use GitHub API to read/write data/events.json and data/changelog.json
+- Changes trigger automatic rebuilds via GitHub webhooks
+
+### Conventions
+
+**Data Files:**
+- All dates use ISO 8601 format with America/Los_Angeles timezone
+- All-day events use `00:00:00` time
+- Event IDs are stable slugs: `{organizer-slug}-{title-slug}-{date}`
+- Categories are arrays (events can have multiple tags)
+
+**Git Commits:**
+- Descriptive messages with event titles/IDs
+- Auto-generated commits include "🤖 Generated with Claude Code"
+- Changelog updated automatically via Netlify Functions
+
+**Admin Access:**
+- Password protected (set in admin.html)
+- Changes made in admin trigger GitHub commits
+- All changes logged to data/changelog.json
+
+**Color Coding:**
+- Blue theme matches public and admin interfaces
+- Event categories have specific colors:
+  - Startup: #3b82f6
+  - Training: #8b5cf6
+  - Investor: #10b981
+  - Life Science: #ec4899
+  - Networking: #f59e0b
+  - Conference: #6366f1
+  - Underrepresented Founders: #14b8a6
+
 ## Scope Rules
 
 ### INCLUDE events that are any of:
