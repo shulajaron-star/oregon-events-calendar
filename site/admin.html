@@ -325,6 +325,9 @@
         <button class="tab active" onclick="switchTab('suggestions')">
           Event Suggestions (<span id="suggestions-count">0</span>)
         </button>
+        <button class="tab" onclick="switchTab('pending')">
+          Pending Events (<span id="pending-count">0</span>)
+        </button>
         <button class="tab" onclick="switchTab('issues')">
           Issue Reports (<span id="issues-count">0</span>)
         </button>
@@ -339,6 +342,19 @@
           <p>Loading event suggestions...</p>
         </div>
         <div id="suggestions-list"></div>
+      </div>
+
+      <!-- Pending Events Tab -->
+      <div id="pending-tab" class="tab-content">
+        <div class="alert alert-info" style="margin-bottom: 1rem;">
+          <strong>🤖 Automated Discovery</strong><br>
+          These events were discovered by the weekly harvester from your approved sources.
+          Review each event and approve to add it to the calendar.
+        </div>
+        <div id="pending-loading" class="loading">
+          <p>Loading pending events...</p>
+        </div>
+        <div id="pending-list"></div>
       </div>
 
       <!-- Issue Reports Tab -->
@@ -390,6 +406,7 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-content').classList.add('active');
       loadSubmissions();
+      loadPendingItems();
       loadEvents();
     }
 
@@ -464,6 +481,107 @@
           </div>
         `;
       }
+    }
+
+    // Store current events and pending items globally
+    let allEvents = [];
+    let pendingItems = { events: [], sources: [] };
+
+    async function loadPendingItems() {
+      try {
+        const response = await fetch('/.netlify/functions/get-pending');
+        const data = await response.json();
+
+        pendingItems = data;
+        document.getElementById('pending-count').textContent = data.events.length;
+        document.getElementById('pending-loading').style.display = 'none';
+
+        if (data.events.length === 0) {
+          document.getElementById('pending-list').innerHTML = `
+            <div class="empty-state">
+              <h3>No pending events</h3>
+              <p>When the weekly harvester discovers new events, they will appear here for review.</p>
+              <p style="margin-top: 1rem;"><em>Tip: Run the GitHub Actions workflow "Weekly Event Harvest" to discover new events.</em></p>
+            </div>
+          `;
+        } else {
+          document.getElementById('pending-list').innerHTML = data.events.map(renderPendingEvent).join('');
+        }
+
+      } catch (error) {
+        console.error('Error loading pending items:', error);
+        document.getElementById('pending-loading').innerHTML = `
+          <div class="alert alert-error">
+            Failed to load pending items. Make sure the get-pending function is deployed.
+          </div>
+        `;
+      }
+    }
+
+    function renderPendingEvent(event) {
+      const eventDate = new Date(event.start);
+      const formattedDate = eventDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      const formattedTime = event.start.includes('T00:00:00') ? 'All day' :
+        eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+      return `
+        <div class="submission-card">
+          <div class="submission-header">
+            <div>
+              <div class="submission-title">${escapeHtml(event.title)}</div>
+              <div class="submission-date">${formattedDate} at ${formattedTime}</div>
+            </div>
+          </div>
+
+          <div class="submission-field">
+            <label>Source:</label>
+            <span>${escapeHtml(event.source_url || 'Unknown')}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Organizer:</label>
+            <span>${escapeHtml(event.organizer)}</span>
+          </div>
+
+          ${event.venue ? `
+          <div class="submission-field">
+            <label>Venue:</label>
+            <span>${escapeHtml(event.venue)}</span>
+          </div>
+          ` : ''}
+
+          <div class="submission-field">
+            <label>Region:</label>
+            <span>${escapeHtml(event.region)}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Summary:</label>
+            <span>${escapeHtml(event.summary || 'N/A')}</span>
+          </div>
+
+          ${event.registration_url ? `
+          <div class="submission-field">
+            <label>URL:</label>
+            <span><a href="${escapeHtml(event.registration_url)}" target="_blank">${escapeHtml(event.registration_url)}</a></span>
+          </div>
+          ` : ''}
+
+          <div class="submission-actions">
+            <button class="btn btn-sm btn-success" onclick="approvePendingEvent('${escapeHtml(event.id)}')">
+              ✓ Approve & Add to Calendar
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="rejectPendingEvent('${escapeHtml(event.id)}')">
+              ✕ Reject
+            </button>
+          </div>
+        </div>
+      `;
     }
 
     // Store current events globally
@@ -1039,6 +1157,88 @@
         button.disabled = false;
         button.textContent = '⚠️ Mark as Cancelled';
       }
+    }
+
+    // Pending events approval/rejection
+    // These will be handled by the approve-event function (same as manual suggestions)
+    async function approvePendingEvent(eventId) {
+      const event = pendingItems.events.find(e => e.id === eventId);
+      if (!event) {
+        alert('Error: Could not find pending event');
+        return;
+      }
+
+      // Convert event format to match what approve-event expects
+      const eventData = {
+        event_name: event.title,
+        event_url: event.registration_url || event.source_url,
+        event_date: event.start.split('T')[0],
+        event_time: event.start.includes('T00:00:00') ? '' : event.start.split('T')[1].substring(0, 5),
+        organizer: event.organizer,
+        location: event.venue || '',
+        category: event.categories && event.categories.length > 0 ? event.categories[0] : 'startup',
+        description: event.summary || ''
+      };
+
+      if (!confirm(`Approve and add "${event.title}" to the calendar?\n\nThis event was discovered by the automated harvester.`)) return;
+
+      try {
+        const button = window.event.target;
+        const card = button.closest('.submission-card');
+        button.disabled = true;
+        button.textContent = '⏳ Approving...';
+
+        // Call the approve-event function
+        const response = await fetch('/.netlify/functions/approve-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventData: eventData,
+            submissionId: null  // No form submission to delete for pending events
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to approve event');
+        }
+
+        // Remove card from view
+        card.remove();
+
+        // Update count
+        const count = document.getElementById('pending-count');
+        count.textContent = parseInt(count.textContent) - 1;
+
+        // Update pendingItems array
+        pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+
+        alert(`✓ Event approved!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. It will also be removed from pending on the next harvest run.`);
+
+      } catch (error) {
+        alert(`Error approving event: ${error.message}`);
+        button.disabled = false;
+        button.textContent = '✓ Approve & Add to Calendar';
+      }
+    }
+
+    async function rejectPendingEvent(eventId) {
+      if (!confirm('Reject this pending event? It will be removed from the pending list.')) return;
+
+      // Note: This just removes from view. The actual removal from events-pending.json
+      // should be handled by the harvest workflow or manually
+      const card = window.event.target.closest('.submission-card');
+      card.remove();
+
+      // Update count
+      const count = document.getElementById('pending-count');
+      count.textContent = parseInt(count.textContent) - 1;
+
+      // Update pendingItems array
+      pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+
+      alert('Event rejected and removed from view.\n\nNote: To permanently remove, delete from data/events-pending.json in GitHub.');
     }
   </script>
 </body>
