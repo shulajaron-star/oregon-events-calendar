@@ -938,28 +938,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-she-flies-2024-2027-09-30",
-      "title": "She Flies 2024",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-09-30T18:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "Tender Loving Empire's Community Space\n                \n                (map)",
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/she-flies-2024",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "She Flies 2024",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
