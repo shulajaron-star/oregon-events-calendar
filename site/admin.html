@@ -392,13 +392,20 @@
       document.getElementById(tab + '-tab').classList.add('active');
     }
 
+    // Store submissions data globally so functions can access it
+    let allSubmissions = { suggestions: [], issues: [] };
+
     async function loadSubmissions() {
       try {
         const response = await fetch('/.netlify/functions/get-submissions');
         const data = await response.json();
 
+        // Store submissions globally
+        allSubmissions.suggestions = data.suggestions || [];
+        allSubmissions.issues = data.issues || [];
+
         // Load event suggestions
-        const suggestions = data.suggestions || [];
+        const suggestions = allSubmissions.suggestions;
         document.getElementById('suggestions-count').textContent = suggestions.length;
         document.getElementById('suggestions-loading').style.display = 'none';
 
@@ -414,7 +421,7 @@
         }
 
         // Load issue reports
-        const issues = data.issues || [];
+        const issues = allSubmissions.issues;
         document.getElementById('issues-count').textContent = issues.length;
         document.getElementById('issues-loading').style.display = 'none';
 
@@ -645,17 +652,65 @@
       return div.innerHTML;
     }
 
+    function findSubmissionById(submissionId) {
+      // Search in both suggestions and issues
+      const suggestion = allSubmissions.suggestions.find(s => s.id === submissionId);
+      if (suggestion) return suggestion;
+
+      const issue = allSubmissions.issues.find(i => i.id === submissionId);
+      if (issue) return issue;
+
+      return null;
+    }
+
     async function approveSuggestion(submissionId) {
-      if (!confirm('Mark this event as approved? This will remove it from view.\n\nNote: You still need to manually add it to data/events.json')) return;
+      // Find the submission data
+      const card = event.target.closest('.submission-card');
+      const submissionData = findSubmissionById(submissionId);
 
-      // Remove the card from view
-      event.target.closest('.submission-card').remove();
+      if (!submissionData) {
+        alert('Error: Could not find submission data');
+        return;
+      }
 
-      // Update count
-      const count = document.getElementById('suggestions-count');
-      count.textContent = parseInt(count.textContent) - 1;
+      if (!confirm(`Approve and add "${submissionData.data.event_name}" to the calendar?\n\nThis will:\n- Add event to data/events.json\n- Commit to GitHub\n- Trigger automatic rebuild\n- Delete this submission`)) return;
 
-      alert('Marked as approved!\n\nNext steps:\n1. Manually add event to data/events.json\n2. Run: npm run validate && npm run build\n3. Commit and push changes\n4. Delete submission from Netlify Dashboard (Forms → Submissions)');
+      try {
+        // Show loading state
+        const button = event.target;
+        button.disabled = true;
+        button.textContent = '⏳ Approving...';
+
+        // Call the approve-event function
+        const response = await fetch('/.netlify/functions/approve-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventData: submissionData.data,
+            submissionId: submissionId
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to approve event');
+        }
+
+        // Remove card from view
+        card.remove();
+
+        // Update count
+        const count = document.getElementById('suggestions-count');
+        count.textContent = parseInt(count.textContent) - 1;
+
+        alert(`✓ Event approved successfully!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. GitHub will automatically rebuild the site in a few minutes.`);
+
+      } catch (error) {
+        alert(`Error approving event: ${error.message}\n\nPlease try again or add manually.`);
+        button.disabled = false;
+        button.textContent = '✓ Approve & Add to Calendar';
+      }
     }
 
     async function approveEditedSuggestion(submissionId) {
@@ -671,18 +726,44 @@
         description: document.getElementById(`edit-description-${submissionId}`).value
       };
 
-      if (!confirm(`Add "${editedData.event_name}" to the calendar with your edits?`)) return;
+      if (!confirm(`Approve and add "${editedData.event_name}" to the calendar with your edits?\n\nThis will:\n- Add event to data/events.json\n- Commit to GitHub\n- Trigger automatic rebuild\n- Delete this submission`)) return;
 
-      // In a real implementation, this would:
-      // 1. Call a Netlify Function to add event to events.json with edited data
-      // 2. Run validation and deduplication
-      // 3. Rebuild the calendar
-      // 4. Delete the form submission
+      try {
+        const button = event.target;
+        const card = button.closest('.submission-card');
+        button.disabled = true;
+        button.textContent = '⏳ Approving...';
 
-      alert(`Event approval with edits coming soon!\n\nEdited event details:\n- Name: ${editedData.event_name}\n- Date: ${editedData.event_date}\n- Time: ${editedData.event_time}\n- Organizer: ${editedData.organizer}\n- Location: ${editedData.location}\n- Category: ${editedData.category}\n\nThis will:\n- Add event to data/events.json\n- Run validation\n- Rebuild calendar\n- Delete submission`);
+        // Call the approve-event function with edited data
+        const response = await fetch('/.netlify/functions/approve-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventData: editedData,
+            submissionId: submissionId
+          })
+        });
 
-      // For now, just remove the card from view
-      // event.target.closest('.submission-card').remove();
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to approve event');
+        }
+
+        // Remove card from view
+        card.remove();
+
+        // Update count
+        const count = document.getElementById('suggestions-count');
+        count.textContent = parseInt(count.textContent) - 1;
+
+        alert(`✓ Event approved with your edits!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. GitHub will automatically rebuild the site in a few minutes.`);
+
+      } catch (error) {
+        alert(`Error approving event: ${error.message}\n\nPlease try again or add manually.`);
+        button.disabled = false;
+        button.textContent = '✓ Approve Edited Event';
+      }
     }
 
     async function resolveIssue(submissionId, eventId) {
@@ -699,24 +780,44 @@
     }
 
     async function rejectSubmission(submissionId, type) {
-      if (!confirm('Reject this submission? This will remove it from view.\n\nNote: To permanently delete, go to Netlify Dashboard → Forms → Submissions.')) return;
+      if (!confirm('Reject and permanently delete this submission?')) return;
 
-      // Remove the card from view
-      event.target.closest('.submission-card').remove();
+      try {
+        const button = event.target;
+        const card = button.closest('.submission-card');
+        button.disabled = true;
+        button.textContent = '⏳ Deleting...';
 
-      // Update counts
-      if (type === 'suggestion') {
-        const count = document.getElementById('suggestions-count');
-        count.textContent = parseInt(count.textContent) - 1;
-      } else {
-        const count = document.getElementById('issues-count');
-        count.textContent = parseInt(count.textContent) - 1;
+        // Call the delete-submission function
+        const response = await fetch('/.netlify/functions/delete-submission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ submissionId })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to delete submission');
+        }
+
+        // Remove the card from view
+        card.remove();
+
+        // Update counts
+        if (type === 'suggestion') {
+          const count = document.getElementById('suggestions-count');
+          count.textContent = parseInt(count.textContent) - 1;
+        } else {
+          const count = document.getElementById('issues-count');
+          count.textContent = parseInt(count.textContent) - 1;
+        }
+
+      } catch (error) {
+        alert(`Error deleting submission: ${error.message}\n\nPlease try again or delete manually from Netlify Dashboard.`);
+        button.disabled = false;
+        button.textContent = '✕ Reject';
       }
-
-      // Note: To fully delete from Netlify, you would need to:
-      // 1. Create a Netlify Function that calls DELETE /api/v1/submissions/{id}
-      // 2. This requires the submission ID and API token
-      // For now, manual deletion via Netlify Dashboard is required
     }
   </script>
 </body>

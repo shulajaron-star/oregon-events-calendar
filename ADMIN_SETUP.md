@@ -21,29 +21,44 @@ For the admin interface to work, you need to set up environment variables in Net
 3. Give it a name like "Oregon Events Admin"
 4. Copy the token (you won't see it again!)
 
-### 2. Get Your Site ID
+### 2. Get a GitHub Personal Access Token
+
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Click "Generate new token (classic)"
+3. Give it a name like "Oregon Events Calendar Admin"
+4. Select scopes: `repo` (Full control of private repositories)
+5. Click "Generate token"
+6. Copy the token (you won't see it again!)
+
+### 3. Get Your Netlify Site ID
 
 1. Go to Netlify Dashboard → Your Site → Site Settings
 2. Under "Site information", find "API ID"
 3. Copy the Site ID
 
-### 3. Add Environment Variables
+### 4. Add Environment Variables
 
 1. Go to Netlify Dashboard → Your Site → Site configuration → Environment variables
-2. Click "Add a variable" → "Add a single variable"
-3. Add the first variable:
-   - **Key**: `NETLIFY_API_TOKEN`
-   - **Value**: Your personal access token from step 1
-   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
-4. Click "Create variable"
-5. Click "Add a variable" → "Add a single variable" again
-6. Add the second variable:
-   - **Key**: `CUSTOM_SITE_ID`
-   - **Value**: Your site API ID from step 2
-   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
-7. Click "Create variable"
+2. Add these three variables (click "Add a variable" → "Add a single variable" for each):
 
-### 4. Redeploy Your Site
+   **Variable 1:**
+   - **Key**: `NETLIFY_API_TOKEN`
+   - **Value**: Your Netlify personal access token from step 1
+   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
+
+   **Variable 2:**
+   - **Key**: `GITHUB_TOKEN`
+   - **Value**: Your GitHub personal access token from step 2
+   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
+
+   **Variable 3:**
+   - **Key**: `CUSTOM_SITE_ID`
+   - **Value**: Your Netlify site API ID from step 3
+   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
+
+3. Click "Create variable" after each one
+
+### 5. Redeploy Your Site
 
 After adding environment variables, trigger a new deployment:
 
@@ -76,9 +91,16 @@ When someone submits an event through the "Suggest Event" form:
 1. It appears in the **Event Suggestions** tab
 2. Review the event details
 3. Options:
-   - **✓ Approve & Add to Calendar**: Accept the event as-is (placeholder - manual process for now)
-   - **✏️ Edit Before Approving**: Make changes before accepting (coming soon)
-   - **✕ Reject**: Dismiss the submission
+   - **✓ Approve & Add to Calendar**: Automatically adds the event to data/events.json, commits to GitHub, and deletes the submission
+   - **✏️ Edit Before Approving**: Make changes to any field, then approve with your edits
+   - **✕ Reject**: Permanently deletes the submission from Netlify
+
+**What happens when you approve:**
+1. Event is added to `data/events.json` in GitHub
+2. Automatic commit is made with descriptive message
+3. GitHub triggers Netlify to rebuild the site
+4. Form submission is deleted from Netlify
+5. Event appears on calendar within 2-3 minutes
 
 ### Managing Issue Reports
 
@@ -87,24 +109,9 @@ When someone reports an issue with an event:
 1. It appears in the **Issue Reports** tab
 2. Review the issue type and details
 3. Options:
-   - **✓ Fix & Mark Resolved**: Acknowledge you'll fix it (placeholder - manual process for now)
-   - **✕ Dismiss**: Ignore the report
+   - **✕ Dismiss**: Permanently deletes the submission from Netlify
 
-## Current Limitations
-
-The admin interface currently **displays** submissions but doesn't yet have full automation for:
-
-- Automatically adding approved events to `data/events.json`
-- Automatically updating events based on issue reports
-- Deleting submissions from Netlify after processing
-
-**Workaround for now**:
-
-1. Review submissions in the admin interface
-2. Manually add/edit events in `data/events.json`
-3. Run `npm run validate` and `npm run build`
-4. Commit and push changes
-5. Manually delete processed submissions in Netlify Dashboard → Forms → Submissions
+**Note:** Fixing reported issues still requires manual editing of `data/events.json`. The admin interface helps you track which issues have been addressed by removing them from view after dismissal.
 
 ## Email Notifications
 
