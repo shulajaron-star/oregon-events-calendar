@@ -1558,6 +1558,11 @@
                 <input type="url" id="manage-url-${event.id}" class="form-control">
               </div>
               <div class="form-group">
+                <label>Categories (comma-separated) *</label>
+                <input type="text" id="manage-categories-${event.id}" class="form-control" placeholder="startup, training, investor, life_science, networking, conference" required>
+                <small style="color: var(--text-light);">Valid: startup, training, investor, life_science, networking, conference, underrepresented_founders</small>
+              </div>
+              <div class="form-group">
                 <label>Summary</label>
                 <textarea id="manage-summary-${event.id}" class="form-control" rows="3"></textarea>
               </div>
@@ -2334,6 +2339,11 @@
       document.getElementById(`manage-url-${eventId}`).value = eventData.registration_url || '';
       document.getElementById(`manage-summary-${eventId}`).value = eventData.summary || '';
 
+      // Pre-fill categories (comma-separated)
+      if (eventData.categories && eventData.categories.length > 0) {
+        document.getElementById(`manage-categories-${eventId}`).value = eventData.categories.join(', ');
+      }
+
       // Handle date/time
       if (eventData.start) {
         const startDate = new Date(eventData.start);
@@ -2367,6 +2377,18 @@
       const venue = document.getElementById(`manage-venue-${eventId}`).value;
       const url = document.getElementById(`manage-url-${eventId}`).value;
       const summary = document.getElementById(`manage-summary-${eventId}`).value;
+      const categoriesInput = document.getElementById(`manage-categories-${eventId}`).value;
+
+      // Parse categories (comma-separated)
+      const categories = categoriesInput
+        .split(',')
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
+
+      if (categories.length === 0) {
+        alert('Please provide at least one category');
+        return;
+      }
 
       // Build ISO timestamp
       let start;
@@ -2382,7 +2404,8 @@
         venue: venue,
         registration_url: url,
         summary: summary,
-        start: start
+        start: start,
+        categories: categories
       };
 
       if (!confirm(`Save changes to "${title}"?\n\nThis will update the event in the calendar.`)) return;
