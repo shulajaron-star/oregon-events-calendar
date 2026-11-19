@@ -1092,28 +1092,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-little-boxes-2019-2027-10-17",
-      "title": "Little Boxes 2019",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-10-17T18:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "Travel Portland\n                \n                (map)",
-      "city": "Portland",
-      "region": "Portland Metro",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/little-boxes-2019",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "Little Boxes 2019",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
