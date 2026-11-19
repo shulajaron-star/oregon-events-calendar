@@ -10,14 +10,13 @@ exports.handler = async (event, context) => {
   try {
     // Get Netlify API token from environment variable
     const netlifyToken = process.env.NETLIFY_API_TOKEN;
-    const siteId = process.env.SITE_ID;
 
-    if (!netlifyToken || !siteId) {
+    if (!netlifyToken) {
       return {
         statusCode: 500,
         body: JSON.stringify({
           error: 'Missing configuration',
-          message: 'NETLIFY_API_TOKEN and SITE_ID environment variables must be set'
+          message: 'NETLIFY_API_TOKEN environment variable must be set'
         })
       };
     }
