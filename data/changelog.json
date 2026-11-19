@@ -1,3 +1,16 @@
 {
-  "changes": []
+  "changes": [
+    {
+      "action": "added",
+      "eventId": "oregon-life-sciences-2027-jpm-reception-oregon-life-2027-01-10",
+      "eventTitle": "2027 JPM Reception - Oregon Life Sciences",
+      "timestamp": "2026-11-19T18:03:36.385Z",
+      "details": {
+        "organizer": "Oregon Life Sciences (OLS)",
+        "date": "2027-01-11",
+        "category": "investor"
+      },
+      "note": "Approved via admin interface"
+    }
+  ]
 }
