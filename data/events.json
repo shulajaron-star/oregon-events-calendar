@@ -872,28 +872,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-she-flies-2026-2027-09-23",
-      "title": "She Flies 2026",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-09-23T17:30:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": null,
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/she-flies-2026-ewb39",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "She Flies 2026",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
