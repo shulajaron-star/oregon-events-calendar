@@ -23,6 +23,28 @@
       "last_verified": "2026-11-18"
     },
     {
+      "id": "technology-associati-saif-webinar-course-and-2026-11-19",
+      "title": "Saif Webinar: Course and scope",
+      "organizer": "Technology Association of Oregon (TAO)",
+      "co_hosts": [],
+      "start": "2026-11-19T10:00:00-08:00",
+      "end": null,
+      "format": "virtual",
+      "venue": null,
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.techoregon.org/event/saif-webinar-course-and-scope",
+      "source_url": "https://www.techoregon.org/events",
+      "summary": "Saif Webinar: Course and scope",
+      "status": "confirmed",
+      "first_seen": "2026-11-18",
+      "last_verified": "2026-11-18"
+    },
+    {
       "id": "oregon-life-sciences-oregon-bio-women-meetup-2026-11-19",
       "title": "Oregon Bio Women Meetup",
       "organizer": "Oregon Life Sciences (OLS)",
@@ -42,28 +64,6 @@
       "registration_url": "https://www.oregonlifesciences.org/events/obw-corvallis2026",
       "source_url": "https://oregonlifesciences.org/events",
       "summary": "Oregon Bio Women Meetup | Corvallis",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
-    },
-    {
-      "id": "technology-associati-saif-webinar-course-and-2026-11-19",
-      "title": "Saif Webinar: Course and scope",
-      "organizer": "Technology Association of Oregon (TAO)",
-      "co_hosts": [],
-      "start": "2026-11-19T10:00:00-08:00",
-      "end": null,
-      "format": "virtual",
-      "venue": null,
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.techoregon.org/event/saif-webinar-course-and-scope",
-      "source_url": "https://www.techoregon.org/events",
-      "summary": "Saif Webinar: Course and scope",
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
@@ -605,6 +605,28 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
+    },
+    {
+      "id": "innovate-collaborate-2027-oregon-innovation-showcas-2027-05-10",
+      "title": "2027 Oregon Innovation Showcase",
+      "organizer": "Innovate Collaborate Oregon",
+      "co_hosts": [],
+      "start": "2027-05-10T08:00:00-07:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "Hilton Portland Downtown, Portland, OR",
+      "city": "Portland",
+      "region": "Portland Metro",
+      "categories": [
+        "investor"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.oregoninnovationshowcase.org/",
+      "source_url": "https://www.oregoninnovationshowcase.org/",
+      "summary": "2027 Oregon Innovation Showcase takes place from May 10, 2027 to May 11, 2027 at Hilton Portland Downtown, Portland, OR. Organized by Social Enterprises, Inc..",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
     },
     {
       "id": "built-oregon-level-accelerator-info-session-2027-06-09",
