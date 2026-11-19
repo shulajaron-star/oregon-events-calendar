@@ -646,18 +646,16 @@
     }
 
     async function approveSuggestion(submissionId) {
-      if (!confirm('Add this event to the calendar as-is?')) return;
+      if (!confirm('Mark this event as approved? This will remove it from view.\n\nNote: You still need to manually add it to data/events.json')) return;
 
-      // In a real implementation, this would:
-      // 1. Call a Netlify Function to add event to events.json
-      // 2. Run validation and deduplication
-      // 3. Rebuild the calendar
-      // 4. Delete the form submission
+      // Remove the card from view
+      event.target.closest('.submission-card').remove();
 
-      alert('Event approval functionality coming soon!\n\nThis will:\n- Add event to data/events.json\n- Run validation\n- Rebuild calendar\n- Delete submission');
+      // Update count
+      const count = document.getElementById('suggestions-count');
+      count.textContent = parseInt(count.textContent) - 1;
 
-      // For now, just remove the card from view
-      // event.target.closest('.submission-card').remove();
+      alert('Marked as approved!\n\nNext steps:\n1. Manually add event to data/events.json\n2. Run: npm run validate && npm run build\n3. Commit and push changes\n4. Delete submission from Netlify Dashboard (Forms → Submissions)');
     }
 
     async function approveEditedSuggestion(submissionId) {
@@ -688,22 +686,37 @@
     }
 
     async function resolveIssue(submissionId, eventId) {
-      if (!confirm('Mark this issue as resolved?')) return;
+      if (!confirm('Mark this issue as resolved? This will remove it from view.\n\nNote: You still need to manually fix the event in data/events.json')) return;
 
-      alert('Issue resolution functionality coming soon!\n\nFor now, please manually update the event in data/events.json');
+      // Remove the card from view
+      event.target.closest('.submission-card').remove();
 
-      // For now, just remove the card from view
-      // event.target.closest('.submission-card').remove();
+      // Update count
+      const count = document.getElementById('issues-count');
+      count.textContent = parseInt(count.textContent) - 1;
+
+      alert(`Issue marked as resolved!\n\nNext steps:\n1. Manually update event "${eventId}" in data/events.json\n2. Run: npm run validate && npm run build\n3. Commit and push changes\n4. Delete submission from Netlify Dashboard (Forms → Submissions)`);
     }
 
     async function rejectSubmission(submissionId, type) {
-      if (!confirm('Reject this submission? This action cannot be undone.')) return;
+      if (!confirm('Reject this submission? This will remove it from view.\n\nNote: To permanently delete, go to Netlify Dashboard → Forms → Submissions.')) return;
 
-      // In a real implementation, this would delete the submission via Netlify API
-      alert('Reject functionality coming soon!\n\nThis will delete the submission from Netlify Forms.');
+      // Remove the card from view
+      event.target.closest('.submission-card').remove();
 
-      // For now, just remove the card from view
-      // event.target.closest('.submission-card').remove();
+      // Update counts
+      if (type === 'suggestion') {
+        const count = document.getElementById('suggestions-count');
+        count.textContent = parseInt(count.textContent) - 1;
+      } else {
+        const count = document.getElementById('issues-count');
+        count.textContent = parseInt(count.textContent) - 1;
+      }
+
+      // Note: To fully delete from Netlify, you would need to:
+      // 1. Create a Netlify Function that calls DELETE /api/v1/submissions/{id}
+      // 2. This requires the submission ID and API token
+      // For now, manual deletion via Netlify Dashboard is required
     }
   </script>
 </body>
