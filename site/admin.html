@@ -813,32 +813,54 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
   <script>
-    // Simple password protection (in production, use proper authentication)
-    const ADMIN_PASSWORD = 'gegqsB7qwW9goczJkog0Q';
+    // Secure authentication via Netlify Function
+    // Password is stored in environment variable, never sent to browser
 
     // Check if already logged in
     if (sessionStorage.getItem('admin-logged-in') === 'true') {
       showAdmin();
     }
 
-    document.getElementById('login-form').addEventListener('submit', function(e) {
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('login-error');
+      const submitButton = e.target.querySelector('button[type="submit"]');
 
-      console.log('Attempting login...');
-      console.log('Password entered:', password);
-      console.log('Expected password:', ADMIN_PASSWORD);
-      console.log('Match:', password === ADMIN_PASSWORD);
+      // Disable button during login
+      submitButton.disabled = true;
+      submitButton.textContent = 'Logging in...';
+      errorDiv.style.display = 'none';
 
-      if (password === ADMIN_PASSWORD) {
-        console.log('Login successful!');
-        sessionStorage.setItem('admin-logged-in', 'true');
-        showAdmin();
-      } else {
-        console.log('Login failed!');
-        const errorDiv = document.getElementById('login-error');
-        errorDiv.textContent = 'Incorrect password. Please try again. (Entered: "' + password + '")';
+      try {
+        const response = await fetch('/.netlify/functions/admin-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Login successful
+          sessionStorage.setItem('admin-logged-in', 'true');
+          sessionStorage.setItem('admin-token', result.token);
+          showAdmin();
+        } else {
+          // Login failed
+          errorDiv.textContent = result.message || 'Incorrect password. Please try again.';
+          errorDiv.style.display = 'block';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Login';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorDiv.textContent = 'Login failed. Please check your connection and try again.';
         errorDiv.style.display = 'block';
+        submitButton.disabled = false;
+        submitButton.textContent = 'Login';
       }
     });
 

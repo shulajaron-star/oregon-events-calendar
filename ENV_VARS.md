@@ -29,6 +29,24 @@ This document lists all environment variables and API keys required for the Oreg
 - **Default**: `oregon-events-calendar`
 - **Where to set**: Netlify Environment Variables
 
+### Admin Authentication (Required for admin access)
+
+**`ADMIN_PASSWORD`** ⚠️ **CRITICAL - MUST BE SET**
+- **Purpose**: Password for admin dashboard authentication
+- **Used by**: `admin-login` Netlify Function
+- **Security**: Stored securely in environment variable, NEVER in code
+- **Current value**: `gegqsB7qwW9goczJkog0Q`
+- **How to set**: 
+  - Go to Netlify → Site Settings → Environment Variables
+  - Add variable: `ADMIN_PASSWORD`
+  - Value: `gegqsB7qwW9goczJkog0Q` (or your chosen password)
+  - **IMPORTANT**: After setting, change the password to your own value
+- **Where to set**: Netlify Environment Variables (Site Settings → Environment Variables)
+- **Notes**: 
+  - Login will NOT work without this variable set
+  - Password is validated server-side, never exposed to browser
+  - Change this password regularly for security
+
 ### Netlify (Automatically provided by Netlify)
 
 **`NETLIFY_API_TOKEN`**
@@ -69,6 +87,7 @@ This document lists all environment variables and API keys required for the Oreg
 ✅ **GITHUB_TOKEN** - Set in Netlify Environment Variables  
 ✅ **GITHUB_OWNER** - Set to `shulajaron-star`  
 ✅ **GITHUB_REPO** - Set to `oregon-events-calendar`  
+⚠️ **ADMIN_PASSWORD** - **MUST BE SET** in Netlify Environment Variables (see instructions above)  
 ✅ **NETLIFY_API_TOKEN** - Automatically set by Netlify  
 ✅ **CUSTOM_SITE_ID** - Automatically set by Netlify  
 
