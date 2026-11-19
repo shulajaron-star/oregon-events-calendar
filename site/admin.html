@@ -400,12 +400,19 @@
       e.preventDefault();
       const password = document.getElementById('password').value;
 
+      console.log('Attempting login...');
+      console.log('Password entered:', password);
+      console.log('Expected password:', ADMIN_PASSWORD);
+      console.log('Match:', password === ADMIN_PASSWORD);
+
       if (password === ADMIN_PASSWORD) {
+        console.log('Login successful!');
         sessionStorage.setItem('admin-logged-in', 'true');
         showAdmin();
       } else {
+        console.log('Login failed!');
         const errorDiv = document.getElementById('login-error');
-        errorDiv.textContent = 'Incorrect password. Please try again.';
+        errorDiv.textContent = 'Incorrect password. Please try again. (Entered: "' + password + '")';
         errorDiv.style.display = 'block';
       }
     });
