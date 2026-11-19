@@ -827,29 +827,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-she-flies-evening-for-2027-09-17",
-      "title": "She Flies:  An Evening for Women Founders and Leaders",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-09-17T17:30:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": null,
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup",
-        "underrepresented_founders"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/she-flies-an-evening-for-women-founders-and-leaders",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "She Flies:  An Evening for Women Founders and Leaders",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
