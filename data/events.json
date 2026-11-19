@@ -804,29 +804,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-pitch-black-2025-2027-08-21",
-      "title": "Pitch Black 2025",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-08-21T17:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "Portland Center Stage\n                \n                (map)",
-      "city": "Portland",
-      "region": "Portland Metro",
-      "categories": [
-        "startup",
-        "investor"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/pitch-black-2025",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "Pitch Black 2025",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
