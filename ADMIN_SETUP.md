@@ -113,6 +113,29 @@ When someone reports an issue with an event:
 
 **Note:** Fixing reported issues still requires manual editing of `data/events.json`. The admin interface helps you track which issues have been addressed by removing them from view after dismissal.
 
+### Managing Existing Events
+
+The **Manage Events** tab lets you delete or update events already on the calendar:
+
+1. Click the **Manage Events** tab
+2. See all upcoming events (from 7 days ago forward)
+3. Use the search box to filter by title, organizer, or event ID
+4. For each event:
+   - **⚠️ Mark as Cancelled**: Updates the event status to "cancelled" (keeps it on calendar but marks it cancelled)
+   - **🗑️ Delete Event**: Permanently removes the event from the calendar
+
+**What happens when you delete/cancel:**
+1. Event is removed/updated in `data/events.json` on GitHub
+2. Automatic commit is made with descriptive message
+3. GitHub triggers Netlify to rebuild the site
+4. Changes appear on calendar within 2-3 minutes
+
+**Use cases:**
+- Delete events that are no longer happening
+- Mark events as cancelled when they're postponed or cancelled
+- Clean up duplicate events
+- Remove test events
+
 ## Email Notifications
 
 To get notified when someone submits a form:

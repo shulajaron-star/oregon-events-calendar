@@ -328,6 +328,9 @@
         <button class="tab" onclick="switchTab('issues')">
           Issue Reports (<span id="issues-count">0</span>)
         </button>
+        <button class="tab" onclick="switchTab('manage')">
+          Manage Events (<span id="events-count">0</span>)
+        </button>
       </div>
 
       <!-- Event Suggestions Tab -->
@@ -344,6 +347,18 @@
           <p>Loading issue reports...</p>
         </div>
         <div id="issues-list"></div>
+      </div>
+
+      <!-- Manage Events Tab -->
+      <div id="manage-tab" class="tab-content">
+        <div style="margin-bottom: 1rem;">
+          <input type="text" id="event-search" placeholder="Search events by title, organizer, or ID..."
+                 style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+        </div>
+        <div id="events-loading" class="loading">
+          <p>Loading events...</p>
+        </div>
+        <div id="events-list"></div>
       </div>
     </div>
   </div>
@@ -375,6 +390,7 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-content').classList.add('active');
       loadSubmissions();
+      loadEvents();
     }
 
     function logout() {
@@ -448,6 +464,130 @@
           </div>
         `;
       }
+    }
+
+    // Store current events globally
+    let allEvents = [];
+
+    async function loadEvents() {
+      try {
+        const response = await fetch('/.netlify/functions/get-events');
+        const data = await response.json();
+
+        allEvents = data.events || [];
+        document.getElementById('events-count').textContent = allEvents.length;
+        document.getElementById('events-loading').style.display = 'none';
+
+        renderEvents(allEvents);
+
+        // Add search functionality
+        document.getElementById('event-search').addEventListener('input', function(e) {
+          const searchTerm = e.target.value.toLowerCase();
+          const filtered = allEvents.filter(event =>
+            event.title.toLowerCase().includes(searchTerm) ||
+            event.organizer.toLowerCase().includes(searchTerm) ||
+            event.id.toLowerCase().includes(searchTerm)
+          );
+          renderEvents(filtered);
+        });
+
+      } catch (error) {
+        console.error('Error loading events:', error);
+        document.getElementById('events-loading').innerHTML = `
+          <div class="alert alert-error">
+            Failed to load events. Make sure the get-events function is deployed.
+          </div>
+        `;
+      }
+    }
+
+    function renderEvents(events) {
+      if (events.length === 0) {
+        document.getElementById('events-list').innerHTML = `
+          <div class="empty-state">
+            <h3>No events found</h3>
+            <p>Try a different search term.</p>
+          </div>
+        `;
+        return;
+      }
+
+      document.getElementById('events-list').innerHTML = events.map(renderEvent).join('');
+    }
+
+    function renderEvent(event) {
+      const eventDate = new Date(event.start);
+      const formattedDate = eventDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      const formattedTime = event.start.includes('T00:00:00') ? 'All day' :
+        eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+      return `
+        <div class="submission-card">
+          <div class="submission-header">
+            <div>
+              <div class="submission-title">${escapeHtml(event.title)}</div>
+              <div class="submission-date">${formattedDate} at ${formattedTime}</div>
+            </div>
+          </div>
+
+          <div class="submission-field">
+            <label>Event ID:</label>
+            <span style="font-family: monospace; font-size: 0.875rem;">${escapeHtml(event.id)}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Organizer:</label>
+            <span>${escapeHtml(event.organizer)}</span>
+          </div>
+
+          ${event.venue ? `
+          <div class="submission-field">
+            <label>Venue:</label>
+            <span>${escapeHtml(event.venue)}</span>
+          </div>
+          ` : ''}
+
+          <div class="submission-field">
+            <label>Region:</label>
+            <span>${escapeHtml(event.region)}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Format:</label>
+            <span>${escapeHtml(event.format)}</span>
+          </div>
+
+          <div class="submission-field">
+            <label>Status:</label>
+            <span style="color: ${event.status === 'cancelled' ? 'var(--danger)' : 'var(--success)'}; font-weight: 600;">
+              ${escapeHtml(event.status)}
+            </span>
+          </div>
+
+          ${event.registration_url ? `
+          <div class="submission-field">
+            <label>URL:</label>
+            <span><a href="${escapeHtml(event.registration_url)}" target="_blank">${escapeHtml(event.registration_url)}</a></span>
+          </div>
+          ` : ''}
+
+          <div class="submission-actions">
+            ${event.status !== 'cancelled' ? `
+            <button class="btn btn-sm" style="background: var(--warning);" onclick="markAsCancelled('${event.id}', '${escapeHtml(event.title).replace(/'/g, "\\'")}')">
+              ⚠️ Mark as Cancelled
+            </button>
+            ` : ''}
+            <button class="btn btn-sm btn-danger" onclick="deleteEvent('${event.id}', '${escapeHtml(event.title).replace(/'/g, "\\'")}')">
+              🗑️ Delete Event
+            </button>
+          </div>
+        </div>
+      `;
     }
 
     function renderSuggestion(submission) {
@@ -817,6 +957,87 @@
         alert(`Error deleting submission: ${error.message}\n\nPlease try again or delete manually from Netlify Dashboard.`);
         button.disabled = false;
         button.textContent = '✕ Reject';
+      }
+    }
+
+    async function deleteEvent(eventId, eventTitle) {
+      if (!confirm(`Delete "${eventTitle}"?\n\nThis will permanently remove the event from the calendar. This action cannot be undone.`)) return;
+
+      try {
+        const button = event.target;
+        const card = button.closest('.submission-card');
+        button.disabled = true;
+        button.textContent = '⏳ Deleting...';
+
+        // Call the manage-event function
+        const response = await fetch('/.netlify/functions/manage-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'delete',
+            eventId: eventId
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to delete event');
+        }
+
+        // Remove card from view
+        card.remove();
+
+        // Update count
+        const count = document.getElementById('events-count');
+        count.textContent = parseInt(count.textContent) - 1;
+
+        // Update allEvents array
+        allEvents = allEvents.filter(e => e.id !== eventId);
+
+        alert(`✓ Event deleted successfully!\n\nThe event has been removed from data/events.json. GitHub will automatically rebuild the site in a few minutes.`);
+
+      } catch (error) {
+        alert(`Error deleting event: ${error.message}\n\nPlease try again or delete manually from data/events.json.`);
+        button.disabled = false;
+        button.textContent = '🗑️ Delete Event';
+      }
+    }
+
+    async function markAsCancelled(eventId, eventTitle) {
+      if (!confirm(`Mark "${eventTitle}" as cancelled?\n\nThis will update the event status to 'cancelled' on the calendar.`)) return;
+
+      try {
+        const button = event.target;
+        button.disabled = true;
+        button.textContent = '⏳ Updating...';
+
+        // Call the manage-event function
+        const response = await fetch('/.netlify/functions/manage-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'update',
+            eventId: eventId,
+            updates: { status: 'cancelled' }
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to update event');
+        }
+
+        alert(`✓ Event marked as cancelled!\n\nThe event status has been updated. GitHub will automatically rebuild the site in a few minutes.`);
+
+        // Reload events to show updated status
+        loadEvents();
+
+      } catch (error) {
+        alert(`Error updating event: ${error.message}\n\nPlease try again or update manually in data/events.json.`);
+        button.disabled = false;
+        button.textContent = '⚠️ Mark as Cancelled';
       }
     }
   </script>
