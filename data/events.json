@@ -327,6 +327,28 @@
       "last_verified": "2026-11-18"
     },
     {
+      "id": "tie-tie-pitch-club-2026-12-02",
+      "title": "TIE Pitch Club",
+      "organizer": "TIE",
+      "co_hosts": [],
+      "start": "2026-12-03T01:30:00-07:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "Portland",
+      "city": "Portland",
+      "region": "Portland Metro",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://events.tie.org/Oregon/PitchClub_November2026",
+      "source_url": "https://events.tie.org/Oregon/PitchClub_November2026",
+      "summary": "Looking to understand how investors evaluate potential opportunities? Pitch Club offers entrepreneurs a unique chance to experience a mock investor meeting, where real-world feedback helps you refine your pitch and investment strategy. This event simulates an actual investor session, complete with pitches from select companies, Q&A, and in-depth feedback from experienced TiE Oregon Angel Investors.",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
+    },
+    {
       "id": "otradi-oregon-transl-accelerate-biotech-happy-hour-2026-12-04",
       "title": "Accelerate Biotech Happy Hour",
       "organizer": "OTRADI (Oregon Translational Research and Development Institute)",
