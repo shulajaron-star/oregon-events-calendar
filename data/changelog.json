@@ -1,6 +1,21 @@
 {
   "changes": [
     {
+      "action": "edited",
+      "eventId": "tie-tie-pitch-club-2026-12-02",
+      "eventTitle": "TIE Pitch Club",
+      "timestamp": "2026-11-19T18:23:30.435Z",
+      "details": {
+        "title": "TIE Pitch Club",
+        "organizer": "TIE",
+        "venue": "Portland",
+        "registration_url": "https://events.tie.org/Oregon/PitchClub_November2026",
+        "summary": "Looking to understand how investors evaluate potential opportunities? Pitch Club offers entrepreneurs a unique chance to experience a mock investor meeting, where real-world feedback helps you refine your pitch and investment strategy. This event simulates an actual investor session, complete with pitches from select companies, Q&A, and in-depth feedback from experienced TiE Oregon Angel Investors.",
+        "start": "2026-12-02T00:30:00-08:00"
+      },
+      "note": "Via admin interface"
+    },
+    {
       "action": "added",
       "eventId": "tie-tie-pitch-club-2026-12-02",
       "eventTitle": "TIE Pitch Club",
