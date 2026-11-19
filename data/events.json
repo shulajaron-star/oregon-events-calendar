@@ -45,6 +45,28 @@
       "last_verified": "2026-11-18"
     },
     {
+      "id": "onami-onami-innovation-exchange-inte-2026-11-19",
+      "title": "ONAMI Innovation Exchange Interview with Dr. Patricia Buehler, Founder of Osheru ",
+      "organizer": "ONAMI",
+      "co_hosts": [],
+      "start": "2026-11-19T15:00:00-08:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "meet.google.com/mju-zrab-mfe",
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://onami.us/events",
+      "source_url": "https://onami.us/events",
+      "summary": "meet.google.com/mju-zrab-mfe\nJoin us for a live interview with one of our ONAMI Portfolio Companies: OSheru, maker of Ziplyft.\nLearn about building a medical device business and investor readiness for raising funds. \n \nMore about Dr. Patricia Buehler\nhttps://www.linkedin.com/in/pattybuehler/",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
+    },
+    {
       "id": "oregon-life-sciences-oregon-bio-women-meetup-2026-11-19",
       "title": "Oregon Bio Women Meetup",
       "organizer": "Oregon Life Sciences (OLS)",
@@ -113,28 +135,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-17",
       "last_verified": "2026-11-17"
-    },
-    {
-      "id": "onami-onami-innovation-exchange-inte-2026-11-19",
-      "title": "ONAMI Innovation Exchange Interview with Dr. Patricia Buehler, Founder of Osheru ",
-      "organizer": "ONAMI",
-      "co_hosts": [],
-      "start": "2026-11-19T15:00:00-08:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "meet.google.com/mju-zrab-mfe",
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://onami.us/events",
-      "source_url": "https://onami.us/events",
-      "summary": "meet.google.com/mju-zrab-mfe\nJoin us for a live interview with one of our ONAMI Portfolio Companies: OSheru, maker of Ziplyft.\nLearn about building a medical device business and investor readiness for raising funds. \n \nMore about Dr. Patricia Buehler\nhttps://www.linkedin.com/in/pattybuehler/",
-      "status": "confirmed",
-      "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
     },
     {
       "id": "tie-pitch-polish-competition-2026-11-20",
@@ -516,6 +516,28 @@
       "status": "confirmed",
       "first_seen": "2026-11-17",
       "last_verified": "2026-11-17"
+    },
+    {
+      "id": "oregon-life-sciences-2027-jpm-reception-oregon-life-2027-01-10",
+      "title": "2027 JPM Reception - Oregon Life Sciences",
+      "organizer": "Oregon Life Sciences (OLS)",
+      "co_hosts": [],
+      "start": "2027-01-11T00:00:00-07:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "San Francisco",
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "investor"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.oregonlifesciences.org/events/2027-jpm-reception",
+      "source_url": "https://www.oregonlifesciences.org/events/2027-jpm-reception",
+      "summary": "Hosted by Oregon Life Sciences and AZBio, Biocom California, BioNJ, Bio Utah, Colorado Bioscience Association, Georgia Life Sciences, Life Sciences Pennsylvania, MichBio, NCLifeSci, New York Bio, Ohio Life Sciences, Oregon Bio, Virginia Bio, and more, the State Bio Friends Reception kicks off the largest annual gathering of Healthcare Innovators and Healthcare Investors in the world.",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
     },
     {
       "id": "technology-associati-oregon-largest-hackathon-back-2027-04-17",
