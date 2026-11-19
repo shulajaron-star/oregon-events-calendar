@@ -164,6 +164,28 @@
       "last_verified": "2026-11-17"
     },
     {
+      "id": "technology-associati-virtual-reality-in-healthcare-2026-11-23",
+      "title": "Virtual Reality in Healthcare",
+      "organizer": "Technology Association of Oregon (TAO)",
+      "co_hosts": [],
+      "start": "2026-11-23T19:00:00-07:00",
+      "end": null,
+      "format": "virtual",
+      "venue": "Virtual",
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "training"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.techoregon.org/event/virtual-reality-in-healthcare",
+      "source_url": "https://www.techoregon.org/event/virtual-reality-in-healthcare",
+      "summary": "The presentation will address a question that has become central to Dr. Ferrer Costa’s work:\nwhat does it take to move immersive technologies beyond successful clinical pilots and integrate them into routine healthcare practice?\nSince 2015, Dr. Ferrer Costa’s research has focused on primary care and expanding the application of Virtual Reality in healthcare professional education and mental health. His current projects include developing educational programs that utilize VR for clinical skills training, chronic pain management, and mental health therapies, aimed at enhancing healthcare delivery and training, reducing practitioner burnout, and improving patient\noutcomes across multiple domains.",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
+    },
+    {
       "id": "oregon-entrepreneurs-innovation-hub-virtual-office-2026-11-24",
       "title": "NW Innovation Hub Virtual Office Hours November: Tillamook County",
       "organizer": "Oregon Entrepreneurs Network (OEN)",
@@ -259,6 +281,28 @@
       "last_verified": "2026-11-17"
     },
     {
+      "id": "tie-tie-pitch-club-2026-12-02",
+      "title": "TIE Pitch Club",
+      "organizer": "TIE",
+      "co_hosts": [],
+      "start": "2026-12-02T00:30:00-08:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "Portland",
+      "city": "Portland",
+      "region": "Portland Metro",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://events.tie.org/Oregon/PitchClub_November2026",
+      "source_url": "https://events.tie.org/Oregon/PitchClub_November2026",
+      "summary": "Looking to understand how investors evaluate potential opportunities? Pitch Club offers entrepreneurs a unique chance to experience a mock investor meeting, where real-world feedback helps you refine your pitch and investment strategy. This event simulates an actual investor session, complete with pitches from select companies, Q&A, and in-depth feedback from experienced TiE Oregon Angel Investors.",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
+    },
+    {
       "id": "oregon-startup-cente-westside-founder-coffee-december-2026-12-02",
       "title": "Westside Founder Coffee December 2026",
       "organizer": "Oregon Startup Center",
@@ -325,28 +369,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "tie-tie-pitch-club-2026-12-02",
-      "title": "TIE Pitch Club",
-      "organizer": "TIE",
-      "co_hosts": [],
-      "start": "2026-12-02T00:30:00-08:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "Portland",
-      "city": "Portland",
-      "region": "Portland Metro",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://events.tie.org/Oregon/PitchClub_November2026",
-      "source_url": "https://events.tie.org/Oregon/PitchClub_November2026",
-      "summary": "Looking to understand how investors evaluate potential opportunities? Pitch Club offers entrepreneurs a unique chance to experience a mock investor meeting, where real-world feedback helps you refine your pitch and investment strategy. This event simulates an actual investor session, complete with pitches from select companies, Q&A, and in-depth feedback from experienced TiE Oregon Angel Investors.",
-      "status": "confirmed",
-      "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
     },
     {
       "id": "otradi-oregon-transl-accelerate-biotech-happy-hour-2026-12-04",
