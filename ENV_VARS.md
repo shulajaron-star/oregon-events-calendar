@@ -35,17 +35,18 @@ This document lists all environment variables and API keys required for the Oreg
 - **Purpose**: Password for admin dashboard authentication
 - **Used by**: `admin-login` Netlify Function
 - **Security**: Stored securely in environment variable, NEVER in code
-- **Current value**: `gegqsB7qwW9goczJkog0Q`
 - **How to set**: 
   - Go to Netlify → Site Settings → Environment Variables
   - Add variable: `ADMIN_PASSWORD`
-  - Value: `gegqsB7qwW9goczJkog0Q` (or your chosen password)
-  - **IMPORTANT**: After setting, change the password to your own value
+  - Value: Use a strong random password (at least 20 characters)
+  - Generate one with: `node -e "console.log(require('crypto').randomBytes(20).toString('base64').replace(/[+/=]/g, ''))"`
+  - Or use a password manager to generate one
 - **Where to set**: Netlify Environment Variables (Site Settings → Environment Variables)
 - **Notes**: 
   - Login will NOT work without this variable set
   - Password is validated server-side, never exposed to browser
   - Change this password regularly for security
+  - **NEVER commit the actual password to the repository**
 
 ### Netlify (Automatically provided by Netlify)
 
