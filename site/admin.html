@@ -306,6 +306,74 @@
       color: var(--text-light);
     }
 
+    /* Compact changelog entries */
+    .changelog-entry {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+
+    .changelog-entry-header {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background 0.2s;
+    }
+
+    .changelog-entry-header:hover {
+      background: var(--bg-alt);
+    }
+
+    .changelog-action-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .changelog-entry-title {
+      flex: 1;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .changelog-entry-date {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      flex-shrink: 0;
+    }
+
+    .changelog-entry-details {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg-alt);
+      font-size: 0.875rem;
+    }
+
+    .changelog-entry-details.expanded {
+      display: block;
+    }
+
+    .changelog-entry-details dt {
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 0.5rem;
+    }
+
+    .changelog-entry-details dt:first-child {
+      margin-top: 0;
+    }
+
+    .changelog-entry-details dd {
+      margin-left: 0;
+      margin-bottom: 0.5rem;
+    }
+
     .view-toggle {
       display: flex;
       gap: 0.5rem;
@@ -716,15 +784,21 @@
           <strong>📝 Change Log</strong><br>
           This log tracks all modifications made to the calendar including additions, edits, and deletions.
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
-          <input type="text" id="changelog-search" placeholder="Search changes by event name or action..."
-                 style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 0.5rem; flex-wrap: wrap;">
+          <input type="text" id="changelog-search" placeholder="Search changes by event name..."
+                 style="flex: 1; min-width: 200px; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
           <select id="changelog-filter" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
             <option value="all">All Actions</option>
             <option value="added">Added</option>
             <option value="edited">Edited</option>
             <option value="deleted">Deleted</option>
             <option value="cancelled">Cancelled</option>
+          </select>
+          <select id="changelog-sort" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+            <option value="action-date-desc">Sort: Action Date (Newest)</option>
+            <option value="action-date-asc">Sort: Action Date (Oldest)</option>
+            <option value="event-date-desc">Sort: Event Date (Newest)</option>
+            <option value="event-date-asc">Sort: Event Date (Oldest)</option>
           </select>
         </div>
         <div id="changelog-loading" class="loading">
@@ -1198,25 +1272,13 @@
         renderChangelog(allChanges);
 
         // Add search functionality
-        document.getElementById('changelog-search').addEventListener('input', function(e) {
-          const searchTerm = e.target.value.toLowerCase();
-          const filtered = allChanges.filter(change =>
-            change.eventTitle.toLowerCase().includes(searchTerm) ||
-            change.action.toLowerCase().includes(searchTerm)
-          );
-          renderChangelog(filtered);
-        });
+        document.getElementById('changelog-search').addEventListener('input', applyChangelogFilters);
 
         // Add filter functionality
-        document.getElementById('changelog-filter').addEventListener('change', function(e) {
-          const filterValue = e.target.value;
-          if (filterValue === 'all') {
-            renderChangelog(allChanges);
-          } else {
-            const filtered = allChanges.filter(change => change.action === filterValue);
-            renderChangelog(filtered);
-          }
-        });
+        document.getElementById('changelog-filter').addEventListener('change', applyChangelogFilters);
+
+        // Add sort functionality
+        document.getElementById('changelog-sort').addEventListener('change', applyChangelogFilters);
 
       } catch (error) {
         console.error('Error loading changelog:', error);
@@ -1226,6 +1288,56 @@
           </div>
         `;
       }
+    }
+
+    function applyChangelogFilters() {
+      const searchTerm = document.getElementById('changelog-search').value.toLowerCase();
+      const filterValue = document.getElementById('changelog-filter').value;
+      const sortValue = document.getElementById('changelog-sort').value;
+
+      // Filter changes
+      let filtered = allChanges;
+
+      // Apply search
+      if (searchTerm) {
+        filtered = filtered.filter(change =>
+          change.eventTitle.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Apply action filter
+      if (filterValue !== 'all') {
+        filtered = filtered.filter(change => change.action === filterValue);
+      }
+
+      // Apply sorting
+      filtered = [...filtered]; // Clone array to avoid mutating original
+
+      switch(sortValue) {
+        case 'action-date-desc':
+          filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          break;
+        case 'action-date-asc':
+          filtered.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+          break;
+        case 'event-date-desc':
+          // Sort by event date from details, fallback to action date
+          filtered.sort((a, b) => {
+            const dateA = a.details?.date ? new Date(a.details.date) : new Date(a.timestamp);
+            const dateB = b.details?.date ? new Date(b.details.date) : new Date(b.timestamp);
+            return dateB - dateA;
+          });
+          break;
+        case 'event-date-asc':
+          filtered.sort((a, b) => {
+            const dateA = a.details?.date ? new Date(a.details.date) : new Date(a.timestamp);
+            const dateB = b.details?.date ? new Date(b.details.date) : new Date(b.timestamp);
+            return dateA - dateB;
+          });
+          break;
+      }
+
+      renderChangelog(filtered);
     }
 
     function renderChangelog(changes) {
@@ -1246,7 +1358,14 @@
 
     function renderChangeEntry(change) {
       const timestamp = new Date(change.timestamp);
-      const formattedDate = timestamp.toLocaleDateString('en-US', {
+      const actionDate = timestamp.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      const fullDate = timestamp.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -1254,65 +1373,65 @@
         minute: '2-digit'
       });
 
-      let actionColor = '';
       let actionIcon = '';
       switch(change.action) {
         case 'added':
-          actionColor = 'var(--success)';
           actionIcon = '✓';
           break;
         case 'edited':
-          actionColor = 'var(--warning)';
           actionIcon = '✏️';
           break;
         case 'deleted':
-          actionColor = 'var(--danger)';
           actionIcon = '🗑️';
           break;
         case 'cancelled':
-          actionColor = 'var(--warning)';
           actionIcon = '⚠️';
           break;
       }
 
-      let detailsHtml = '';
+      // Build details section
+      let detailsHtml = `<dl>
+        <dt>Action Date</dt>
+        <dd>${fullDate}</dd>
+        <dt>Event ID</dt>
+        <dd style="font-family: monospace;">${escapeHtml(change.eventId)}</dd>`;
+
       if (change.details && Object.keys(change.details).length > 0) {
-        detailsHtml = '<div class="submission-field"><label>Changes:</label><div>';
+        detailsHtml += '<dt>Changes</dt><dd>';
         for (const [key, value] of Object.entries(change.details)) {
-          detailsHtml += `<div style="font-size: 0.875rem; margin: 0.25rem 0;">
-            <strong>${key}:</strong> ${escapeHtml(String(value))}
-          </div>`;
+          detailsHtml += `<div><strong>${key}:</strong> ${escapeHtml(String(value))}</div>`;
         }
-        detailsHtml += '</div></div>';
+        detailsHtml += '</dd>';
       }
 
+      if (change.note) {
+        detailsHtml += `<dt>Note</dt><dd>${escapeHtml(change.note)}</dd>`;
+      }
+
+      detailsHtml += '</dl>';
+
+      const entryId = `change-${change.timestamp}-${change.eventId}`.replace(/[^a-z0-9-]/gi, '-');
+
       return `
-        <div class="submission-card">
-          <div class="submission-header">
-            <div>
-              <div class="submission-title">
-                <span style="color: ${actionColor};">${actionIcon} ${change.action.toUpperCase()}</span>
-                : ${escapeHtml(change.eventTitle)}
-              </div>
-              <div class="submission-date">${formattedDate}</div>
+        <div class="changelog-entry">
+          <div class="changelog-entry-header" onclick="toggleChangelogDetails('${entryId}')">
+            <span class="changelog-action-icon">${actionIcon}</span>
+            <div class="changelog-entry-title">
+              <strong>${change.action.toUpperCase()}:</strong>
+              <span>${escapeHtml(change.eventTitle)}</span>
             </div>
+            <div class="changelog-entry-date">${actionDate}</div>
           </div>
-
-          <div class="submission-field">
-            <label>Event ID:</label>
-            <span style="font-family: monospace; font-size: 0.875rem;">${escapeHtml(change.eventId)}</span>
+          <div id="${entryId}" class="changelog-entry-details">
+            ${detailsHtml}
           </div>
-
-          ${detailsHtml}
-
-          ${change.note ? `
-          <div class="submission-field">
-            <label>Note:</label>
-            <span>${escapeHtml(change.note)}</span>
-          </div>
-          ` : ''}
         </div>
       `;
+    }
+
+    function toggleChangelogDetails(entryId) {
+      const details = document.getElementById(entryId);
+      details.classList.toggle('expanded');
     }
 
     function renderEvents(events) {
