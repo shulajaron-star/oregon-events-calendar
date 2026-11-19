@@ -1,6 +1,14 @@
 {
   "changes": [
     {
+      "action": "deleted",
+      "eventId": "technology-associati-virtual-reality-healthcare-2026-11-23",
+      "eventTitle": "Virtual Reality in Healthcare",
+      "timestamp": "2026-11-19T18:09:54.231Z",
+      "details": {},
+      "note": "Via admin interface"
+    },
+    {
       "action": "added",
       "eventId": "oregon-life-sciences-2027-jpm-reception-oregon-life-2027-01-10",
       "eventTitle": "2027 JPM Reception - Oregon Life Sciences",
