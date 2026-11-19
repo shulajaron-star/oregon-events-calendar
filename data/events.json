@@ -612,14 +612,16 @@
       "title": "2027 Oregon Innovation Showcase",
       "organizer": "Innovate Collaborate Oregon",
       "co_hosts": [],
-      "start": "2027-05-11T08:00:00-07:00",
+      "start": "2027-05-11T08:00:00-08:00",
       "end": null,
       "format": "in_person",
       "venue": "Hilton Portland Downtown, Portland, OR",
       "city": "Portland",
       "region": "Portland Metro",
       "categories": [
-        "investor"
+        "investor",
+        "startup",
+        "conference"
       ],
       "cost": "unknown",
       "registration_url": "https://www.oregoninnovationshowcase.org/",
