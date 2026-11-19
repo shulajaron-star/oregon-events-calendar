@@ -21,16 +21,30 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Get the site ID - Netlify automatically provides this as an environment variable
+    // But we can also accept it as a custom env var for local testing
+    const siteId = process.env.NETLIFY_SITE_ID || process.env.CUSTOM_SITE_ID;
+
+    if (!siteId) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: 'Missing site ID',
+          message: 'NETLIFY_SITE_ID not available. This should be set automatically by Netlify.'
+        })
+      };
+    }
+
     // Fetch form submissions from Netlify API
     // https://docs.netlify.com/api/get-started/#submissions
-    const formsResponse = await fetch(`https://api.netlify.com/api/v1/forms`, {
+    const formsResponse = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/forms`, {
       headers: {
         'Authorization': `Bearer ${netlifyToken}`
       }
     });
 
     if (!formsResponse.ok) {
-      throw new Error(`Failed to fetch forms: ${formsResponse.statusText}`);
+      throw new Error(`Failed to fetch forms: ${formsResponse.status} ${formsResponse.statusText}`);
     }
 
     const forms = await formsResponse.json();

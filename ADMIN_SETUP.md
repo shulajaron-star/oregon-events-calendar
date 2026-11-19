@@ -21,17 +21,29 @@ For the admin interface to work, you need to set up environment variables in Net
 3. Give it a name like "Oregon Events Admin"
 4. Copy the token (you won't see it again!)
 
-### 2. Add Environment Variable
+### 2. Get Your Site ID
+
+1. Go to Netlify Dashboard → Your Site → Site Settings
+2. Under "Site information", find "API ID"
+3. Copy the Site ID
+
+### 3. Add Environment Variables
 
 1. Go to Netlify Dashboard → Your Site → Site configuration → Environment variables
 2. Click "Add a variable" → "Add a single variable"
-3. Add this variable:
+3. Add the first variable:
    - **Key**: `NETLIFY_API_TOKEN`
    - **Value**: Your personal access token from step 1
    - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
 4. Click "Create variable"
+5. Click "Add a variable" → "Add a single variable" again
+6. Add the second variable:
+   - **Key**: `CUSTOM_SITE_ID`
+   - **Value**: Your site API ID from step 2
+   - **Scopes**: Check all scopes (Builds, Functions, Post-processing)
+7. Click "Create variable"
 
-### 3. Redeploy Your Site
+### 4. Redeploy Your Site
 
 After adding environment variables, trigger a new deployment:
 
@@ -121,10 +133,11 @@ You'll now receive an email whenever someone submits a form.
 
 ### "Failed to load submissions" error
 
-1. Check that you've added the `NETLIFY_API_TOKEN` environment variable in Netlify
+1. Check that you've added both `NETLIFY_API_TOKEN` and `CUSTOM_SITE_ID` environment variables in Netlify
 2. Verify the token is correct and not revoked
-3. Trigger a new deployment after adding the variable
-4. Check browser console for specific error messages
+3. Verify the Site ID matches your site's API ID
+4. Trigger a new deployment after adding the variables
+5. Check browser console for specific error messages
 
 ### Forms not appearing
 
