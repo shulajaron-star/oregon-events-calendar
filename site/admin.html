@@ -514,8 +514,55 @@
             <div class="alert alert-info">
               Edit the event details below, then click "Approve Edited Event" to add it to the calendar.
             </div>
-            <!-- Edit form would go here - for now, just approve/reject -->
-            <p><em>Edit functionality coming soon. For now, approve to add as-is or reject.</em></p>
+            <form id="edit-form-${id}">
+              <div class="form-group">
+                <label>Event Name *</label>
+                <input type="text" id="edit-name-${id}" value="${escapeHtml(data.event_name || '')}" required>
+              </div>
+              <div class="form-group">
+                <label>Event URL *</label>
+                <input type="url" id="edit-url-${id}" value="${escapeHtml(data.event_url || '')}" required>
+              </div>
+              <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="edit-date-${id}" value="${escapeHtml(data.event_date || '')}" required>
+              </div>
+              <div class="form-group">
+                <label>Time</label>
+                <input type="time" id="edit-time-${id}" value="${escapeHtml(data.event_time || '')}">
+              </div>
+              <div class="form-group">
+                <label>Organizer *</label>
+                <input type="text" id="edit-organizer-${id}" value="${escapeHtml(data.organizer || '')}" required>
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="edit-location-${id}" value="${escapeHtml(data.location || '')}">
+              </div>
+              <div class="form-group">
+                <label>Category *</label>
+                <select id="edit-category-${id}" required>
+                  <option value="startup" ${data.category === 'startup' ? 'selected' : ''}>Startup</option>
+                  <option value="training" ${data.category === 'training' ? 'selected' : ''}>Training</option>
+                  <option value="investor" ${data.category === 'investor' ? 'selected' : ''}>Investor</option>
+                  <option value="life_science" ${data.category === 'life_science' ? 'selected' : ''}>Life Science</option>
+                  <option value="networking" ${data.category === 'networking' ? 'selected' : ''}>Networking</option>
+                  <option value="conference" ${data.category === 'conference' ? 'selected' : ''}>Conference</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea id="edit-description-${id}" rows="3">${escapeHtml(data.description || '')}</textarea>
+              </div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button type="button" class="btn btn-success btn-sm" onclick="approveEditedSuggestion('${id}')">
+                  ✓ Approve Edited Event
+                </button>
+                <button type="button" class="btn btn-sm" onclick="toggleEdit('suggestion-${id}')">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       `;
@@ -599,7 +646,7 @@
     }
 
     async function approveSuggestion(submissionId) {
-      if (!confirm('Add this event to the calendar?')) return;
+      if (!confirm('Add this event to the calendar as-is?')) return;
 
       // In a real implementation, this would:
       // 1. Call a Netlify Function to add event to events.json
@@ -608,6 +655,33 @@
       // 4. Delete the form submission
 
       alert('Event approval functionality coming soon!\n\nThis will:\n- Add event to data/events.json\n- Run validation\n- Rebuild calendar\n- Delete submission');
+
+      // For now, just remove the card from view
+      // event.target.closest('.submission-card').remove();
+    }
+
+    async function approveEditedSuggestion(submissionId) {
+      // Get edited values from form
+      const editedData = {
+        event_name: document.getElementById(`edit-name-${submissionId}`).value,
+        event_url: document.getElementById(`edit-url-${submissionId}`).value,
+        event_date: document.getElementById(`edit-date-${submissionId}`).value,
+        event_time: document.getElementById(`edit-time-${submissionId}`).value,
+        organizer: document.getElementById(`edit-organizer-${submissionId}`).value,
+        location: document.getElementById(`edit-location-${submissionId}`).value,
+        category: document.getElementById(`edit-category-${submissionId}`).value,
+        description: document.getElementById(`edit-description-${submissionId}`).value
+      };
+
+      if (!confirm(`Add "${editedData.event_name}" to the calendar with your edits?`)) return;
+
+      // In a real implementation, this would:
+      // 1. Call a Netlify Function to add event to events.json with edited data
+      // 2. Run validation and deduplication
+      // 3. Rebuild the calendar
+      // 4. Delete the form submission
+
+      alert(`Event approval with edits coming soon!\n\nEdited event details:\n- Name: ${editedData.event_name}\n- Date: ${editedData.event_date}\n- Time: ${editedData.event_time}\n- Organizer: ${editedData.organizer}\n- Location: ${editedData.location}\n- Category: ${editedData.category}\n\nThis will:\n- Add event to data/events.json\n- Run validation\n- Rebuild calendar\n- Delete submission`);
 
       // For now, just remove the card from view
       // event.target.closest('.submission-card').remove();
