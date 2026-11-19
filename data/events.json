@@ -850,28 +850,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-built-festival-2025-2027-09-19",
-      "title": "Built Festival 2025",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-09-19T10:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "The Redd\n                \n                (map)",
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/built-oregon-festival-2025",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "Built Festival 2025",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
