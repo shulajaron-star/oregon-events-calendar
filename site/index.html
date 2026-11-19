@@ -37,14 +37,14 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1rem;
+      padding: 0.25rem 1rem 1rem 1rem;
     }
 
     header {
       background: var(--primary);
       color: white;
       padding: 1rem 0;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.25rem;
     }
 
     .header-content {
@@ -112,9 +112,9 @@
 
     .filters {
       background: white;
-      padding: 1rem;
+      padding: 0.75rem;
       border-radius: 0.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
@@ -123,14 +123,14 @@
       font-weight: 600;
       text-transform: uppercase;
       color: var(--text-light);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .filter-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
     }
 
     .filter-group {
@@ -154,7 +154,7 @@
     }
 
     .filter-group-full {
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .filter-group-full:last-child {
@@ -169,23 +169,53 @@
 
     .filter-tag {
       padding: 0.375rem 0.75rem;
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
+      border: 2px solid;
       border-radius: 1rem;
       font-size: 0.75rem;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
       user-select: none;
+      color: white;
+    }
+
+    /* Category-specific colors */
+    .filter-tag[data-category="startup"] {
+      background: #3b82f6;
+      border-color: #2563eb;
+    }
+    .filter-tag[data-category="training"] {
+      background: #8b5cf6;
+      border-color: #7c3aed;
+    }
+    .filter-tag[data-category="investor"] {
+      background: #10b981;
+      border-color: #059669;
+    }
+    .filter-tag[data-category="life_science"] {
+      background: #f59e0b;
+      border-color: #d97706;
+    }
+    .filter-tag[data-category="networking"] {
+      background: #ec4899;
+      border-color: #db2777;
+    }
+    .filter-tag[data-category="conference"] {
+      background: #6366f1;
+      border-color: #4f46e5;
+    }
+    .filter-tag[data-category="underrepresented_founders"] {
+      background: #14b8a6;
+      border-color: #0d9488;
     }
 
     .filter-tag:hover {
-      border-color: var(--primary);
+      opacity: 0.8;
+      transform: translateY(-1px);
     }
 
     .filter-tag.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
     }
 
     #calendar {
@@ -483,6 +513,7 @@
           </div>
           <a href="#about" class="btn btn-secondary">ℹ️ About</a>
           <button class="btn btn-secondary" id="suggestBtn">💡 Suggest Event</button>
+          <a href="admin.html" class="btn btn-secondary" style="background: rgba(255,255,255,0.15);">🔐 Admin</a>
         </div>
       </div>
     </div>
@@ -496,6 +527,7 @@
       <div class="filter-group-full">
         <label>Category</label>
         <div class="filter-tags" id="categoryFilters">
+          <span class="filter-tag active" data-category="all" style="background: var(--text); border-color: var(--text);">All</span>
           <span class="filter-tag" data-category="startup">Startup</span>
           <span class="filter-tag" data-category="training">Training</span>
           <span class="filter-tag" data-category="investor">Investor</span>
@@ -565,7 +597,7 @@
 
   <footer>
     <div class="container">
-      <p>Maintained by Shula Nema with assistance from Claude Code</p>
+      <p>Maintained by Shula with assistance from Claude Code</p>
       <p>Data is public domain (CC0) | <a href="https://github.com/username/oregon-events-calendar" style="color: inherit;">View on GitHub</a></p>
     </div>
   </footer>
@@ -612,16 +644,28 @@
         </div>
 
         <div class="form-group">
-          <label for="event_url">Event URL *</label>
-          <input type="url" id="event_url" name="event_url" placeholder="https://" required>
+          <label for="event_url">Event URL</label>
+          <input type="url" id="event_url" name="event_url" placeholder="https://">
           <small>Paste event URL and we'll try to auto-fill details</small>
           <button type="button" class="btn btn-secondary" id="fetchEventBtn" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;">📥 Fetch Event Details</button>
           <div id="fetchStatus" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
         </div>
 
         <div class="form-group">
-          <label for="event_date">Event Date *</label>
+          <label for="virtual_meeting_url">Virtual Meeting Link (if applicable)</label>
+          <input type="url" id="virtual_meeting_url" name="virtual_meeting_url" placeholder="https://zoom.us/... or https://meet.google.com/...">
+          <small>Direct link to join virtual event (Zoom, Google Meet, etc.)</small>
+        </div>
+
+        <div class="form-group">
+          <label for="event_date">Event Start Date *</label>
           <input type="date" id="event_date" name="event_date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="event_end_date">Event End Date (if multi-day)</label>
+          <input type="date" id="event_end_date" name="event_end_date">
+          <small>Leave blank for single-day events</small>
         </div>
 
         <div class="form-group">
@@ -805,13 +849,50 @@
       document.querySelectorAll('.filter-tag').forEach(tag => {
         tag.addEventListener('click', function() {
           const category = this.dataset.category;
-          if (activeFilters.categories.has(category)) {
-            activeFilters.categories.delete(category);
-            this.classList.remove('active');
+
+          // Handle "All" button
+          if (category === 'all') {
+            const allTags = document.querySelectorAll('.filter-tag');
+            const isActive = this.classList.contains('active');
+
+            if (isActive) {
+              // Deactivate all
+              activeFilters.categories.clear();
+              allTags.forEach(t => t.classList.remove('active'));
+            } else {
+              // Activate all
+              activeFilters.categories.clear();
+              allTags.forEach(t => {
+                if (t.dataset.category !== 'all') {
+                  activeFilters.categories.add(t.dataset.category);
+                }
+                t.classList.add('active');
+              });
+            }
           } else {
-            activeFilters.categories.add(category);
-            this.classList.add('active');
+            // Handle individual category
+            const allButton = document.querySelector('.filter-tag[data-category="all"]');
+
+            if (activeFilters.categories.has(category)) {
+              activeFilters.categories.delete(category);
+              this.classList.remove('active');
+              allButton.classList.remove('active');
+            } else {
+              activeFilters.categories.add(category);
+              this.classList.add('active');
+
+              // Check if all categories are now selected
+              const allCategories = Array.from(document.querySelectorAll('.filter-tag'))
+                .filter(t => t.dataset.category !== 'all')
+                .map(t => t.dataset.category);
+              const allSelected = allCategories.every(cat => activeFilters.categories.has(cat));
+
+              if (allSelected) {
+                allButton.classList.add('active');
+              }
+            }
           }
+
           applyFilters();
         });
       });

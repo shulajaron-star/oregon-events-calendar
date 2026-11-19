@@ -113,6 +113,25 @@ exports.handler = async (event, context) => {
       throw new Error(`Failed to commit: ${commitResponse.status} ${error}`);
     }
 
+    // Step 3.5: Log the change to changelog.json
+    try {
+      await logChange(githubToken, repoOwner, repoName, {
+        action: 'added',
+        eventId: newEvent.id,
+        eventTitle: newEvent.title,
+        timestamp: new Date().toISOString(),
+        details: {
+          organizer: newEvent.organizer,
+          date: newEvent.start.split('T')[0],
+          category: newEvent.categories[0]
+        },
+        note: 'Approved via admin interface'
+      });
+    } catch (logError) {
+      // Log error but don't fail the whole operation
+      console.error('Failed to log change:', logError);
+    }
+
     // Step 4: Delete the Netlify form submission (if token available)
     if (netlifyToken && submissionId) {
       try {
@@ -245,4 +264,62 @@ function guessRegion(location) {
   }
 
   return 'Statewide/Virtual';
+}
+
+async function logChange(githubToken, repoOwner, repoName, changeEntry) {
+  // Fetch current changelog.json
+  const getResponse = await fetch(
+    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/changelog.json`,
+    {
+      headers: {
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Oregon Events Admin'
+      }
+    }
+  );
+
+  let changelog = { changes: [] };
+  let fileSha = null;
+
+  if (getResponse.ok) {
+    const fileData = await getResponse.json();
+    const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
+    changelog = JSON.parse(content);
+    fileSha = fileData.sha;
+  }
+
+  // Add new change at the beginning (most recent first)
+  changelog.changes.unshift(changeEntry);
+
+  // Keep only last 500 changes to prevent file from growing too large
+  if (changelog.changes.length > 500) {
+    changelog.changes = changelog.changes.slice(0, 500);
+  }
+
+  // Commit back to GitHub
+  const updatedContent = Buffer.from(JSON.stringify(changelog, null, 2)).toString('base64');
+
+  const commitResponse = await fetch(
+    `https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/changelog.json`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+        'User-Agent': 'Oregon Events Admin'
+      },
+      body: JSON.stringify({
+        message: `Update changelog: ${changeEntry.action} ${changeEntry.eventTitle}`,
+        content: updatedContent,
+        sha: fileSha,
+        branch: 'main'
+      })
+    }
+  );
+
+  if (!commitResponse.ok) {
+    throw new Error(`Failed to update changelog: ${commitResponse.status}`);
+  }
 }

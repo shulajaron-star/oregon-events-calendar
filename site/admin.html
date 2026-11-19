@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - Oregon Events Calendar</title>
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #1a472a;
-      --primary-dark: #0f2818;
-      --secondary: #2e7d47;
-      --accent: #f39c12;
-      --text: #2c3e50;
-      --text-light: #7f8c8d;
-      --bg: #f8f9fa;
-      --border: #dee2e6;
+      --primary: #1e5a8e;
+      --secondary: #2d8659;
+      --accent: #d97706;
+      --bg: #ffffff;
+      --bg-alt: #f9fafb;
+      --text: #1f2937;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
       --success: #27ae60;
       --danger: #e74c3c;
       --warning: #f39c12;
@@ -26,8 +28,8 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-alt);
       color: var(--text);
       line-height: 1.6;
     }
@@ -50,27 +52,55 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    h1 {
+    .header-left h1 {
       font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header-left p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .header-actions .btn {
+      font-size: 0.8125rem;
+      padding: 0.5rem 1rem;
     }
 
     .btn {
-      background: var(--secondary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.25rem;
-      cursor: pointer;
-      text-decoration: none;
       display: inline-block;
+      padding: 0.625rem 1.25rem;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
       font-size: 0.875rem;
       transition: background 0.2s;
     }
 
     .btn:hover {
-      background: var(--primary-dark);
+      background: #164569;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #236647;
     }
 
     .btn-success {
@@ -250,6 +280,20 @@
       display: block;
     }
 
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+
     .loading {
       text-align: center;
       padding: 3rem;
@@ -260,6 +304,117 @@
       text-align: center;
       padding: 3rem;
       color: var(--text-light);
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      justify-content: flex-end;
+    }
+
+    .view-toggle .btn {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .view-toggle .btn.active {
+      background: var(--primary);
+    }
+
+    #events-calendar-view {
+      display: none;
+    }
+
+    #events-calendar-view.active {
+      display: block;
+    }
+
+    #events-list.hidden {
+      display: none;
+    }
+
+    /* FullCalendar admin styling */
+    .fc {
+      max-width: 100%;
+    }
+
+    .fc .fc-toolbar-title {
+      font-size: 1.25rem;
+    }
+
+    /* Ensure button group shows all buttons */
+    .fc .fc-button-group {
+      display: inline-flex !important;
+      gap: 0 !important;
+    }
+
+    .fc .fc-button-group .fc-button {
+      display: inline-block !important;
+      visibility: visible !important;
+    }
+
+    .fc .fc-button {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: white !important;
+      display: inline-block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      position: relative !important;
+      pointer-events: auto !important;
+    }
+
+    .fc .fc-button:hover {
+      background: #164569 !important;
+      border-color: #164569 !important;
+      color: white !important;
+    }
+
+    .fc .fc-button-active,
+    .fc .fc-button-active:hover,
+    .fc .fc-button.fc-button-active {
+      background: #164569 !important;
+      border-color: #164569 !important;
+      color: white !important;
+      font-weight: bold !important;
+    }
+
+    .fc .fc-button:disabled,
+    .fc .fc-button:disabled:hover {
+      opacity: 1 !important;
+      cursor: pointer !important;
+      background: #164569 !important;
+      border-color: #164569 !important;
+      color: white !important;
+      pointer-events: auto !important;
+      display: inline-block !important;
+      visibility: visible !important;
+    }
+
+    /* Force all toolbar buttons to show */
+    .fc .fc-toolbar button {
+      display: inline-block !important;
+      visibility: visible !important;
+    }
+
+    /* Event category colors - match public page */
+    .fc-event.event-startup { background-color: #3b82f6; border-color: #2563eb; }
+    .fc-event.event-training { background-color: #8b5cf6; border-color: #7c3aed; }
+    .fc-event.event-investor { background-color: #10b981; border-color: #059669; }
+    .fc-event.event-life_science { background-color: #f59e0b; border-color: #d97706; }
+    .fc-event.event-networking { background-color: #ec4899; border-color: #db2777; }
+    .fc-event.event-conference { background-color: #6366f1; border-color: #4f46e5; }
+    .fc-event.event-underrepresented_founders { background-color: #14b8a6; border-color: #0d9488; }
+
+    .fc .fc-button:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .fc .fc-button-active {
+      background: var(--primary-dark) !important;
+      border-color: var(--primary-dark) !important;
     }
 
     .empty-state h3 {
@@ -319,10 +474,13 @@
     <header>
       <div class="container">
         <div class="header-content">
-          <h1>🛠️ Oregon Events Admin</h1>
-          <div>
-            <a href="index.html" class="btn btn-sm">← Back to Calendar</a>
-            <button class="btn btn-sm" onclick="logout()">Logout</button>
+          <div class="header-left">
+            <h1>Oregon Startup & Bioscience Events Calendar</h1>
+            <p>Admin Dashboard</p>
+          </div>
+          <div class="header-actions">
+            <a href="index.html" class="btn btn-secondary">← Back to Calendar</a>
+            <button class="btn btn-secondary" onclick="logout()">🔓 Logout</button>
           </div>
         </div>
       </div>
@@ -330,7 +488,7 @@
 
     <div class="container">
       <div class="tabs">
-        <button class="tab active" onclick="switchTab('suggestions')">
+        <button class="tab" onclick="switchTab('suggestions')">
           Event Suggestions (<span id="suggestions-count">0</span>)
         </button>
         <button class="tab" onclick="switchTab('pending')">
@@ -339,13 +497,16 @@
         <button class="tab" onclick="switchTab('issues')">
           Issue Reports (<span id="issues-count">0</span>)
         </button>
-        <button class="tab" onclick="switchTab('manage')">
+        <button class="tab active" onclick="switchTab('manage')">
           Manage Events (<span id="events-count">0</span>)
+        </button>
+        <button class="tab" onclick="switchTab('changelog')">
+          Change Log (<span id="changelog-count">0</span>)
         </button>
       </div>
 
       <!-- Event Suggestions Tab -->
-      <div id="suggestions-tab" class="tab-content active">
+      <div id="suggestions-tab" class="tab-content">
         <div id="suggestions-loading" class="loading">
           <p>Loading event suggestions...</p>
         </div>
@@ -374,18 +535,211 @@
       </div>
 
       <!-- Manage Events Tab -->
-      <div id="manage-tab" class="tab-content">
-        <div style="margin-bottom: 1rem;">
+      <div id="manage-tab" class="tab-content active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
           <input type="text" id="event-search" placeholder="Search events by title, organizer, or ID..."
-                 style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                 style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+          <button class="btn btn-success" onclick="showAddEventForm()">
+            ➕ Add New Event
+          </button>
+          <div class="view-toggle">
+            <button class="btn" id="list-view-btn" onclick="switchManageView('list')">
+              📋 List View
+            </button>
+            <button class="btn active" id="calendar-view-btn" onclick="switchManageView('calendar')">
+              📅 Calendar View
+            </button>
+          </div>
         </div>
+
+        <!-- Add Event Form -->
+        <div id="add-event-form" style="display: none; background: white; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 4px solid var(--success);">
+          <h3 style="margin-bottom: 1rem;">Add New Event</h3>
+          <form onsubmit="submitNewEvent(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Event Title *</label>
+                <input type="text" id="new-title" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Organizer *</label>
+                <input type="text" id="new-organizer" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Start Date *</label>
+                <input type="date" id="new-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Start Time (optional)</label>
+                <input type="time" id="new-time" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>End Date (for multi-day events)</label>
+                <input type="date" id="new-end-date" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>End Time (optional)</label>
+                <input type="time" id="new-end-time" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Format *</label>
+                <select id="new-format" class="form-control" required>
+                  <option value="in_person">In Person</option>
+                  <option value="virtual">Virtual</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Region *</label>
+                <select id="new-region" class="form-control" required>
+                  <option value="Portland Metro">Portland Metro</option>
+                  <option value="Southwest Washington">Southwest Washington</option>
+                  <option value="Willamette Valley">Willamette Valley</option>
+                  <option value="Eugene/Lane">Eugene/Lane</option>
+                  <option value="Central Oregon">Central Oregon</option>
+                  <option value="Southern Oregon">Southern Oregon</option>
+                  <option value="Statewide/Virtual">Statewide/Virtual</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Venue</label>
+                <input type="text" id="new-venue" class="form-control" placeholder="Location or platform name">
+              </div>
+              <div class="form-group">
+                <label>City</label>
+                <input type="text" id="new-city" class="form-control" placeholder="e.g., Portland, Eugene">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Categories (comma-separated) *</label>
+              <input type="text" id="new-categories" class="form-control" placeholder="startup, training, investor, life_science, networking, conference" required>
+              <small style="color: var(--text-light);">Valid categories: startup, training, investor, life_science, networking, conference, underrepresented_founders</small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Registration URL</label>
+                <input type="url" id="new-url" class="form-control" placeholder="https://">
+                <small style="color: var(--text-light);">Where people sign up for the event</small>
+              </div>
+              <div class="form-group">
+                <label>Virtual Meeting Link</label>
+                <input type="url" id="new-meeting-url" class="form-control" placeholder="https://zoom.us/... or https://meet.google.com/...">
+                <small style="color: var(--text-light);">Direct link to join virtual event</small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Cost</label>
+                <select id="new-cost" class="form-control">
+                  <option value="free">Free</option>
+                  <option value="paid">Paid</option>
+                  <option value="unknown">Unknown</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <!-- Spacer for alignment -->
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Summary *</label>
+              <textarea id="new-summary" class="form-control" rows="3" placeholder="Brief description of the event" required></textarea>
+            </div>
+
+            <div class="form-actions" style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <button type="submit" class="btn btn-success">💾 Add Event</button>
+              <button type="button" class="btn" onclick="hideAddEventForm()">Cancel</button>
+            </div>
+          </form>
+        </div>
+
         <div id="events-loading" class="loading">
           <p>Loading events...</p>
         </div>
-        <div id="events-list"></div>
+
+        <!-- Color Legend -->
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid var(--border);">
+          <h4 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-light);">EVENT CATEGORIES</h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #3b82f6;"></span>
+              <span style="font-size: 0.875rem;">Startup</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #8b5cf6;"></span>
+              <span style="font-size: 0.875rem;">Training</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #10b981;"></span>
+              <span style="font-size: 0.875rem;">Investor</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #f59e0b;"></span>
+              <span style="font-size: 0.875rem;">Life Science</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #ec4899;"></span>
+              <span style="font-size: 0.875rem;">Networking</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #6366f1;"></span>
+              <span style="font-size: 0.875rem;">Conference</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="display: inline-block; width: 16px; height: 16px; border-radius: 3px; background-color: #14b8a6;"></span>
+              <span style="font-size: 0.875rem;">Women & Underrepresented</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="events-list" class="hidden"></div>
+        <div id="events-calendar-view" class="active">
+          <div id="events-calendar"></div>
+        </div>
+      </div>
+
+      <!-- Change Log Tab -->
+      <div id="changelog-tab" class="tab-content">
+        <div class="alert alert-info" style="margin-bottom: 1rem;">
+          <strong>📝 Change Log</strong><br>
+          This log tracks all modifications made to the calendar including additions, edits, and deletions.
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem;">
+          <input type="text" id="changelog-search" placeholder="Search changes by event name or action..."
+                 style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+          <select id="changelog-filter" style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+            <option value="all">All Actions</option>
+            <option value="added">Added</option>
+            <option value="edited">Edited</option>
+            <option value="deleted">Deleted</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div id="changelog-loading" class="loading">
+          <p>Loading change log...</p>
+        </div>
+        <div id="changelog-list"></div>
       </div>
     </div>
   </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
   <script>
     // Simple password protection (in production, use proper authentication)
@@ -423,6 +777,135 @@
       loadSubmissions();
       loadPendingItems();
       loadEvents();
+      loadChangelog();
+
+      // Initialize calendar immediately since it's the default view
+      setTimeout(() => {
+        if (!eventsCalendar) {
+          initEventsCalendar();
+        }
+      }, 100);
+    }
+
+    // Add Event Form Functions
+    function showAddEventForm() {
+      document.getElementById('add-event-form').style.display = 'block';
+      document.getElementById('add-event-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideAddEventForm() {
+      document.getElementById('add-event-form').style.display = 'none';
+      // Reset form
+      document.querySelector('#add-event-form form').reset();
+    }
+
+    function generateEventId(organizer, title, date) {
+      const org = (organizer || 'unknown').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .substring(0, 20);
+      const titleSlug = (title || 'event').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .substring(0, 30);
+      const dateStr = date || new Date().toISOString().split('T')[0];
+
+      return `${org}-${titleSlug}-${dateStr}`.replace(/^-+|-+$/g, '');
+    }
+
+    async function submitNewEvent(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('new-title').value;
+      const organizer = document.getElementById('new-organizer').value;
+      const date = document.getElementById('new-date').value;
+      const time = document.getElementById('new-time').value;
+      const endDate = document.getElementById('new-end-date').value;
+      const endTime = document.getElementById('new-end-time').value;
+      const format = document.getElementById('new-format').value;
+      const region = document.getElementById('new-region').value;
+      const venue = document.getElementById('new-venue').value;
+      const city = document.getElementById('new-city').value;
+      const categoriesInput = document.getElementById('new-categories').value;
+      const url = document.getElementById('new-url').value;
+      const meetingUrl = document.getElementById('new-meeting-url').value;
+      const cost = document.getElementById('new-cost').value;
+      const summary = document.getElementById('new-summary').value;
+
+      // Parse categories
+      const categories = categoriesInput.split(',').map(c => c.trim()).filter(c => c);
+
+      // Build timestamps
+      const start = time ? `${date}T${time}:00-08:00` : `${date}T00:00:00-08:00`;
+      const end = endDate ? (endTime ? `${endDate}T${endTime}:00-08:00` : `${endDate}T00:00:00-08:00`) : null;
+
+      // Generate event ID
+      const eventId = generateEventId(organizer, title, date);
+
+      // Build event object
+      const eventData = {
+        id: eventId,
+        title: title,
+        organizer: organizer,
+        co_hosts: [],
+        start: start,
+        end: end,
+        format: format,
+        venue: venue || null,
+        city: city || null,
+        region: region,
+        categories: categories,
+        cost: cost,
+        registration_url: url || null,
+        virtual_meeting_url: meetingUrl || null,
+        source_url: url || null,
+        summary: summary,
+        status: 'confirmed',
+        first_seen: new Date().toISOString().split('T')[0],
+        last_verified: new Date().toISOString().split('T')[0]
+      };
+
+      if (!confirm(`Add event: "${title}"?\n\nThis will add the event to the calendar immediately.`)) return;
+
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Adding...';
+
+      try {
+        const response = await fetch('/.netlify/functions/manage-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'add',
+            eventData: eventData
+          })
+        });
+
+        // Check if we got HTML back (local mode) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('LOCAL_MODE');
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to add event');
+        }
+
+        hideAddEventForm();
+        loadEvents();
+
+        alert(`✓ Event added successfully!\n\nEvent: ${title}\nID: ${eventId}\n\nThe calendar will rebuild automatically in a few minutes.`);
+
+      } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 Add Event';
+
+        if (error.message === 'LOCAL_MODE') {
+          alert(`⚠️ Running in Local Mode\n\nAdding events requires the deployed Netlify environment.\n\nTo add this event locally:\n1. Manually add it to data/events.json\n2. Run: npm run build\n3. Commit and push to deploy`);
+        } else {
+          alert(`Error adding event: ${error.message}\n\nPlease try again.`);
+        }
+      }
     }
 
     function logout() {
@@ -458,7 +941,14 @@
 
     async function loadSubmissions() {
       try {
+        // Try Netlify function first
         const response = await fetch('/.netlify/functions/get-submissions');
+
+        if (!response.ok) {
+          // For local development, show empty state with helpful message
+          throw new Error('Running locally - Netlify Forms not available');
+        }
+
         const data = await response.json();
 
         // Store submissions globally
@@ -498,14 +988,23 @@
         }
       } catch (error) {
         console.error('Error loading submissions:', error);
-        document.getElementById('suggestions-loading').innerHTML = `
-          <div class="alert alert-error">
-            Failed to load submissions. Make sure the get-submissions function is deployed.
+        // Show helpful message for local development
+        document.getElementById('suggestions-count').textContent = '0';
+        document.getElementById('suggestions-loading').style.display = 'none';
+        document.getElementById('suggestions-list').innerHTML = `
+          <div class="empty-state">
+            <h3>Running in Local Mode</h3>
+            <p>Event suggestions and issue reports from Netlify Forms are only available on the deployed site.</p>
+            <p style="margin-top: 1rem;"><em>To test form submissions, deploy to Netlify.</em></p>
           </div>
         `;
-        document.getElementById('issues-loading').innerHTML = `
-          <div class="alert alert-error">
-            Failed to load submissions. Make sure the get-submissions function is deployed.
+        document.getElementById('issues-count').textContent = '0';
+        document.getElementById('issues-loading').style.display = 'none';
+        document.getElementById('issues-list').innerHTML = `
+          <div class="empty-state">
+            <h3>Running in Local Mode</h3>
+            <p>Issue reports from Netlify Forms are only available on the deployed site.</p>
+            <p style="margin-top: 1rem;"><em>To test form submissions, deploy to Netlify.</em></p>
           </div>
         `;
       }
@@ -514,17 +1013,26 @@
     // Store current events and pending items globally
     let allEvents = [];
     let pendingItems = { events: [], sources: [] };
+    let eventsCalendar = null;
 
     async function loadPendingItems() {
       try {
-        const response = await fetch('/.netlify/functions/get-pending');
-        const data = await response.json();
+        // Try Netlify function first, fallback to local file for development
+        let response = await fetch('/.netlify/functions/get-pending');
+        if (!response.ok) {
+          // Fallback to local files for development
+          const eventsResponse = await fetch('../data/events-pending.json');
+          const eventsData = await eventsResponse.json();
+          pendingItems = { events: eventsData.events || [], sources: [] };
+        } else {
+          const data = await response.json();
+          pendingItems = data;
+        }
 
-        pendingItems = data;
-        document.getElementById('pending-count').textContent = data.events.length;
+        document.getElementById('pending-count').textContent = pendingItems.events.length;
         document.getElementById('pending-loading').style.display = 'none';
 
-        if (data.events.length === 0) {
+        if (pendingItems.events.length === 0) {
           document.getElementById('pending-list').innerHTML = `
             <div class="empty-state">
               <h3>No pending events</h3>
@@ -533,7 +1041,7 @@
             </div>
           `;
         } else {
-          document.getElementById('pending-list').innerHTML = data.events.map(renderPendingEvent).join('');
+          document.getElementById('pending-list').innerHTML = pendingItems.events.map(renderPendingEvent).join('');
         }
 
       } catch (error) {
@@ -616,8 +1124,20 @@
 
     async function loadEvents() {
       try {
-        const response = await fetch('/.netlify/functions/get-events');
-        const data = await response.json();
+        let data;
+        // Try Netlify function first, fallback to local file for development
+        try {
+          const response = await fetch('/.netlify/functions/get-events');
+          if (response.ok) {
+            data = await response.json();
+          } else {
+            throw new Error('Netlify function not available');
+          }
+        } catch (netlifyError) {
+          // Fallback to events.json built by the build script (in site/)
+          const response = await fetch('events.json');
+          data = await response.json();
+        }
 
         allEvents = data.events || [];
         document.getElementById('events-count').textContent = allEvents.length;
@@ -646,6 +1166,158 @@
       }
     }
 
+    // Load changelog
+    let allChanges = [];
+    async function loadChangelog() {
+      try {
+        let data;
+        // Try Netlify function first, fallback to local file for development
+        try {
+          const response = await fetch('/.netlify/functions/get-changelog');
+          if (response.ok) {
+            data = await response.json();
+          } else {
+            throw new Error('Netlify function not available');
+          }
+        } catch (netlifyError) {
+          // Fallback to local changelog.json file
+          try {
+            const response = await fetch('../data/changelog.json');
+            if (response.ok) {
+              data = await response.json();
+            } else {
+              data = { changes: [] };
+            }
+          } catch (error) {
+            console.log('No changelog file yet, starting fresh');
+            data = { changes: [] };
+          }
+        }
+
+        allChanges = data.changes || [];
+        document.getElementById('changelog-count').textContent = allChanges.length;
+        document.getElementById('changelog-loading').style.display = 'none';
+
+        renderChangelog(allChanges);
+
+        // Add search functionality
+        document.getElementById('changelog-search').addEventListener('input', function(e) {
+          const searchTerm = e.target.value.toLowerCase();
+          const filtered = allChanges.filter(change =>
+            change.eventTitle.toLowerCase().includes(searchTerm) ||
+            change.action.toLowerCase().includes(searchTerm)
+          );
+          renderChangelog(filtered);
+        });
+
+        // Add filter functionality
+        document.getElementById('changelog-filter').addEventListener('change', function(e) {
+          const filterValue = e.target.value;
+          if (filterValue === 'all') {
+            renderChangelog(allChanges);
+          } else {
+            const filtered = allChanges.filter(change => change.action === filterValue);
+            renderChangelog(filtered);
+          }
+        });
+
+      } catch (error) {
+        console.error('Error loading changelog:', error);
+        document.getElementById('changelog-loading').innerHTML = `
+          <div class="alert alert-error">
+            Failed to load change log.
+          </div>
+        `;
+      }
+    }
+
+    function renderChangelog(changes) {
+      if (changes.length === 0) {
+        document.getElementById('changelog-list').innerHTML = `
+          <div class="empty-state">
+            <h3>No changes recorded yet</h3>
+            <p>Changes will appear here when you add, edit, or delete events on the deployed site.</p>
+            <p style="margin-top: 1rem;"><em>Note: Changes made in local mode are not logged automatically.</em></p>
+          </div>
+        `;
+        return;
+      }
+
+      const html = changes.map(change => renderChangeEntry(change)).join('');
+      document.getElementById('changelog-list').innerHTML = html;
+    }
+
+    function renderChangeEntry(change) {
+      const timestamp = new Date(change.timestamp);
+      const formattedDate = timestamp.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      let actionColor = '';
+      let actionIcon = '';
+      switch(change.action) {
+        case 'added':
+          actionColor = 'var(--success)';
+          actionIcon = '✓';
+          break;
+        case 'edited':
+          actionColor = 'var(--warning)';
+          actionIcon = '✏️';
+          break;
+        case 'deleted':
+          actionColor = 'var(--danger)';
+          actionIcon = '🗑️';
+          break;
+        case 'cancelled':
+          actionColor = 'var(--warning)';
+          actionIcon = '⚠️';
+          break;
+      }
+
+      let detailsHtml = '';
+      if (change.details && Object.keys(change.details).length > 0) {
+        detailsHtml = '<div class="submission-field"><label>Changes:</label><div>';
+        for (const [key, value] of Object.entries(change.details)) {
+          detailsHtml += `<div style="font-size: 0.875rem; margin: 0.25rem 0;">
+            <strong>${key}:</strong> ${escapeHtml(String(value))}
+          </div>`;
+        }
+        detailsHtml += '</div></div>';
+      }
+
+      return `
+        <div class="submission-card">
+          <div class="submission-header">
+            <div>
+              <div class="submission-title">
+                <span style="color: ${actionColor};">${actionIcon} ${change.action.toUpperCase()}</span>
+                : ${escapeHtml(change.eventTitle)}
+              </div>
+              <div class="submission-date">${formattedDate}</div>
+            </div>
+          </div>
+
+          <div class="submission-field">
+            <label>Event ID:</label>
+            <span style="font-family: monospace; font-size: 0.875rem;">${escapeHtml(change.eventId)}</span>
+          </div>
+
+          ${detailsHtml}
+
+          ${change.note ? `
+          <div class="submission-field">
+            <label>Note:</label>
+            <span>${escapeHtml(change.note)}</span>
+          </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
     function renderEvents(events) {
       if (events.length === 0) {
         document.getElementById('events-list').innerHTML = `
@@ -658,6 +1330,11 @@
       }
 
       document.getElementById('events-list').innerHTML = events.map(renderEvent).join('');
+
+      // Update calendar if it exists
+      if (eventsCalendar) {
+        updateEventsCalendar();
+      }
     }
 
     function renderEvent(event) {
@@ -672,7 +1349,7 @@
         eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
       return `
-        <div class="submission-card">
+        <div class="submission-card" data-event-id="${event.id}">
           <div class="submission-header">
             <div>
               <div class="submission-title">${escapeHtml(event.title)}</div>
@@ -722,6 +1399,9 @@
           ` : ''}
 
           <div class="submission-actions">
+            <button class="btn btn-sm btn-primary" onclick="showManageEditForm('${event.id}')">
+              ✏️ Edit Event
+            </button>
             ${event.status !== 'cancelled' ? `
             <button class="btn btn-sm" style="background: var(--warning);" onclick="markAsCancelled('${event.id}', '${escapeHtml(event.title).replace(/'/g, "\\'")}')">
               ⚠️ Mark as Cancelled
@@ -730,6 +1410,50 @@
             <button class="btn btn-sm btn-danger" onclick="deleteEvent('${event.id}', '${escapeHtml(event.title).replace(/'/g, "\\'")}')">
               🗑️ Delete Event
             </button>
+          </div>
+
+          <div id="manage-edit-${event.id}" class="edit-form" style="display: none;">
+            <h4>Edit Event</h4>
+            <form onsubmit="saveManageEdit(event, '${event.id}')">
+              <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" id="manage-title-${event.id}" class="form-control" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="manage-date-${event.id}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Time</label>
+                  <input type="time" id="manage-time-${event.id}" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Organizer</label>
+                <input type="text" id="manage-organizer-${event.id}" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Venue/Location</label>
+                <input type="text" id="manage-venue-${event.id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Registration URL</label>
+                <input type="url" id="manage-url-${event.id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Summary</label>
+                <textarea id="manage-summary-${event.id}" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-success">
+                  💾 Save Changes
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="hideManageEditForm('${event.id}')">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       `;
@@ -901,12 +1625,63 @@
           ` : ''}
 
           <div class="submission-actions">
-            <button class="btn btn-sm btn-success" onclick="resolveIssue('${id}', '${escapeHtml(data.event_id)}')">
-              ✓ Fix & Mark Resolved
+            <button class="btn btn-sm btn-primary" onclick="showIssueEditForm('${id}')">
+              ✏️ Edit Event
+            </button>
+            <button class="btn btn-sm btn-success" onclick="markIssueResolved('${id}')">
+              ✓ Mark Resolved
             </button>
             <button class="btn btn-sm btn-danger" onclick="rejectSubmission('${id}', 'issue')">
               ✕ Dismiss
             </button>
+          </div>
+
+          <div id="issue-edit-${id}" class="edit-form" style="display: none;">
+            <h4>Edit Event</h4>
+            <p style="font-size: 0.875rem; color: var(--text-light); margin-bottom: 1rem;">
+              Issue type: <strong>${formatIssueType(data.issue_type)}</strong><br>
+              Details: ${escapeHtml(data.issue_details || '')}
+            </p>
+            <form onsubmit="saveIssueEdit(event, '${id}', '${escapeHtml(data.event_id)}')">
+              <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" id="issue-title-${id}" class="form-control" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="issue-date-${id}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Time</label>
+                  <input type="time" id="issue-time-${id}" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Organizer</label>
+                <input type="text" id="issue-organizer-${id}" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Venue/Location</label>
+                <input type="text" id="issue-venue-${id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Registration URL</label>
+                <input type="url" id="issue-url-${id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Summary</label>
+                <textarea id="issue-summary-${id}" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-success">
+                  💾 Save Changes
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="hideIssueEditForm('${id}')">
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       `;
@@ -929,6 +1704,86 @@
     function toggleEdit(id) {
       const form = document.getElementById(id);
       form.classList.toggle('active');
+    }
+
+    // Calendar view functions
+    function switchManageView(view) {
+      const listViewBtn = document.getElementById('list-view-btn');
+      const calendarViewBtn = document.getElementById('calendar-view-btn');
+      const eventsList = document.getElementById('events-list');
+      const eventsCalendarView = document.getElementById('events-calendar-view');
+
+      if (view === 'list') {
+        listViewBtn.classList.add('active');
+        calendarViewBtn.classList.remove('active');
+        eventsList.classList.remove('hidden');
+        eventsCalendarView.classList.remove('active');
+      } else {
+        listViewBtn.classList.remove('active');
+        calendarViewBtn.classList.add('active');
+        eventsList.classList.add('hidden');
+        eventsCalendarView.classList.add('active');
+
+        // Initialize calendar if not already done
+        if (!eventsCalendar) {
+          initEventsCalendar();
+        } else {
+          updateEventsCalendar();
+        }
+      }
+    }
+
+    function initEventsCalendar() {
+      const calendarEl = document.getElementById('events-calendar');
+      eventsCalendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,listMonth'
+        },
+        height: 'auto',
+        events: [],
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          // Switch to list view and scroll to that event
+          switchManageView('list');
+          setTimeout(() => {
+            const eventCard = document.querySelector(`[data-event-id="${info.event.id}"]`);
+            if (eventCard) {
+              eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              eventCard.style.backgroundColor = 'rgba(30, 90, 142, 0.1)';
+              setTimeout(() => {
+                eventCard.style.backgroundColor = '';
+              }, 2000);
+            }
+          }, 100);
+        },
+        eventClassNames: function(arg) {
+          const categories = arg.event.extendedProps.categories || [];
+          return categories.map(cat => `event-${cat}`);
+        }
+      });
+      eventsCalendar.render();
+      updateEventsCalendar();
+    }
+
+    function updateEventsCalendar() {
+      if (!eventsCalendar) return;
+
+      // Convert events to FullCalendar format
+      const calendarEvents = allEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        start: event.start,
+        end: event.end || event.start,
+        extendedProps: {
+          categories: event.categories || []
+        }
+      }));
+
+      eventsCalendar.removeAllEvents();
+      eventsCalendar.addEventSource(calendarEvents);
     }
 
     function escapeHtml(text) {
@@ -989,6 +1844,9 @@
         const count = document.getElementById('suggestions-count');
         count.textContent = parseInt(count.textContent) - 1;
 
+        // Refresh the Manage Events tab to show the new event
+        loadEvents();
+
         alert(`✓ Event approved successfully!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. GitHub will automatically rebuild the site in a few minutes.`);
 
       } catch (error) {
@@ -1042,6 +1900,9 @@
         const count = document.getElementById('suggestions-count');
         count.textContent = parseInt(count.textContent) - 1;
 
+        // Refresh the Manage Events tab to show the new event
+        loadEvents();
+
         alert(`✓ Event approved with your edits!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. GitHub will automatically rebuild the site in a few minutes.`);
 
       } catch (error) {
@@ -1051,8 +1912,8 @@
       }
     }
 
-    async function resolveIssue(submissionId, eventId) {
-      if (!confirm('Mark this issue as resolved? This will remove it from view.\n\nNote: You still need to manually fix the event in data/events.json')) return;
+    async function markIssueResolved(submissionId) {
+      if (!confirm('Mark this issue as resolved? This will remove it from view.')) return;
 
       // Remove the card from view
       event.target.closest('.submission-card').remove();
@@ -1061,7 +1922,142 @@
       const count = document.getElementById('issues-count');
       count.textContent = parseInt(count.textContent) - 1;
 
-      alert(`Issue marked as resolved!\n\nNext steps:\n1. Manually update event "${eventId}" in data/events.json\n2. Run: npm run validate && npm run build\n3. Commit and push changes\n4. Delete submission from Netlify Dashboard (Forms → Submissions)`);
+      alert(`Issue marked as resolved!\n\nNote: You may want to delete the submission from Netlify Dashboard (Forms → Submissions)`);
+    }
+
+    async function showIssueEditForm(submissionId) {
+      const editForm = document.getElementById(`issue-edit-${submissionId}`);
+
+      // Load the event data for this issue
+      try {
+        const response = await fetch('/.netlify/functions/get-events');
+        const data = await response.json();
+
+        // Find the event ID from the submission
+        const issue = allSubmissions.issues.find(s => s.id === submissionId);
+        if (!issue) {
+          alert('Could not find issue data');
+          return;
+        }
+
+        const eventId = issue.data.event_id;
+        const eventData = data.events.find(e => e.id === eventId);
+
+        if (!eventData) {
+          alert(`Could not find event with ID: ${eventId}\n\nThe event may have been deleted or the ID may be incorrect.`);
+          return;
+        }
+
+        // Pre-fill the form with current event data
+        document.getElementById(`issue-title-${submissionId}`).value = eventData.title || '';
+        document.getElementById(`issue-organizer-${submissionId}`).value = eventData.organizer || '';
+        document.getElementById(`issue-venue-${submissionId}`).value = eventData.venue || '';
+        document.getElementById(`issue-url-${submissionId}`).value = eventData.registration_url || '';
+        document.getElementById(`issue-summary-${submissionId}`).value = eventData.summary || '';
+
+        // Handle date/time
+        if (eventData.start) {
+          const startDate = new Date(eventData.start);
+          const dateStr = startDate.toISOString().split('T')[0];
+          document.getElementById(`issue-date-${submissionId}`).value = dateStr;
+
+          // Only set time if it's not midnight (all-day events are midnight)
+          if (startDate.getHours() !== 0 || startDate.getMinutes() !== 0) {
+            const timeStr = startDate.toTimeString().slice(0, 5);
+            document.getElementById(`issue-time-${submissionId}`).value = timeStr;
+          }
+        }
+
+        // Show the form
+        editForm.style.display = 'block';
+        editForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      } catch (error) {
+        console.error('Error loading event data:', error);
+        alert(`Error loading event data: ${error.message}`);
+      }
+    }
+
+    function hideIssueEditForm(submissionId) {
+      document.getElementById(`issue-edit-${submissionId}`).style.display = 'none';
+    }
+
+    async function saveIssueEdit(event, submissionId, eventId) {
+      event.preventDefault();
+
+      const title = document.getElementById(`issue-title-${submissionId}`).value;
+      const date = document.getElementById(`issue-date-${submissionId}`).value;
+      const time = document.getElementById(`issue-time-${submissionId}`).value;
+      const organizer = document.getElementById(`issue-organizer-${submissionId}`).value;
+      const venue = document.getElementById(`issue-venue-${submissionId}`).value;
+      const url = document.getElementById(`issue-url-${submissionId}`).value;
+      const summary = document.getElementById(`issue-summary-${submissionId}`).value;
+
+      // Build ISO timestamp
+      let start;
+      if (time) {
+        start = `${date}T${time}:00-08:00`; // Pacific time
+      } else {
+        start = `${date}T00:00:00-08:00`; // All-day event
+      }
+
+      const updates = {
+        title: title,
+        organizer: organizer,
+        venue: venue,
+        registration_url: url,
+        summary: summary,
+        start: start
+      };
+
+      if (!confirm(`Save changes to "${title}"?\n\nThis will update the event in the calendar.`)) return;
+
+      const button = event.target.querySelector('button[type="submit"]');
+      button.disabled = true;
+      button.textContent = '⏳ Saving...';
+
+      try {
+        const response = await fetch('/.netlify/functions/manage-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'update',
+            eventId: eventId,
+            updates: updates
+          })
+        });
+
+        // Check if we got HTML back (local mode) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('LOCAL_MODE');
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to update event');
+        }
+
+        // Remove the card from view
+        document.querySelector(`#issue-edit-${submissionId}`).closest('.submission-card').remove();
+
+        // Update count
+        const count = document.getElementById('issues-count');
+        count.textContent = parseInt(count.textContent) - 1;
+
+        alert(`✓ Event updated successfully!\n\nEvent: ${title}\nID: ${eventId}\n\nThe calendar will rebuild automatically in a few minutes.`);
+
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = '💾 Save Changes';
+
+        if (error.message === 'LOCAL_MODE') {
+          alert(`⚠️ Running in Local Mode\n\nEvent edits require the deployed Netlify environment.\n\nTo make this change:\n1. Note the event ID: ${eventId}\n2. Manually edit data/events.json\n3. Update these fields:\n   - title: ${title}\n   - organizer: ${organizer}\n   - venue: ${venue}\n   - registration_url: ${url}\n   - summary: ${summary}\n   - start: ${start}\n4. Run: npm run build\n5. Commit and push to deploy`);
+        } else {
+          alert(`Error saving changes: ${error.message}\n\nPlease try again.`);
+        }
+      }
     }
 
     async function rejectSubmission(submissionId, type) {
@@ -1108,12 +2104,12 @@
     async function deleteEvent(eventId, eventTitle) {
       if (!confirm(`Delete "${eventTitle}"?\n\nThis will permanently remove the event from the calendar. This action cannot be undone.`)) return;
 
-      try {
-        const button = event.target;
-        const card = button.closest('.submission-card');
-        button.disabled = true;
-        button.textContent = '⏳ Deleting...';
+      const button = event.target;
+      const card = button.closest('.submission-card');
+      button.disabled = true;
+      button.textContent = '⏳ Deleting...';
 
+      try {
         // Call the manage-event function
         const response = await fetch('/.netlify/functions/manage-event', {
           method: 'POST',
@@ -1123,6 +2119,12 @@
             eventId: eventId
           })
         });
+
+        // Check if we got HTML back (local mode) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('LOCAL_MODE');
+        }
 
         const result = await response.json();
 
@@ -1143,20 +2145,25 @@
         alert(`✓ Event deleted successfully!\n\nThe event has been removed from data/events.json. GitHub will automatically rebuild the site in a few minutes.`);
 
       } catch (error) {
-        alert(`Error deleting event: ${error.message}\n\nPlease try again or delete manually from data/events.json.`);
         button.disabled = false;
         button.textContent = '🗑️ Delete Event';
+
+        if (error.message === 'LOCAL_MODE') {
+          alert(`⚠️ Running in Local Mode\n\nEvent deletion requires the deployed Netlify environment.\n\nTo delete this event:\n1. Note the event ID: ${eventId}\n2. Manually remove it from data/events.json\n3. Run: npm run build\n4. Commit and push to deploy`);
+        } else {
+          alert(`Error deleting event: ${error.message}\n\nPlease try again or delete manually from data/events.json.`);
+        }
       }
     }
 
     async function markAsCancelled(eventId, eventTitle) {
       if (!confirm(`Mark "${eventTitle}" as cancelled?\n\nThis will update the event status to 'cancelled' on the calendar.`)) return;
 
-      try {
-        const button = event.target;
-        button.disabled = true;
-        button.textContent = '⏳ Updating...';
+      const button = event.target;
+      button.disabled = true;
+      button.textContent = '⏳ Updating...';
 
+      try {
         // Call the manage-event function
         const response = await fetch('/.netlify/functions/manage-event', {
           method: 'POST',
@@ -1167,6 +2174,12 @@
             updates: { status: 'cancelled' }
           })
         });
+
+        // Check if we got HTML back (local mode) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('LOCAL_MODE');
+        }
 
         const result = await response.json();
 
@@ -1180,9 +2193,128 @@
         loadEvents();
 
       } catch (error) {
-        alert(`Error updating event: ${error.message}\n\nPlease try again or update manually in data/events.json.`);
         button.disabled = false;
         button.textContent = '⚠️ Mark as Cancelled';
+
+        if (error.message === 'LOCAL_MODE') {
+          alert(`⚠️ Running in Local Mode\n\nMarking events as cancelled requires the deployed Netlify environment.\n\nTo cancel this event:\n1. Note the event ID: ${eventId}\n2. Manually edit data/events.json\n3. Find the event and change "status" to "cancelled"\n4. Run: npm run build\n5. Commit and push to deploy`);
+        } else {
+          alert(`Error updating event: ${error.message}\n\nPlease try again or update manually in data/events.json.`);
+        }
+      }
+    }
+
+    async function showManageEditForm(eventId) {
+      const eventData = allEvents.find(e => e.id === eventId);
+      if (!eventData) {
+        alert('Could not find event data');
+        return;
+      }
+
+      // Pre-fill the form
+      document.getElementById(`manage-title-${eventId}`).value = eventData.title || '';
+      document.getElementById(`manage-organizer-${eventId}`).value = eventData.organizer || '';
+      document.getElementById(`manage-venue-${eventId}`).value = eventData.venue || '';
+      document.getElementById(`manage-url-${eventId}`).value = eventData.registration_url || '';
+      document.getElementById(`manage-summary-${eventId}`).value = eventData.summary || '';
+
+      // Handle date/time
+      if (eventData.start) {
+        const startDate = new Date(eventData.start);
+        const dateStr = startDate.toISOString().split('T')[0];
+        document.getElementById(`manage-date-${eventId}`).value = dateStr;
+
+        // Only set time if it's not midnight (all-day events are midnight)
+        if (startDate.getHours() !== 0 || startDate.getMinutes() !== 0) {
+          const timeStr = startDate.toTimeString().slice(0, 5);
+          document.getElementById(`manage-time-${eventId}`).value = timeStr;
+        }
+      }
+
+      // Show the form
+      const editForm = document.getElementById(`manage-edit-${eventId}`);
+      editForm.style.display = 'block';
+      editForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideManageEditForm(eventId) {
+      document.getElementById(`manage-edit-${eventId}`).style.display = 'none';
+    }
+
+    async function saveManageEdit(event, eventId) {
+      event.preventDefault();
+
+      const title = document.getElementById(`manage-title-${eventId}`).value;
+      const date = document.getElementById(`manage-date-${eventId}`).value;
+      const time = document.getElementById(`manage-time-${eventId}`).value;
+      const organizer = document.getElementById(`manage-organizer-${eventId}`).value;
+      const venue = document.getElementById(`manage-venue-${eventId}`).value;
+      const url = document.getElementById(`manage-url-${eventId}`).value;
+      const summary = document.getElementById(`manage-summary-${eventId}`).value;
+
+      // Build ISO timestamp
+      let start;
+      if (time) {
+        start = `${date}T${time}:00-08:00`; // Pacific time
+      } else {
+        start = `${date}T00:00:00-08:00`; // All-day event
+      }
+
+      const updates = {
+        title: title,
+        organizer: organizer,
+        venue: venue,
+        registration_url: url,
+        summary: summary,
+        start: start
+      };
+
+      if (!confirm(`Save changes to "${title}"?\n\nThis will update the event in the calendar.`)) return;
+
+      const button = event.target.querySelector('button[type="submit"]');
+      button.disabled = true;
+      button.textContent = '⏳ Saving...';
+
+      try {
+        const response = await fetch('/.netlify/functions/manage-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'update',
+            eventId: eventId,
+            updates: updates
+          })
+        });
+
+        // Check if we got HTML back (local mode) instead of JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('LOCAL_MODE');
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to update event');
+        }
+
+        // Hide the edit form
+        hideManageEditForm(eventId);
+
+        // Reload events to show changes
+        loadEvents();
+
+        alert(`✓ Event updated successfully!\n\nEvent: ${title}\nID: ${eventId}\n\nThe calendar will rebuild automatically in a few minutes.`);
+
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = '💾 Save Changes';
+
+        if (error.message === 'LOCAL_MODE') {
+          alert(`⚠️ Running in Local Mode\n\nEvent edits require the deployed Netlify environment.\n\nTo make this change:\n1. Note the event ID: ${eventId}\n2. Manually edit data/events.json\n3. Update these fields:\n   - title: ${title}\n   - organizer: ${organizer}\n   - venue: ${venue}\n   - registration_url: ${url}\n   - summary: ${summary}\n   - start: ${start}\n4. Run: npm run build\n5. Commit and push to deploy`);
+        } else {
+          alert(`Error saving changes: ${error.message}\n\nPlease try again.`);
+        }
       }
     }
 
@@ -1240,6 +2372,9 @@
 
         // Update pendingItems array
         pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+
+        // Refresh the Manage Events tab to show the new event
+        loadEvents();
 
         alert(`✓ Event approved!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. It will also be removed from pending on the next harvest run.`);
 
