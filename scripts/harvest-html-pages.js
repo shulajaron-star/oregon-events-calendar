@@ -542,7 +542,8 @@ async function scrapeBuiltOregon(page) {
       const eventElements = [];
 
       // Built Oregon uses Squarespace event list
-      const eventCards = document.querySelectorAll('.eventlist-event');
+      // Skip past events (marked with eventlist-event--past class)
+      const eventCards = document.querySelectorAll('.eventlist-event:not(.eventlist-event--past)');
 
       eventCards.forEach(card => {
         const titleEl = card.querySelector('.eventlist-title');
