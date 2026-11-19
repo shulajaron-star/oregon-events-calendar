@@ -782,28 +782,6 @@
       "status": "confirmed",
       "first_seen": "2026-11-18",
       "last_verified": "2026-11-18"
-    },
-    {
-      "id": "built-oregon-show-for-small-business-2027-07-30",
-      "title": "Show up for Small Business",
-      "organizer": "Built Oregon",
-      "co_hosts": [],
-      "start": "2027-07-30T17:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "Brooklyn Carreta Bar & Carts\n                \n                (map)",
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.builtoregon.com/events/show-up-for-small-business",
-      "source_url": "https://www.builtoregon.com/events",
-      "summary": "Show up for Small Business",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
     }
   ]
 }
