@@ -2,6 +2,26 @@
   "changes": [
     {
       "action": "edited",
+      "eventId": "innovate-collaborate-2027-oregon-innovation-showcas-2027-05-11",
+      "eventTitle": "2027 Oregon Innovation Showcase",
+      "timestamp": "2026-11-19T18:29:44.017Z",
+      "details": {
+        "title": "2027 Oregon Innovation Showcase",
+        "organizer": "Innovate Collaborate Oregon",
+        "venue": "Hilton Portland Downtown, Portland, OR",
+        "registration_url": "https://www.oregoninnovationshowcase.org/",
+        "summary": "2027 Oregon Innovation Showcase takes place from May 10, 2027 to May 11, 2027 at Hilton Portland Downtown, Portland, OR. Organized by Social Enterprises, Inc..",
+        "start": "2027-05-11T08:00:00-08:00",
+        "categories": [
+          "investor",
+          "startup",
+          "conference"
+        ]
+      },
+      "note": "Via admin interface"
+    },
+    {
+      "action": "edited",
       "eventId": "innovate-collaborate-2027-oregon-innovation-showcas-2027-05-10",
       "eventTitle": "2027 Oregon Innovation Showcase",
       "timestamp": "2026-11-19T18:29:19.331Z",
