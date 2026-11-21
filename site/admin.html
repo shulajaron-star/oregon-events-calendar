@@ -672,6 +672,8 @@
                   <option value="Eugene/Lane">Eugene/Lane</option>
                   <option value="Central Oregon">Central Oregon</option>
                   <option value="Southern Oregon">Southern Oregon</option>
+                  <option value="Coast">Coast</option>
+                  <option value="Eastern Oregon">Eastern Oregon</option>
                   <option value="Statewide/Virtual">Statewide/Virtual</option>
                 </select>
               </div>
@@ -927,8 +929,8 @@
       const categories = categoriesInput.split(',').map(c => c.trim()).filter(c => c);
 
       // Build timestamps
-      const start = time ? `${date}T${time}:00-08:00` : `${date}T00:00:00-08:00`;
-      const end = endDate ? (endTime ? `${endDate}T${endTime}:00-08:00` : `${endDate}T00:00:00-08:00`) : null;
+      const start = pacificISO(date, time);
+      const end = endDate ? pacificISO(endDate, endTime) : (endTime ? pacificISO(date, endTime) : null);
 
       // Generate event ID
       const eventId = generateEventId(organizer, title, date);
@@ -1189,9 +1191,16 @@
             <span>${escapeHtml(event.region)}</span>
           </div>
 
+          ${event.virtual_meeting_url ? `
+          <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${linkOrText(event.virtual_meeting_url)}</span>
+          </div>
+          ` : ''}
+
           <div class="submission-field">
             <label>Summary:</label>
-            <span>${escapeHtml(event.summary || 'N/A')}</span>
+            <span style="white-space: pre-line;">${event.summary ? linkify(event.summary) : 'N/A'}</span>
           </div>
 
           ${event.registration_url ? `
@@ -1522,6 +1531,13 @@
             <span>${escapeHtml(event.format)}</span>
           </div>
 
+          ${event.virtual_meeting_url ? `
+          <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${linkOrText(event.virtual_meeting_url)}</span>
+          </div>
+          ` : ''}
+
           <div class="submission-field">
             <label>Status:</label>
             <span style="color: ${event.status === 'cancelled' ? 'var(--danger)' : 'var(--success)'}; font-weight: 600;">
@@ -1567,17 +1583,77 @@
                   <input type="time" id="manage-time-${event.id}" class="form-control">
                 </div>
               </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>End Date</label>
+                  <input type="date" id="manage-end-date-${event.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>End Time</label>
+                  <input type="time" id="manage-end-time-${event.id}" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Cost</label>
+                <select id="manage-cost-${event.id}" class="form-control">
+                  <option value="unknown">Unknown</option>
+                  <option value="free">Free</option>
+                  <option value="paid">Paid</option>
+                </select>
+              </div>
               <div class="form-group">
                 <label>Organizer</label>
                 <input type="text" id="manage-organizer-${event.id}" class="form-control" required>
               </div>
               <div class="form-group">
-                <label>Venue/Location</label>
-                <input type="text" id="manage-venue-${event.id}" class="form-control">
+                <label>Co-hosts (comma-separated)</label>
+                <input type="text" id="manage-cohosts-${event.id}" class="form-control">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Format</label>
+                  <select id="manage-format-${event.id}" class="form-control">
+                    <option value="in_person">In Person</option>
+                    <option value="virtual">Virtual</option>
+                    <option value="hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Region</label>
+                  <select id="manage-region-${event.id}" class="form-control">
+                    <option value="Portland Metro">Portland Metro</option>
+                    <option value="Southwest Washington">Southwest Washington</option>
+                    <option value="Willamette Valley">Willamette Valley</option>
+                    <option value="Eugene/Lane">Eugene/Lane</option>
+                    <option value="Central Oregon">Central Oregon</option>
+                    <option value="Southern Oregon">Southern Oregon</option>
+                    <option value="Coast">Coast</option>
+                    <option value="Eastern Oregon">Eastern Oregon</option>
+                    <option value="Statewide/Virtual">Statewide/Virtual</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Venue/Location</label>
+                  <input type="text" id="manage-venue-${event.id}" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" id="manage-city-${event.id}" class="form-control">
+                </div>
               </div>
               <div class="form-group">
                 <label>Registration URL</label>
                 <input type="url" id="manage-url-${event.id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Source URL (where the event was found)</label>
+                <input type="url" id="manage-source-url-${event.id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Virtual Meeting Link</label>
+                <input type="url" id="manage-meeting-url-${event.id}" class="form-control" placeholder="https://zoom.us/... or https://meet.google.com/...">
               </div>
               <div class="form-group">
                 <label>Categories (comma-separated) *</label>
@@ -1587,6 +1663,15 @@
               <div class="form-group">
                 <label>Summary</label>
                 <textarea id="manage-summary-${event.id}" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="manage-status-${event.id}" class="form-control">
+                  <option value="confirmed">Confirmed</option>
+                  <option value="needs_review">Needs review</option>
+                  <option value="postponed">Postponed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
               </div>
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-success">
@@ -1630,6 +1715,18 @@
             <span>${escapeHtml(data.event_time || 'N/A')}</span>
           </div>
 
+          ${data.event_end_date ? `
+          <div class="submission-field">
+            <label>End Date:</label>
+            <span>${escapeHtml(data.event_end_date)}</span>
+          </div>
+          ` : ''}
+
+          <div class="submission-field">
+            <label>Cost:</label>
+            <span>${escapeHtml(data.cost || 'Not given')}</span>
+          </div>
+
           <div class="submission-field">
             <label>Organizer:</label>
             <span>${escapeHtml(data.organizer || 'N/A')}</span>
@@ -1646,8 +1743,13 @@
           </div>
 
           <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${data.virtual_meeting_url ? linkOrText(data.virtual_meeting_url) : 'N/A'}</span>
+          </div>
+
+          <div class="submission-field">
             <label>Description:</label>
-            <span>${escapeHtml(data.description || 'N/A')}</span>
+            <span style="white-space: pre-line;">${data.description ? linkify(data.description) : 'N/A'}</span>
           </div>
 
           ${data.submitter_email ? `
@@ -1691,12 +1793,32 @@
                 <input type="time" id="edit-time-${id}" value="${escapeHtml(data.event_time || '')}">
               </div>
               <div class="form-group">
+                <label>End Date</label>
+                <input type="date" id="edit-end-date-${id}" value="${escapeHtml(data.event_end_date || '')}">
+              </div>
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="time" id="edit-end-time-${id}" value="${escapeHtml(data.event_end_time || '')}">
+              </div>
+              <div class="form-group">
+                <label>Cost</label>
+                <select id="edit-cost-${id}">
+                  <option value="unknown" ${data.cost !== 'free' && data.cost !== 'paid' ? 'selected' : ''}>Unknown</option>
+                  <option value="free" ${data.cost === 'free' ? 'selected' : ''}>Free</option>
+                  <option value="paid" ${data.cost === 'paid' ? 'selected' : ''}>Paid</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label>Organizer *</label>
                 <input type="text" id="edit-organizer-${id}" value="${escapeHtml(data.organizer || '')}" required>
               </div>
               <div class="form-group">
                 <label>Location</label>
                 <input type="text" id="edit-location-${id}" value="${escapeHtml(data.location || '')}">
+              </div>
+              <div class="form-group">
+                <label>Virtual Meeting Link</label>
+                <input type="url" id="edit-meeting-url-${id}" value="${escapeAttr(data.virtual_meeting_url || '')}" placeholder="https://zoom.us/... or https://meet.google.com/...">
               </div>
               <div class="form-group">
                 <label>Category *</label>
@@ -1929,10 +2051,96 @@
       eventsCalendar.addEventSource(calendarEvents);
     }
 
+// Pacific time helpers. Event times are stored as Pacific wall-clock times with
+    // the correct offset for that date (-08:00 in winter, -07:00 during daylight time).
+    function laOffsetMinutes(utcMs) {
+      const parts = {};
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles', hourCycle: 'h23',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      }).formatToParts(new Date(utcMs)).forEach(p => { parts[p.type] = p.value; });
+      const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);
+      return Math.round((asUtc - utcMs) / 60000);
+    }
+
+    function pacificISO(date, time) {
+      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+      const [y, m, d] = date.split('-').map(Number);
+      const [hh, mm] = (time && /^\d{1,2}:\d{2}/.test(time) ? time : '00:00').split(':').map(Number);
+      const wall = Date.UTC(y, m - 1, d, hh, mm);
+      let offset = laOffsetMinutes(wall + 8 * 3600000);
+      offset = laOffsetMinutes(wall - offset * 60000);
+      const sign = offset <= 0 ? '-' : '+';
+      const abs = Math.abs(offset);
+      const pad = n => String(n).padStart(2, '0');
+      return `${date}T${pad(hh)}:${pad(mm)}:00${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
+    }
+
+    // Read the stored Pacific date and time straight from the string, without
+    // converting through the viewer's own time zone.
+    function splitPacific(iso) {
+      if (!iso) return { date: '', time: '' };
+      const date = iso.slice(0, 10);
+      const time = iso.slice(11, 16);
+      return { date, time: time === '00:00' ? '' : time };
+    }
+
     function escapeHtml(text) {
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    // Escape for HTML attributes too (quotes included)
+    function escapeAttr(text) {
+      return String(text == null ? '' : text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Return the URL only if it is a plain http(s) link, otherwise null
+    function safeUrl(url) {
+      if (!url) return null;
+      try {
+        const parsed = new URL(String(url).trim());
+        return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Escape text, then turn http(s):// and www. URLs into links that open in a new tab
+    function linkify(text) {
+      const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+      let html = '';
+      let lastIndex = 0;
+      const source = String(text == null ? '' : text);
+      let match;
+      while ((match = urlPattern.exec(source)) !== null) {
+        let raw = match[0];
+        const trailing = raw.match(/[.,;:!?)\]]+$/);
+        if (trailing) raw = raw.slice(0, -trailing[0].length);
+        const href = safeUrl(raw.toLowerCase().startsWith('www.') ? 'https://' + raw : raw);
+        html += escapeAttr(source.slice(lastIndex, match.index));
+        html += href
+          ? `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeAttr(raw)}</a>`
+          : escapeAttr(raw);
+        lastIndex = match.index + raw.length;
+        urlPattern.lastIndex = lastIndex;
+      }
+      html += escapeAttr(source.slice(lastIndex));
+      return html;
+    }
+
+    // Render a URL as a clickable link, or plain escaped text if it is not http(s)
+    function linkOrText(url, fallback) {
+      const href = safeUrl(url);
+      if (href) return `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeAttr(url)}</a>`;
+      return escapeAttr(url || fallback || 'N/A');
     }
 
     function findSubmissionById(submissionId) {
@@ -2000,14 +2208,21 @@
     }
 
     async function approveEditedSuggestion(submissionId) {
-      // Get edited values from form
+      // Start from the original submission so no submitted field is dropped,
+      // then apply the edits from the form
+      const original = findSubmissionById(submissionId);
       const editedData = {
+        ...(original ? original.data : {}),
+        event_end_date: document.getElementById(`edit-end-date-${submissionId}`).value,
+        event_end_time: document.getElementById(`edit-end-time-${submissionId}`).value,
+        cost: document.getElementById(`edit-cost-${submissionId}`).value,
         event_name: document.getElementById(`edit-name-${submissionId}`).value,
         event_url: document.getElementById(`edit-url-${submissionId}`).value,
         event_date: document.getElementById(`edit-date-${submissionId}`).value,
         event_time: document.getElementById(`edit-time-${submissionId}`).value,
         organizer: document.getElementById(`edit-organizer-${submissionId}`).value,
         location: document.getElementById(`edit-location-${submissionId}`).value,
+        virtual_meeting_url: document.getElementById(`edit-meeting-url-${submissionId}`).value,
         category: document.getElementById(`edit-category-${submissionId}`).value,
         description: document.getElementById(`edit-description-${submissionId}`).value
       };
@@ -2098,18 +2313,10 @@
         document.getElementById(`issue-url-${submissionId}`).value = eventData.registration_url || '';
         document.getElementById(`issue-summary-${submissionId}`).value = eventData.summary || '';
 
-        // Handle date/time
-        if (eventData.start) {
-          const startDate = new Date(eventData.start);
-          const dateStr = startDate.toISOString().split('T')[0];
-          document.getElementById(`issue-date-${submissionId}`).value = dateStr;
-
-          // Only set time if it's not midnight (all-day events are midnight)
-          if (startDate.getHours() !== 0 || startDate.getMinutes() !== 0) {
-            const timeStr = startDate.toTimeString().slice(0, 5);
-            document.getElementById(`issue-time-${submissionId}`).value = timeStr;
-          }
-        }
+        // Date/time: read the stored Pacific values directly (all-day = no time)
+        const startParts = splitPacific(eventData.start);
+        document.getElementById(`issue-date-${submissionId}`).value = startParts.date;
+        document.getElementById(`issue-time-${submissionId}`).value = startParts.time;
 
         // Show the form
         editForm.style.display = 'block';
@@ -2136,13 +2343,8 @@
       const url = document.getElementById(`issue-url-${submissionId}`).value;
       const summary = document.getElementById(`issue-summary-${submissionId}`).value;
 
-      // Build ISO timestamp
-      let start;
-      if (time) {
-        start = `${date}T${time}:00-08:00`; // Pacific time
-      } else {
-        start = `${date}T00:00:00-08:00`; // All-day event
-      }
+      // Build ISO timestamp with the correct Pacific offset for that date
+      const start = pacificISO(date, time);
 
       const updates = {
         title: title,
@@ -2359,25 +2561,30 @@
       document.getElementById(`manage-organizer-${eventId}`).value = eventData.organizer || '';
       document.getElementById(`manage-venue-${eventId}`).value = eventData.venue || '';
       document.getElementById(`manage-url-${eventId}`).value = eventData.registration_url || '';
+      document.getElementById(`manage-meeting-url-${eventId}`).value = eventData.virtual_meeting_url || '';
       document.getElementById(`manage-summary-${eventId}`).value = eventData.summary || '';
+      document.getElementById(`manage-cohosts-${eventId}`).value = (eventData.co_hosts || []).join(', ');
+      document.getElementById(`manage-city-${eventId}`).value = eventData.city || '';
+      document.getElementById(`manage-source-url-${eventId}`).value = eventData.source_url || '';
+      document.getElementById(`manage-format-${eventId}`).value = eventData.format || 'in_person';
+      document.getElementById(`manage-region-${eventId}`).value = eventData.region || 'Statewide/Virtual';
+      document.getElementById(`manage-status-${eventId}`).value = eventData.status || 'confirmed';
 
       // Pre-fill categories (comma-separated)
       if (eventData.categories && eventData.categories.length > 0) {
         document.getElementById(`manage-categories-${eventId}`).value = eventData.categories.join(', ');
       }
 
-      // Handle date/time
-      if (eventData.start) {
-        const startDate = new Date(eventData.start);
-        const dateStr = startDate.toISOString().split('T')[0];
-        document.getElementById(`manage-date-${eventId}`).value = dateStr;
+      document.getElementById(`manage-cost-${eventId}`).value =
+        ['free', 'paid'].includes(eventData.cost) ? eventData.cost : 'unknown';
 
-        // Only set time if it's not midnight (all-day events are midnight)
-        if (startDate.getHours() !== 0 || startDate.getMinutes() !== 0) {
-          const timeStr = startDate.toTimeString().slice(0, 5);
-          document.getElementById(`manage-time-${eventId}`).value = timeStr;
-        }
-      }
+      // Date/time: read the stored Pacific values directly (all-day = no time)
+      const startParts = splitPacific(eventData.start);
+      document.getElementById(`manage-date-${eventId}`).value = startParts.date;
+      document.getElementById(`manage-time-${eventId}`).value = startParts.time;
+      const endParts = splitPacific(eventData.end);
+      document.getElementById(`manage-end-date-${eventId}`).value = endParts.date;
+      document.getElementById(`manage-end-time-${eventId}`).value = endParts.time;
 
       // Show the form
       const editForm = document.getElementById(`manage-edit-${eventId}`);
@@ -2398,7 +2605,18 @@
       const organizer = document.getElementById(`manage-organizer-${eventId}`).value;
       const venue = document.getElementById(`manage-venue-${eventId}`).value;
       const url = document.getElementById(`manage-url-${eventId}`).value;
+      const meetingUrl = document.getElementById(`manage-meeting-url-${eventId}`).value.trim();
       const summary = document.getElementById(`manage-summary-${eventId}`).value;
+      const endDate = document.getElementById(`manage-end-date-${eventId}`).value;
+      const endTime = document.getElementById(`manage-end-time-${eventId}`).value;
+      const cost = document.getElementById(`manage-cost-${eventId}`).value;
+      const coHosts = document.getElementById(`manage-cohosts-${eventId}`).value
+        .split(',').map(c => c.trim()).filter(c => c.length > 0);
+      const city = document.getElementById(`manage-city-${eventId}`).value.trim();
+      const sourceUrl = document.getElementById(`manage-source-url-${eventId}`).value.trim();
+      const format = document.getElementById(`manage-format-${eventId}`).value;
+      const region = document.getElementById(`manage-region-${eventId}`).value;
+      const status = document.getElementById(`manage-status-${eventId}`).value;
       const categoriesInput = document.getElementById(`manage-categories-${eventId}`).value;
 
       // Parse categories (comma-separated)
@@ -2412,22 +2630,27 @@
         return;
       }
 
-      // Build ISO timestamp
-      let start;
-      if (time) {
-        start = `${date}T${time}:00-08:00`; // Pacific time
-      } else {
-        start = `${date}T00:00:00-08:00`; // All-day event
-      }
+      // Build ISO timestamps with the correct Pacific offset for each date
+      const start = pacificISO(date, time);
+      const end = endDate ? pacificISO(endDate, endTime) : (endTime ? pacificISO(date, endTime) : null);
 
       const updates = {
         title: title,
         organizer: organizer,
         venue: venue,
         registration_url: url,
+        virtual_meeting_url: meetingUrl || null,
         summary: summary,
         start: start,
-        categories: categories
+        end: end,
+        cost: cost,
+        categories: categories,
+        co_hosts: coHosts,
+        city: city || null,
+        source_url: sourceUrl || null,
+        format: format,
+        region: region,
+        status: status
       };
 
       if (!confirm(`Save changes to "${title}"?\n\nThis will update the event in the calendar.`)) return;
@@ -2514,6 +2737,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             eventData: eventData,
+            fullEvent: event,   // keep every harvested field (end, cost, region, format...)
             submissionId: null  // No form submission to delete for pending events
           })
         });

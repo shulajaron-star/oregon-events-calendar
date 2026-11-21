@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { eventData, submissionId } = JSON.parse(event.body);
+    const { eventData, submissionId, fullEvent } = JSON.parse(event.body);
 
     // Get required environment variables
     const githubToken = process.env.GITHUB_TOKEN;
@@ -50,26 +50,48 @@ exports.handler = async (event, context) => {
     const eventsJson = JSON.parse(content);
 
     // Step 2: Create new event object
-    const newEvent = {
-      id: generateEventId(eventData.organizer, eventData.event_name, eventData.event_date),
-      title: eventData.event_name,
-      organizer: eventData.organizer,
-      co_hosts: [],
-      start: formatDateTime(eventData.event_date, eventData.event_time),
-      end: null,
-      format: guessFormat(eventData.location),
-      venue: eventData.location || null,
-      city: extractCity(eventData.location),
-      region: guessRegion(eventData.location),
-      categories: [eventData.category],
-      cost: 'unknown',
-      registration_url: eventData.event_url,
-      source_url: eventData.event_url,
-      summary: eventData.description || eventData.event_name,
-      status: 'confirmed',
-      first_seen: new Date().toISOString().split('T')[0],
-      last_verified: new Date().toISOString().split('T')[0]
-    };
+    let newEvent;
+    if (fullEvent && fullEvent.title && fullEvent.start) {
+      // A harvested pending event is already a complete event: keep every field.
+      newEvent = {
+        ...fullEvent,
+        id: fullEvent.id || generateEventId(fullEvent.organizer, fullEvent.title, fullEvent.start.slice(0, 10)),
+        cost: cleanCost(fullEvent.cost),
+        status: fullEvent.status === 'needs_review' ? 'confirmed' : (fullEvent.status || 'confirmed'),
+        last_verified: today()
+      };
+    } else {
+      const meetingUrl = cleanUrl(eventData.virtual_meeting_url);
+      const start = pacificISO(eventData.event_date, eventData.event_time);
+      if (!start) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ error: 'A valid event date is required', message: 'A valid event date is required' })
+        };
+      }
+
+      newEvent = {
+        id: generateEventId(eventData.organizer, eventData.event_name, eventData.event_date),
+        title: eventData.event_name,
+        organizer: eventData.organizer,
+        co_hosts: [],
+        start,
+        end: buildEnd(eventData),
+        format: guessFormat(eventData.location, meetingUrl),
+        venue: eventData.location || null,
+        city: extractCity(eventData.location),
+        region: guessRegion(eventData.location),
+        categories: [eventData.category].filter(Boolean),
+        cost: cleanCost(eventData.cost),
+        registration_url: eventData.event_url,
+        virtual_meeting_url: meetingUrl,
+        source_url: eventData.event_url,
+        summary: eventData.description || eventData.event_name,
+        status: 'confirmed',
+        first_seen: today(),
+        last_verified: today()
+      };
+    }
 
     // Check for duplicates
     const isDuplicate = eventsJson.events.some(e => e.id === newEvent.id);
@@ -123,7 +145,7 @@ exports.handler = async (event, context) => {
         details: {
           organizer: newEvent.organizer,
           date: newEvent.start.split('T')[0],
-          category: newEvent.categories[0]
+          category: (newEvent.categories || [])[0] || null
         },
         note: 'Approved via admin interface'
       });
@@ -188,36 +210,75 @@ function generateEventId(organizer, title, date) {
   return `${org}-${titleSlug}-${dateStr}`.replace(/^-+|-+$/g, '');
 }
 
-function formatDateTime(date, time) {
-  if (!date) return new Date().toISOString();
-
-  let dateTime = new Date(date);
-
-  if (time) {
-    const [hours, minutes] = time.split(':');
-    dateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-  } else {
-    dateTime.setHours(0, 0, 0, 0);
-  }
-
-  // Format as ISO with Pacific timezone offset
-  const offset = dateTime.getTimezoneOffset();
-  const pacificOffset = -8 * 60; // PST offset in minutes
-  dateTime.setMinutes(dateTime.getMinutes() + offset - pacificOffset);
-
-  const isoStr = dateTime.toISOString().replace('Z', '');
-  const tzOffset = time ? '-07:00' : '-07:00'; // Simplified, would need proper timezone logic
-
-  return isoStr.substring(0, 19) + tzOffset;
+// Pacific time helpers. Event times are stored as Pacific wall-clock times with
+// the correct offset for that date (-08:00 in winter, -07:00 during daylight time).
+function laOffsetMinutes(utcMs) {
+  const parts = {};
+  new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles', hourCycle: 'h23',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }).formatToParts(new Date(utcMs)).forEach(p => { parts[p.type] = p.value; });
+  const asUtc = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);
+  return Math.round((asUtc - utcMs) / 60000);
 }
 
-function guessFormat(location) {
-  if (!location) return 'unknown';
+function pacificISO(date, time) {
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  const [y, m, d] = date.split('-').map(Number);
+  const [hh, mm] = (time && /^\d{1,2}:\d{2}/.test(time) ? time : '00:00').split(':').map(Number);
+  const wall = Date.UTC(y, m - 1, d, hh, mm);
+  let offset = laOffsetMinutes(wall + 8 * 3600000);
+  offset = laOffsetMinutes(wall - offset * 60000);
+  const sign = offset <= 0 ? '-' : '+';
+  const abs = Math.abs(offset);
+  const pad = n => String(n).padStart(2, '0');
+  return `${date}T${pad(hh)}:${pad(mm)}:00${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`;
+}
+
+// Read the stored Pacific date and time straight from the string, without
+// converting through the viewer's own time zone.
+function splitPacific(iso) {
+  if (!iso) return { date: '', time: '' };
+  const date = iso.slice(0, 10);
+  const time = iso.slice(11, 16);
+  return { date, time: time === '00:00' ? '' : time };
+}
+
+function today() {
+  // Today's date in Pacific time
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date());
+}
+
+function buildEnd(data) {
+  const endDate = data.event_end_date || (data.event_end_time ? data.event_date : '');
+  if (!endDate) return null;
+  return pacificISO(endDate, data.event_end_time);
+}
+
+function cleanCost(cost) {
+  return ['free', 'paid', 'unknown'].includes(cost) ? cost : 'unknown';
+}
+
+function guessFormat(location, meetingUrl) {
+  if (!location) return meetingUrl ? 'virtual' : 'unknown';
   const loc = location.toLowerCase();
   if (loc.includes('zoom') || loc.includes('virtual') || loc.includes('online')) {
     return 'virtual';
   }
-  return 'in_person';
+  // A physical location plus a meeting link means people can join either way
+  return meetingUrl ? 'hybrid' : 'in_person';
+}
+
+// Keep a submitted URL only if it is a valid http(s) link
+function cleanUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  try {
+    const parsed = new URL(url.trim());
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 function extractCity(location) {

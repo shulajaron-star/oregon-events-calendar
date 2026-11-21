@@ -88,9 +88,14 @@ for (const event of currentEvents) {
   const calEvent = {
     start: new Date(event.start),
     summary: event.title,
-    description: `${event.summary}\n\nOrganizer: ${event.organizer}\n\nRegister: ${event.registration_url || event.source_url}`,
+    description: [
+      event.summary,
+      `Organizer: ${event.organizer}`,
+      event.virtual_meeting_url ? `Join online: ${event.virtual_meeting_url}` : null,
+      `Register: ${event.registration_url || event.source_url}`
+    ].filter(Boolean).join('\n\n'),
     location: event.format === 'virtual'
-      ? `Virtual: ${event.venue || 'Online'}`
+      ? (event.virtual_meeting_url || `Virtual: ${event.venue || 'Online'}`)
       : event.venue
         ? `${event.venue}, ${event.city || ''}`
         : event.city || '',
