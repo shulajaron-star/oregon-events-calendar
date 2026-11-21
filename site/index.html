@@ -496,8 +496,7 @@
         grid-template-columns: 1fr;
       }
     }
-      .modal-empty { color: #94a3b8; font-style: italic; }
-  </style>
+    </style>
 </head>
 <body>
   <header>
@@ -1271,11 +1270,10 @@
       const modal = document.getElementById('eventModal');
       const body = document.getElementById('modalBody');
       const esc = v => escapeHtml(v == null ? '' : String(v));
-      const NONE = '<span class="modal-empty">Not provided</span>';
       const title = s => s ? s.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '';
       const link = url => safeUrl(url)
         ? `<a href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`
-        : (url ? esc(url) : NONE);
+        : esc(url);
 
       // Dates and times are always shown in Pacific time
       const isAllDay = event.start.includes('T00:00:00');
@@ -1303,11 +1301,12 @@
       const statusNote = event.status && event.status !== 'confirmed'
         ? `<div class="modal-field"><strong>Status</strong><p>${esc(title(event.status))}</p></div>` : '';
 
-      const field = (label, value) => `
+      // Only show fields that have a value
+      const field = (label, value) => value ? `
         <div class="modal-field">
           <strong>${label}</strong>
           <p>${value}</p>
-        </div>`;
+        </div>` : '';
 
       const eventUrl = event.registration_url || event.source_url;
       body.innerHTML = `
@@ -1315,13 +1314,13 @@
         ${statusNote}
         ${field('Date', esc(dateDisplay))}
         ${field('Time', esc(timeDisplay))}
-        ${field('Organizer', event.organizer ? esc(event.organizer) : NONE)}
+        ${field('Organizer', esc(event.organizer))}
         ${event.co_hosts && event.co_hosts.length ? field('Co-hosts', esc(event.co_hosts.join(', '))) : ''}
-        ${field('Location', event.venue ? esc(event.venue) : NONE)}
-        ${field('City', event.city ? esc(event.city) : NONE)}
-        ${field('Region', event.region ? esc(event.region) : NONE)}
-        ${field('Format', event.format ? esc(title(event.format)) : NONE)}
-        ${field('Cost', event.cost && event.cost !== 'unknown' ? esc(title(event.cost)) : 'Not listed')}
+        ${field('Location', esc(event.venue))}
+        ${event.city && event.city !== event.venue ? field('City', esc(event.city)) : ''}
+        ${field('Region', esc(event.region))}
+        ${field('Format', event.format && event.format !== 'unknown' ? esc(title(event.format)) : '')}
+        ${field('Cost', event.cost && event.cost !== 'unknown' ? esc(title(event.cost)) : '')}
         ${event.categories && event.categories.length ? `
         <div class="modal-field">
           <strong>Categories</strong>
@@ -1329,13 +1328,14 @@
             ${event.categories.map(cat => `<span class="modal-tag">${esc(title(cat))}</span>`).join('')}
           </div>
         </div>` : ''}
-        ${field('Event Website / Registration', link(event.registration_url))}
+        ${event.registration_url ? field('Event Website / Registration', link(event.registration_url)) : ''}
         ${event.virtual_meeting_url ? field('Virtual Meeting Link', link(event.virtual_meeting_url)) : ''}
         ${event.source_url && event.source_url !== event.registration_url ? field('Source', link(event.source_url)) : ''}
+        ${event.summary && event.summary !== event.title ? `
         <div class="modal-field">
           <strong>Description</strong>
-          <p class="modal-description">${event.summary ? linkify(event.summary) : NONE}</p>
-        </div>
+          <p class="modal-description">${linkify(event.summary)}</p>
+        </div>` : ''}
 
         <div class="modal-field" style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
           ${safeUrl(eventUrl) ? `<a href="${esc(safeUrl(eventUrl))}" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-block;">Register / Details →</a>` : ''}
