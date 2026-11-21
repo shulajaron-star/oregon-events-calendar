@@ -929,6 +929,10 @@
       const categories = categoriesInput.split(',').map(c => c.trim()).filter(c => c);
 
       // Build timestamps
+      if (time && endDate && !endTime) {
+        alert('Please add an End Time (including AM/PM), or clear the End Date.');
+        return;
+      }
       const start = pacificISO(date, time);
       const end = endDate ? pacificISO(endDate, endTime) : (endTime ? pacificISO(date, endTime) : null);
 
@@ -2627,6 +2631,12 @@
 
       if (categories.length === 0) {
         alert('Please provide at least one category');
+        return;
+      }
+
+      // A timed event with an end date but no end time would end at midnight
+      if (time && endDate && !endTime) {
+        alert('Please add an End Time (including AM/PM), or clear the End Date.');
         return;
       }
 

@@ -496,7 +496,7 @@
         grid-template-columns: 1fr;
       }
     }
-  </style>
+    </style>
 </head>
 <body>
   <header>
@@ -1269,103 +1269,81 @@
     function showEventDetails(event) {
       const modal = document.getElementById('eventModal');
       const body = document.getElementById('modalBody');
+      const esc = v => escapeHtml(v == null ? '' : String(v));
+      const title = s => s ? s.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '';
+      const link = url => safeUrl(url)
+        ? `<a href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`
+        : esc(url);
 
+      // Dates and times are always shown in Pacific time
+      const isAllDay = event.start.includes('T00:00:00');
+      const tz = 'America/Los_Angeles';
+      const dayFmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const timeFmt = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit' });
       const startDate = new Date(event.start);
       const endDate = event.end ? new Date(event.end) : null;
+      const sameDay = endDate && event.end.slice(0, 10) === event.start.slice(0, 10);
 
-      const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
-          timeZone: 'America/Los_Angeles',
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: event.start.includes('T00:00:00') ? undefined : 'numeric',
-          minute: event.start.includes('T00:00:00') ? undefined : '2-digit',
-          timeZoneName: event.start.includes('T00:00:00') ? undefined : 'short'
-        });
-      };
+      let dateDisplay = dayFmt.format(startDate);
+      if (endDate && !sameDay) dateDisplay += ' to ' + dayFmt.format(endDate);
 
-      let dateDisplay = formatDate(startDate);
-      if (endDate && endDate.getTime() !== startDate.getTime()) {
-        dateDisplay += ' to ' + formatDate(endDate);
+      let timeDisplay;
+      if (isAllDay) {
+        timeDisplay = 'All day';
+      } else {
+        timeDisplay = timeFmt.format(startDate);
+        if (endDate) {
+          timeDisplay += ' to ' + timeFmt.format(endDate) + (sameDay ? '' : ` (${dayFmt.format(endDate)})`);
+        }
+        timeDisplay += ' Pacific';
       }
 
-      const location = event.format === 'virtual'
-        ? `Virtual: ${event.venue || 'Online'}`
-        : event.venue
-          ? `${event.venue}${event.city ? ', ' + event.city : ''}`
-          : event.city || '';
+      const statusNote = event.status && event.status !== 'confirmed'
+        ? `<div class="modal-field"><strong>Status</strong><p>${esc(title(event.status))}</p></div>` : '';
 
+      // Only show fields that have a value
+      const field = (label, value) => value ? `
+        <div class="modal-field">
+          <strong>${label}</strong>
+          <p>${value}</p>
+        </div>` : '';
+
+      const eventUrl = event.registration_url || event.source_url;
       body.innerHTML = `
-        <h2>${event.title}</h2>
-
-        <div class="modal-field">
-          <strong>Date & Time</strong>
-          <p>${dateDisplay}</p>
-        </div>
-
-        <div class="modal-field">
-          <strong>Organizer</strong>
-          <p>${event.organizer}${event.co_hosts && event.co_hosts.length > 0 ? ' (with ' + event.co_hosts.join(', ') + ')' : ''}</p>
-        </div>
-
-        ${location ? `
-        <div class="modal-field">
-          <strong>Location</strong>
-          <p>${location}</p>
-        </div>
-        ` : ''}
-
-        <div class="modal-field">
-          <strong>Region</strong>
-          <p>${event.region || 'N/A'}</p>
-        </div>
-
-        <div class="modal-field">
-          <strong>Format</strong>
-          <p>${event.format ? event.format.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
-        </div>
-
-        <div class="modal-field">
-          <strong>Cost</strong>
-          <p>${event.cost ? event.cost.charAt(0).toUpperCase() + event.cost.slice(1) : 'Unknown'}</p>
-        </div>
-
-        ${event.categories && event.categories.length > 0 ? `
+        <h2>${esc(event.title)}</h2>
+        ${statusNote}
+        ${field('Date', esc(dateDisplay))}
+        ${field('Time', esc(timeDisplay))}
+        ${field('Organizer', esc(event.organizer))}
+        ${event.co_hosts && event.co_hosts.length ? field('Co-hosts', esc(event.co_hosts.join(', '))) : ''}
+        ${field('Location', esc(event.venue))}
+        ${event.city && event.city !== event.venue ? field('City', esc(event.city)) : ''}
+        ${field('Region', esc(event.region))}
+        ${field('Format', event.format && event.format !== 'unknown' ? esc(title(event.format)) : '')}
+        ${field('Cost', event.cost && event.cost !== 'unknown' ? esc(title(event.cost)) : '')}
+        ${event.categories && event.categories.length ? `
         <div class="modal-field">
           <strong>Categories</strong>
           <div class="modal-tags">
-            ${event.categories.map(cat => `<span class="modal-tag">${cat.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>`).join('')}
+            ${event.categories.map(cat => `<span class="modal-tag">${esc(title(cat))}</span>`).join('')}
           </div>
-        </div>
-        ` : ''}
-
-        ${safeUrl(event.virtual_meeting_url) ? `
-        <div class="modal-field">
-          <strong>Virtual Meeting Link</strong>
-          <p><a href="${escapeHtml(safeUrl(event.virtual_meeting_url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(event.virtual_meeting_url)}</a></p>
-        </div>
-        ` : ''}
-
-        ${event.summary ? `
+        </div>` : ''}
+        ${event.registration_url ? field('Event Website / Registration', link(event.registration_url)) : ''}
+        ${event.virtual_meeting_url ? field('Virtual Meeting Link', link(event.virtual_meeting_url)) : ''}
+        ${event.source_url && event.source_url !== event.registration_url ? field('Source', link(event.source_url)) : ''}
+        ${event.summary && event.summary !== event.title ? `
         <div class="modal-field">
           <strong>Description</strong>
           <p class="modal-description">${linkify(event.summary)}</p>
-        </div>
-        ` : ''}
+        </div>` : ''}
 
-        ${event.registration_url ? `
         <div class="modal-field" style="margin-top: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a href="${event.registration_url}" target="_blank" class="btn" style="display: inline-block;">Register / Details →</a>
-          <button class="btn btn-secondary" onclick="reportIssue('${event.id}', '${event.title.replace(/'/g, "\\'")}', '${event.registration_url}')" style="display: inline-block;">⚠️ Report Issue</button>
+          ${safeUrl(eventUrl) ? `<a href="${esc(safeUrl(eventUrl))}" target="_blank" rel="noopener noreferrer" class="btn" style="display: inline-block;">Register / Details →</a>` : ''}
+          <button class="btn btn-secondary" id="modalReportBtn" style="display: inline-block;">⚠️ Report Issue</button>
         </div>
-        ` : `
-        <div class="modal-field" style="margin-top: 1.5rem;">
-          <button class="btn btn-secondary" onclick="reportIssue('${event.id}', '${event.title.replace(/'/g, "\\'")}', '')" style="display: inline-block;">⚠️ Report Issue</button>
-        </div>
-        `}
       `;
+      document.getElementById('modalReportBtn').addEventListener('click', () =>
+        reportIssue(event.id, event.title, event.registration_url || ''));
 
       modal.classList.add('active');
     }
