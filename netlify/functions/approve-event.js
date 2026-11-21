@@ -50,6 +50,8 @@ exports.handler = async (event, context) => {
     const eventsJson = JSON.parse(content);
 
     // Step 2: Create new event object
+    const meetingUrl = cleanUrl(eventData.virtual_meeting_url);
+
     const newEvent = {
       id: generateEventId(eventData.organizer, eventData.event_name, eventData.event_date),
       title: eventData.event_name,
@@ -57,13 +59,14 @@ exports.handler = async (event, context) => {
       co_hosts: [],
       start: formatDateTime(eventData.event_date, eventData.event_time),
       end: null,
-      format: guessFormat(eventData.location),
+      format: guessFormat(eventData.location, meetingUrl),
       venue: eventData.location || null,
       city: extractCity(eventData.location),
       region: guessRegion(eventData.location),
       categories: [eventData.category],
       cost: 'unknown',
       registration_url: eventData.event_url,
+      virtual_meeting_url: meetingUrl,
       source_url: eventData.event_url,
       summary: eventData.description || eventData.event_name,
       status: 'confirmed',
@@ -211,13 +214,25 @@ function formatDateTime(date, time) {
   return isoStr.substring(0, 19) + tzOffset;
 }
 
-function guessFormat(location) {
-  if (!location) return 'unknown';
+function guessFormat(location, meetingUrl) {
+  if (!location) return meetingUrl ? 'virtual' : 'unknown';
   const loc = location.toLowerCase();
   if (loc.includes('zoom') || loc.includes('virtual') || loc.includes('online')) {
     return 'virtual';
   }
-  return 'in_person';
+  // A physical location plus a meeting link means people can join either way
+  return meetingUrl ? 'hybrid' : 'in_person';
+}
+
+// Keep a submitted URL only if it is a valid http(s) link
+function cleanUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  try {
+    const parsed = new URL(url.trim());
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : null;
+  } catch (e) {
+    return null;
+  }
 }
 
 function extractCity(location) {
