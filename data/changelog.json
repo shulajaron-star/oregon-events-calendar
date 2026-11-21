@@ -2,6 +2,33 @@
   "changes": [
     {
       "action": "edited",
+      "eventId": "onami-onami-innovation-exchange-2026-12-09",
+      "eventTitle": "ONAMI Innovation Exchange",
+      "timestamp": "2026-11-21T01:48:56.051Z",
+      "details": {
+        "title": "ONAMI Innovation Exchange",
+        "organizer": "ONAMI",
+        "venue": "Virtual",
+        "registration_url": "https://lnkd.in/gSH3SQwg",
+        "virtual_meeting_url": null,
+        "summary": "We're very pleased to announce our next ONAMI Innovation Exchange is scheduled for December 9, 2026 at 4pm with Skip Rung, founder and Chief Startup Officer of ONAMI. What does it take to turn a big idea into a thriving Oregon startup? Register here: https://lnkd.in/gSH3SQwg Please join us!",
+        "start": "2026-12-09T16:00:00-08:00",
+        "end": null,
+        "cost": "unknown",
+        "categories": [
+          "startup"
+        ],
+        "co_hosts": [],
+        "city": null,
+        "source_url": null,
+        "format": "virtual",
+        "region": "Statewide/Virtual",
+        "status": "confirmed"
+      },
+      "note": "Via admin interface"
+    },
+    {
+      "action": "edited",
       "eventId": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
       "eventTitle": "Oregon Drug Discovery Symposium | OHSU",
       "timestamp": "2026-11-21T01:46:23.176Z",
