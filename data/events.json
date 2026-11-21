@@ -471,6 +471,28 @@
       "last_verified": "2026-11-18"
     },
     {
+      "id": "onami-onami-innovation-exchange-2026-12-09",
+      "title": "ONAMI Innovation Exchange",
+      "organizer": "ONAMI",
+      "co_hosts": [],
+      "start": "2026-12-10T00:00:00-07:00",
+      "end": null,
+      "format": "virtual",
+      "venue": "Virtual",
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "other"
+      ],
+      "cost": "unknown",
+      "registration_url": "",
+      "source_url": "",
+      "summary": "We're very pleased to announce our next ONAMI Innovation Exchange is scheduled for December 9, 2026 at 4pm with Skip Rung, founder and Chief Startup Officer of ONAMI. What does it take to turn a big idea into a thriving Oregon startup? Register here: https://lnkd.in/gSH3SQwg Please join us!",
+      "status": "confirmed",
+      "first_seen": "2026-11-21",
+      "last_verified": "2026-11-21"
+    },
+    {
       "id": "oen-pitch-please-2026-12-15",
       "title": "Pitch Please",
       "organizer": "Oregon Entrepreneurs Network",
