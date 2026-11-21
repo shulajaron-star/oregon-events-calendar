@@ -255,12 +255,13 @@
         "investor"
       ],
       "cost": "paid",
-      "registration_url": "https://oen.app.neoncrm.com/nx/portal/event-calendar",
-      "source_url": "https://oen.app.neoncrm.com/nx/portal/event-calendar",
+      "registration_url": "https://oen.app.neoncrm.com/forms/2026-angel-oregon-life-bioscience-investment-registration?event=480",
+      "source_url": "https://oen.app.neoncrm.com/nx/portal/event-detail?event=480",
       "summary": "Investment announcement mixer where regional life science startup founders pitch for equity investment. AOBIO investors will announce which finalist receives over $130,000 in funding.",
       "status": "confirmed",
       "first_seen": "2026-11-17",
-      "last_verified": "2026-11-17"
+      "last_verified": "2026-11-21",
+      "virtual_meeting_url": null
     },
     {
       "id": "technology-associati-innovation-summit-2026-the-2026-12-09",
