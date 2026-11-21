@@ -2,6 +2,18 @@
   "changes": [
     {
       "action": "added",
+      "eventId": "onami-onami-innovation-exchange-2026-12-09",
+      "eventTitle": "ONAMI Innovation Exchange",
+      "timestamp": "2026-11-21T01:18:15.495Z",
+      "details": {
+        "organizer": "ONAMI",
+        "date": "2026-12-10",
+        "category": "other"
+      },
+      "note": "Approved via admin interface"
+    },
+    {
+      "action": "added",
       "eventId": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
       "eventTitle": "Oregon Drug Discovery Symposium | OHSU",
       "timestamp": "2026-11-21T01:18:09.650Z",
