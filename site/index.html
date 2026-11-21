@@ -627,6 +627,11 @@
     <input type="time" name="event_time">
     <input type="date" name="event_end_date">
     <input type="url" name="virtual_meeting_url">
+    <select name="cost">
+      <option value="free">Free</option>
+      <option value="paid">Paid</option>
+      <option value="unknown">Not sure</option>
+    </select>
     <input type="text" name="organizer">
     <input type="text" name="location">
     <select name="category">
@@ -692,6 +697,15 @@
         <div class="form-group">
           <label for="location">Location/City</label>
           <input type="text" id="location" name="location" placeholder="e.g., Portland, Corvallis, Virtual">
+        </div>
+
+        <div class="form-group">
+          <label for="cost">Cost</label>
+          <select id="cost" name="cost">
+            <option value="unknown">Not sure</option>
+            <option value="free">Free</option>
+            <option value="paid">Paid</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -1231,7 +1245,7 @@
       const calendarEvents = filtered.map(event => ({
         title: event.title,
         start: event.start,
-        end: event.end,
+        end: calendarEnd(event),
         allDay: event.start.includes('T00:00:00'),
         extendedProps: {
           eventData: event
@@ -1240,6 +1254,16 @@
 
       calendar.removeAllEvents();
       calendar.addEventSource(calendarEvents);
+    }
+
+    // FullCalendar treats an all-day event's end as exclusive, so a stored
+    // end date of Nov 25 must become Nov 26 to show Nov 25 on the calendar.
+    function calendarEnd(event) {
+      if (!event.end) return null;
+      if (!event.start.includes('T00:00:00')) return event.end;
+      const [y, m, d] = event.end.slice(0, 10).split('-').map(Number);
+      const next = new Date(Date.UTC(y, m - 1, d + 1));
+      return next.toISOString().slice(0, 10);
     }
 
     function showEventDetails(event) {
@@ -1251,6 +1275,7 @@
 
       const formatDate = (date) => {
         return date.toLocaleDateString('en-US', {
+          timeZone: 'America/Los_Angeles',
           weekday: 'long',
           year: 'numeric',
           month: 'long',
