@@ -1,6 +1,33 @@
 {
   "changes": [
     {
+      "action": "edited",
+      "eventId": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
+      "eventTitle": "Oregon Drug Discovery Symposium | OHSU",
+      "timestamp": "2026-11-21T01:41:50.347Z",
+      "details": {
+        "title": "Oregon Drug Discovery Symposium | OHSU",
+        "organizer": "OHSU",
+        "venue": "Portland",
+        "registration_url": "https://www.eventbrite.com/e/oregon-drug-discovery-symposium-2027-tickets-2002820572246?aff=oddtdtcreator",
+        "virtual_meeting_url": null,
+        "summary": "The Oregon Drug Discovery Symposium (ODDS) aims to build a regional hub for collaboration among academic researchers, industry professionals, and trainees.\nRegistration and abstract submission are now open:\n\nRegistration: https://www.eventbrite.com/e/oregon-drug-discovery-symposium-2027-tickets-2002820572246?aff=oddtdtcreator\n\nAbstract Submission: https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=V3lz4rj6fk2U9pvWr59xWFGyUNsn2qBNpNyhJ_0HQf5UMEJaUUtOWEc1UTk0R0lBMlFKSzZQQlNRMS4u\n\nConference Website: https://www.ohsu.edu/knight-cancer-institute/center-experimental-therapeutics/oregon-drug-discovery-symposium",
+        "start": "2027-04-07T08:00:00-07:00",
+        "end": "2027-04-08T00:00:00-07:00",
+        "cost": "paid",
+        "categories": [
+          "conference"
+        ],
+        "co_hosts": [],
+        "city": "Portland",
+        "source_url": "https://www.ohsu.edu/knight-cancer-institute/center-experimental-therapeutics/oregon-drug-discovery-symposium",
+        "format": "in_person",
+        "region": "Portland Metro",
+        "status": "confirmed"
+      },
+      "note": "Via admin interface"
+    },
+    {
       "action": "added",
       "eventId": "onami-onami-innovation-exchange-2026-12-09",
       "eventTitle": "ONAMI Innovation Exchange",
