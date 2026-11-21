@@ -189,6 +189,7 @@ These need to be verified as active, then presented for approval:
   "categories": ["startup", "training", "investor", "life_science", "networking", "conference", "underrepresented_founders"],
   "cost": "free | paid | unknown",
   "registration_url": "https://...",
+  "virtual_meeting_url": "https://zoom.us/... (optional, direct join link for virtual or hybrid events)",
   "source_url": "https://...",
   "summary": "One or two sentences in your own words, never copied text",
   "status": "confirmed | needs_review | cancelled | postponed",

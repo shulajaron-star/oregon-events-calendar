@@ -1189,9 +1189,16 @@
             <span>${escapeHtml(event.region)}</span>
           </div>
 
+          ${event.virtual_meeting_url ? `
+          <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${linkOrText(event.virtual_meeting_url)}</span>
+          </div>
+          ` : ''}
+
           <div class="submission-field">
             <label>Summary:</label>
-            <span>${escapeHtml(event.summary || 'N/A')}</span>
+            <span style="white-space: pre-line;">${event.summary ? linkify(event.summary) : 'N/A'}</span>
           </div>
 
           ${event.registration_url ? `
@@ -1522,6 +1529,13 @@
             <span>${escapeHtml(event.format)}</span>
           </div>
 
+          ${event.virtual_meeting_url ? `
+          <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${linkOrText(event.virtual_meeting_url)}</span>
+          </div>
+          ` : ''}
+
           <div class="submission-field">
             <label>Status:</label>
             <span style="color: ${event.status === 'cancelled' ? 'var(--danger)' : 'var(--success)'}; font-weight: 600;">
@@ -1578,6 +1592,10 @@
               <div class="form-group">
                 <label>Registration URL</label>
                 <input type="url" id="manage-url-${event.id}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Virtual Meeting Link</label>
+                <input type="url" id="manage-meeting-url-${event.id}" class="form-control" placeholder="https://zoom.us/... or https://meet.google.com/...">
               </div>
               <div class="form-group">
                 <label>Categories (comma-separated) *</label>
@@ -1646,8 +1664,13 @@
           </div>
 
           <div class="submission-field">
+            <label>Virtual Meeting Link:</label>
+            <span>${data.virtual_meeting_url ? linkOrText(data.virtual_meeting_url) : 'N/A'}</span>
+          </div>
+
+          <div class="submission-field">
             <label>Description:</label>
-            <span>${escapeHtml(data.description || 'N/A')}</span>
+            <span style="white-space: pre-line;">${data.description ? linkify(data.description) : 'N/A'}</span>
           </div>
 
           ${data.submitter_email ? `
@@ -1697,6 +1720,10 @@
               <div class="form-group">
                 <label>Location</label>
                 <input type="text" id="edit-location-${id}" value="${escapeHtml(data.location || '')}">
+              </div>
+              <div class="form-group">
+                <label>Virtual Meeting Link</label>
+                <input type="url" id="edit-meeting-url-${id}" value="${escapeAttr(data.virtual_meeting_url || '')}" placeholder="https://zoom.us/... or https://meet.google.com/...">
               </div>
               <div class="form-group">
                 <label>Category *</label>
@@ -1935,6 +1962,57 @@
       return div.innerHTML;
     }
 
+    // Escape for HTML attributes too (quotes included)
+    function escapeAttr(text) {
+      return String(text == null ? '' : text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Return the URL only if it is a plain http(s) link, otherwise null
+    function safeUrl(url) {
+      if (!url) return null;
+      try {
+        const parsed = new URL(String(url).trim());
+        return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Escape text, then turn http(s):// and www. URLs into links that open in a new tab
+    function linkify(text) {
+      const urlPattern = /\b(?:https?:\/\/|www\.)[^\s<>"']+/gi;
+      let html = '';
+      let lastIndex = 0;
+      const source = String(text == null ? '' : text);
+      let match;
+      while ((match = urlPattern.exec(source)) !== null) {
+        let raw = match[0];
+        const trailing = raw.match(/[.,;:!?)\]]+$/);
+        if (trailing) raw = raw.slice(0, -trailing[0].length);
+        const href = safeUrl(raw.toLowerCase().startsWith('www.') ? 'https://' + raw : raw);
+        html += escapeAttr(source.slice(lastIndex, match.index));
+        html += href
+          ? `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeAttr(raw)}</a>`
+          : escapeAttr(raw);
+        lastIndex = match.index + raw.length;
+        urlPattern.lastIndex = lastIndex;
+      }
+      html += escapeAttr(source.slice(lastIndex));
+      return html;
+    }
+
+    // Render a URL as a clickable link, or plain escaped text if it is not http(s)
+    function linkOrText(url, fallback) {
+      const href = safeUrl(url);
+      if (href) return `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeAttr(url)}</a>`;
+      return escapeAttr(url || fallback || 'N/A');
+    }
+
     function findSubmissionById(submissionId) {
       // Search in both suggestions and issues
       const suggestion = allSubmissions.suggestions.find(s => s.id === submissionId);
@@ -2008,6 +2086,7 @@
         event_time: document.getElementById(`edit-time-${submissionId}`).value,
         organizer: document.getElementById(`edit-organizer-${submissionId}`).value,
         location: document.getElementById(`edit-location-${submissionId}`).value,
+        virtual_meeting_url: document.getElementById(`edit-meeting-url-${submissionId}`).value,
         category: document.getElementById(`edit-category-${submissionId}`).value,
         description: document.getElementById(`edit-description-${submissionId}`).value
       };
@@ -2359,6 +2438,7 @@
       document.getElementById(`manage-organizer-${eventId}`).value = eventData.organizer || '';
       document.getElementById(`manage-venue-${eventId}`).value = eventData.venue || '';
       document.getElementById(`manage-url-${eventId}`).value = eventData.registration_url || '';
+      document.getElementById(`manage-meeting-url-${eventId}`).value = eventData.virtual_meeting_url || '';
       document.getElementById(`manage-summary-${eventId}`).value = eventData.summary || '';
 
       // Pre-fill categories (comma-separated)
@@ -2398,6 +2478,7 @@
       const organizer = document.getElementById(`manage-organizer-${eventId}`).value;
       const venue = document.getElementById(`manage-venue-${eventId}`).value;
       const url = document.getElementById(`manage-url-${eventId}`).value;
+      const meetingUrl = document.getElementById(`manage-meeting-url-${eventId}`).value.trim();
       const summary = document.getElementById(`manage-summary-${eventId}`).value;
       const categoriesInput = document.getElementById(`manage-categories-${eventId}`).value;
 
@@ -2425,6 +2506,7 @@
         organizer: organizer,
         venue: venue,
         registration_url: url,
+        virtual_meeting_url: meetingUrl || null,
         summary: summary,
         start: start,
         categories: categories
