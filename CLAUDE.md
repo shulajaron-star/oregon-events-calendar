@@ -72,7 +72,8 @@ oregon-events-calendar/
 
 **Build Process:**
 - `scripts/build.js` reads `data/events.json`
-- Filters events to 12-month rolling window (today → today + 12 months)
+- Merges data/events.json with data/archive/*.json so past events stay on the calendar
+- Drops cancelled events and anything more than 12 months out
 - Generates `site/events.json` (for web display)
 - Generates `site/events.ics` (iCalendar subscription feed)
 
@@ -129,7 +130,7 @@ oregon-events-calendar/
 When unsure, add the event with "status": "needs_review" and a one-line reason, rather than guessing.
 
 ### Rolling window:
-Keep events from today through today + 12 months. Move past events to data/archive/YYYY.json instead of deleting them.
+data/events.json holds events from today through today + 12 months. Move past events to data/archive/YYYY.json instead of deleting them. Past events stay visible on the public calendar: scripts/build.js merges data/archive/ back in, so never delete a finished event.
 
 ## Pre-approved Sources (Seed List)
 

@@ -926,8 +926,8 @@
       const subscribeMenu = document.getElementById('subscribeMenu');
       const googleCalendarLink = document.getElementById('googleCalendarLink');
 
-      // Set Google Calendar subscription URL (placeholder - will update after Netlify deployment)
-      const calendarUrl = 'https://YOUR-SITE.netlify.app/events.ics'; // TODO: Update in Phase 3
+      // Google Calendar subscription URL for the public ICS feed
+      const calendarUrl = 'https://oregonstartupeventscalendar.netlify.app/events.ics';
       googleCalendarLink.href = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(calendarUrl)}`;
 
       subscribeBtn.addEventListener('click', function(e) {
