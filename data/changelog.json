@@ -1,6 +1,18 @@
 {
   "changes": [
     {
+      "action": "added",
+      "eventId": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
+      "eventTitle": "Oregon Drug Discovery Symposium | OHSU",
+      "timestamp": "2026-11-21T01:18:09.650Z",
+      "details": {
+        "organizer": "OHSU",
+        "date": "2027-04-07",
+        "category": "conference"
+      },
+      "note": "Approved via admin interface"
+    },
+    {
       "action": "edited",
       "eventId": "innovate-collaborate-2027-oregon-innovation-showcas-2027-05-11",
       "eventTitle": "2027 Oregon Innovation Showcase",
