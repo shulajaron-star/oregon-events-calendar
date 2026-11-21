@@ -2,6 +2,40 @@
   "changes": [
     {
       "action": "edited",
+      "eventId": "oen-aobio-investment-announcement-mixer-2026-12-07",
+      "eventTitle": "Angel Oregon Life & Bioscience: Investment Announcement Mixer",
+      "timestamp": "2026-11-21T01:54:30.128Z",
+      "details": {
+        "title": "Angel Oregon Life & Bioscience: Investment Announcement Mixer",
+        "organizer": "Oregon Entrepreneurs Network",
+        "venue": "McMenamins Mission Theater",
+        "registration_url": "https://oen.app.neoncrm.com/forms/2026-angel-oregon-life-bioscience-investment-registration?event=480",
+        "virtual_meeting_url": null,
+        "summary": "Investment announcement mixer where regional life science startup founders pitch for equity investment. AOBIO investors will announce which finalist receives over $130,000 in funding.",
+        "start": "2026-12-07T16:00:00-08:00",
+        "end": "2026-12-07T19:00:00-08:00",
+        "cost": "paid",
+        "categories": [
+          "life_science",
+          "startup",
+          "investor"
+        ],
+        "co_hosts": [
+          "Oregon Bioscience Incubator (OTRADI)",
+          "OHSU",
+          "Oregon Life Sciences",
+          "ONAMI"
+        ],
+        "city": "Portland",
+        "source_url": "https://oen.app.neoncrm.com/nx/portal/event-detail?event=480",
+        "format": "in_person",
+        "region": "Portland Metro",
+        "status": "confirmed"
+      },
+      "note": "Via admin interface"
+    },
+    {
+      "action": "edited",
       "eventId": "onami-onami-innovation-exchange-2026-12-09",
       "eventTitle": "ONAMI Innovation Exchange",
       "timestamp": "2026-11-21T01:48:56.051Z",
