@@ -562,6 +562,28 @@
       "last_verified": "2026-11-19"
     },
     {
+      "id": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
+      "title": "Oregon Drug Discovery Symposium | OHSU",
+      "organizer": "OHSU",
+      "co_hosts": [],
+      "start": "2027-04-07T08:00:00-07:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "Portland",
+      "city": "Portland",
+      "region": "Portland Metro",
+      "categories": [
+        "conference"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.ohsu.edu/knight-cancer-institute/center-experimental-therapeutics/oregon-drug-discovery-symposium",
+      "source_url": "https://www.ohsu.edu/knight-cancer-institute/center-experimental-therapeutics/oregon-drug-discovery-symposium",
+      "summary": "The Oregon Drug Discovery Symposium (ODDS) aims to build a regional hub for collaboration among academic researchers, industry professionals, and trainees.\nRegistration and abstract submission are now open:\n\nRegistration: https://www.eventbrite.com/e/oregon-drug-discovery-symposium-2027-tickets-2002820572246?aff=oddtdtcreator\nAbstract Submission: https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=V3lz4rj6fk2U9pvWr59xWFGyUNsn2qBNpNyhJ_0HQf5UMEJaUUtOWEc1UTk0R0lBMlFKSzZQQlNRMS4u\nConference Website: https://www.ohsu.edu/knight-cancer-institute/center-experimental-therapeutics/oregon-drug-discovery-symposium",
+      "status": "confirmed",
+      "first_seen": "2026-11-21",
+      "last_verified": "2026-11-21"
+    },
+    {
       "id": "technology-associati-oregon-largest-hackathon-back-2027-04-17",
       "title": "Oregon’s Largest Hackathon is back! Are you in?",
       "organizer": "Technology Association of Oregon (TAO)",
