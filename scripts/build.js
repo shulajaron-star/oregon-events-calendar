@@ -4,11 +4,11 @@
  * Build script for Oregon Events Calendar
  *
  * Generates:
- * - site/events.json (current events for web display)
+ * - site/events.json (events for web display, including past events)
  * - site/events.ics (iCalendar feed for subscriptions)
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import ical from 'ical-generator';
@@ -36,20 +36,32 @@ function success(msg) {
 const eventsPath = join(projectRoot, 'data', 'events.json');
 const eventsData = JSON.parse(readFileSync(eventsPath, 'utf8'));
 
-// Filter to current events only (within 12-month window, not cancelled)
+// Load archived (past) events so finished events stay on the calendar
+const archiveDir = join(projectRoot, 'data', 'archive');
+const archivedEvents = existsSync(archiveDir)
+  ? readdirSync(archiveDir)
+      .filter(f => /^\d{4}\.json$/.test(f))
+      .flatMap(f => JSON.parse(readFileSync(join(archiveDir, f), 'utf8')).events || [])
+  : [];
+
+// Keep past events (they are never removed from the calendar); only drop
+// cancelled events and anything more than 12 months out.
 const now = new Date();
 const twelveMonthsFromNow = new Date();
 twelveMonthsFromNow.setMonth(now.getMonth() + 12);
 
-const currentEvents = eventsData.events.filter(event => {
+const seenIds = new Set();
+const currentEvents = [...archivedEvents, ...eventsData.events].filter(event => {
+  if (seenIds.has(event.id)) return false;
+  seenIds.add(event.id);
   const eventDate = new Date(event.start);
-  const isInWindow = eventDate >= now && eventDate <= twelveMonthsFromNow;
+  const isInWindow = eventDate <= twelveMonthsFromNow;
   const isNotCancelled = event.status !== 'cancelled';
   return isInWindow && isNotCancelled;
-});
+}).sort((a, b) => new Date(a.start) - new Date(b.start));
 
-info(`Building from ${eventsData.events.length} total events`);
-info(`${currentEvents.length} events in current 12-month window`);
+info(`Building from ${eventsData.events.length} upcoming and ${archivedEvents.length} archived events`);
+info(`${currentEvents.length} events on the calendar (past events kept)`);
 
 // Ensure site directory exists
 mkdirSync(join(projectRoot, 'site'), { recursive: true });
@@ -68,7 +80,7 @@ const calendar = ical({
   name: 'Oregon Startup & Bioscience Events',
   description: 'Startup, entrepreneurship, and bioscience industry events in Oregon and Southwest Washington',
   timezone: 'America/Los_Angeles',
-  url: 'https://oregon-events.netlify.app',
+  url: 'https://oregonstartupeventscalendar.netlify.app',
   ttl: 3600 // 1 hour cache
 });
 

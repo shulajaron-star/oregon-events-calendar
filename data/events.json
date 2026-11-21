@@ -1,175 +1,12 @@
 {
   "events": [
     {
-      "id": "oregon-life-sciences-financial-skills-for-non-2026-11-19",
-      "title": "Financial Skills for Non-Finance People",
-      "organizer": "Oregon Life Sciences (OLS)",
-      "co_hosts": [],
-      "start": "2026-11-19T00:00:00-07:00",
-      "end": null,
-      "format": "in_person",
-      "venue": null,
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.oregonlifesciences.org/events/financial-skills-for-non-finance-people-2026",
-      "source_url": "https://oregonlifesciences.org/events",
-      "summary": "Financial Skills for Non-Finance People",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
-    },
-    {
-      "id": "technology-associati-saif-webinar-course-and-2026-11-19",
-      "title": "Saif Webinar: Course and scope",
-      "organizer": "Technology Association of Oregon (TAO)",
-      "co_hosts": [],
-      "start": "2026-11-19T10:00:00-08:00",
-      "end": null,
-      "format": "virtual",
-      "venue": null,
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.techoregon.org/event/saif-webinar-course-and-scope",
-      "source_url": "https://www.techoregon.org/events",
-      "summary": "Saif Webinar: Course and scope",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
-    },
-    {
-      "id": "onami-onami-innovation-exchange-inte-2026-11-19",
-      "title": "ONAMI Innovation Exchange Interview with Dr. Patricia Buehler, Founder of Osheru ",
-      "organizer": "ONAMI",
-      "co_hosts": [],
-      "start": "2026-11-19T15:00:00-08:00",
-      "end": null,
-      "format": "in_person",
-      "venue": "meet.google.com/mju-zrab-mfe",
-      "city": null,
-      "region": "Statewide/Virtual",
-      "categories": [
-        "startup"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://onami.us/events",
-      "source_url": "https://onami.us/events",
-      "summary": "meet.google.com/mju-zrab-mfe\nJoin us for a live interview with one of our ONAMI Portfolio Companies: OSheru, maker of Ziplyft.\nLearn about building a medical device business and investor readiness for raising funds. \n \nMore about Dr. Patricia Buehler\nhttps://www.linkedin.com/in/pattybuehler/",
-      "status": "confirmed",
-      "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
-    },
-    {
-      "id": "oregon-life-sciences-oregon-bio-women-meetup-2026-11-19",
-      "title": "Oregon Bio Women Meetup",
-      "organizer": "Oregon Life Sciences (OLS)",
-      "co_hosts": [],
-      "start": "2026-11-19T16:00:00-08:00",
-      "end": "2026-11-19T17:00:00-08:00",
-      "format": "in_person",
-      "venue": "Corvallis",
-      "city": "Corvallis",
-      "region": "Willamette Valley",
-      "categories": [
-        "life_science",
-        "networking",
-        "underrepresented_founders"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.oregonlifesciences.org/events/obw-corvallis2026",
-      "source_url": "https://oregonlifesciences.org/events",
-      "summary": "Oregon Bio Women Meetup | Corvallis",
-      "status": "confirmed",
-      "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
-    },
-    {
-      "id": "rain-florence-coffee-old-town-2026-11-19",
-      "title": "Florence: Coffee and Connection",
-      "organizer": "RAIN",
-      "co_hosts": [],
-      "start": "2026-11-19T16:30:00-08:00",
-      "end": "2026-11-19T18:00:00-08:00",
-      "format": "in_person",
-      "venue": "Old Town Coffee",
-      "city": "Florence",
-      "region": "Coast",
-      "categories": [
-        "startup",
-        "networking"
-      ],
-      "cost": "free",
-      "registration_url": "https://raincatalysts.org/event/florence-coffee-and-connection-old-town-coffee/",
-      "source_url": "https://raincatalysts.org/events/?ical=1",
-      "summary": "Co-working and networking session for entrepreneurs to work on business projects, get accountability, and collaborate in a supportive community setting.",
-      "status": "confirmed",
-      "first_seen": "2026-11-17",
-      "last_verified": "2026-11-17"
-    },
-    {
-      "id": "ols-bio-in-the-valley-2026-11-19",
-      "title": "Bio in the Valley",
-      "organizer": "Oregon Life Sciences",
-      "co_hosts": [],
-      "start": "2026-11-19T17:00:00-08:00",
-      "end": "2026-11-19T20:00:00-08:00",
-      "format": "in_person",
-      "venue": "Horizon Room, Memorial Union",
-      "city": "Corvallis",
-      "region": "Willamette Valley",
-      "categories": [
-        "life_science",
-        "networking"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.oregonlifesciences.org/events/bitv2026/register",
-      "source_url": "https://oregonlifesciences.org/events",
-      "summary": "Life sciences networking event bringing together biotech and bioscience professionals in the Willamette Valley.",
-      "status": "confirmed",
-      "first_seen": "2026-11-17",
-      "last_verified": "2026-11-17"
-    },
-    {
-      "id": "tie-pitch-polish-competition-2026-11-20",
-      "title": "TiE Pitch Polish Pitch Competition",
-      "organizer": "TiE Oregon",
-      "co_hosts": [
-        "OSU Advantage Accelerator",
-        "RAIN"
-      ],
-      "start": "2026-11-20T10:00:00-08:00",
-      "end": "2026-11-20T12:00:00-08:00",
-      "format": "in_person",
-      "venue": "Austin Hall",
-      "city": "Corvallis",
-      "region": "Willamette Valley",
-      "categories": [
-        "startup",
-        "investor",
-        "training"
-      ],
-      "cost": "free",
-      "registration_url": "https://raincatalysts.org/event/tie-pitch-polish-pitch-competition/",
-      "source_url": "https://raincatalysts.org/events/?ical=1",
-      "summary": "Live pitch competition concluding a four-day intensive bootcamp where startups present to TiE Oregon Angels and local executives, competing for investment and in-kind services.",
-      "status": "confirmed",
-      "first_seen": "2026-11-17",
-      "last_verified": "2026-11-17"
-    },
-    {
       "id": "technology-associati-virtual-reality-in-healthcare-2026-11-23",
       "title": "Virtual Reality in Healthcare",
       "organizer": "Technology Association of Oregon (TAO)",
       "co_hosts": [],
-      "start": "2026-11-23T19:00:00-07:00",
-      "end": null,
+      "start": "2026-11-23T11:00:00-08:00",
+      "end": "2026-11-23T12:00:00-08:00",
       "format": "virtual",
       "venue": "Virtual",
       "city": null,
@@ -183,14 +20,14 @@
       "summary": "The presentation will address a question that has become central to Dr. Ferrer Costa’s work:\nwhat does it take to move immersive technologies beyond successful clinical pilots and integrate them into routine healthcare practice?\nSince 2015, Dr. Ferrer Costa’s research has focused on primary care and expanding the application of Virtual Reality in healthcare professional education and mental health. His current projects include developing educational programs that utilize VR for clinical skills training, chronic pain management, and mental health therapies, aimed at enhancing healthcare delivery and training, reducing practitioner burnout, and improving patient\noutcomes across multiple domains.",
       "status": "confirmed",
       "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "oregon-entrepreneurs-innovation-hub-virtual-office-2026-11-24",
       "title": "NW Innovation Hub Virtual Office Hours November: Tillamook County",
       "organizer": "Oregon Entrepreneurs Network (OEN)",
       "co_hosts": [],
-      "start": "2026-11-24T00:00:00-07:00",
+      "start": "2026-11-24T00:00:00-08:00",
       "end": null,
       "format": "in_person",
       "venue": null,
@@ -205,14 +42,14 @@
       "summary": "NW Innovation Hub Virtual Office Hours November: Tillamook County",
       "status": "confirmed",
       "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "oregon-entrepreneurs-innovation-hub-virtual-office-2026-11-25",
       "title": "NW Innovation Hub Virtual Office Hours November: Clatsop County",
       "organizer": "Oregon Entrepreneurs Network (OEN)",
       "co_hosts": [],
-      "start": "2026-11-25T00:00:00-07:00",
+      "start": "2026-11-25T00:00:00-08:00",
       "end": null,
       "format": "in_person",
       "venue": null,
@@ -227,7 +64,7 @@
       "summary": "NW Innovation Hub Virtual Office Hours November: Clatsop County",
       "status": "confirmed",
       "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "oen-startup-business-essentials-2026-12-01",
@@ -475,14 +312,14 @@
       "title": "ONAMI Innovation Exchange",
       "organizer": "ONAMI",
       "co_hosts": [],
-      "start": "2026-12-10T00:00:00-07:00",
+      "start": "2026-12-09T16:00:00-08:00",
       "end": null,
       "format": "virtual",
       "venue": "Virtual",
       "city": null,
       "region": "Statewide/Virtual",
       "categories": [
-        "other"
+        "startup"
       ],
       "cost": "unknown",
       "registration_url": "",
@@ -490,7 +327,7 @@
       "summary": "We're very pleased to announce our next ONAMI Innovation Exchange is scheduled for December 9, 2026 at 4pm with Skip Rung, founder and Chief Startup Officer of ONAMI. What does it take to turn a big idea into a thriving Oregon startup? Register here: https://lnkd.in/gSH3SQwg Please join us!",
       "status": "confirmed",
       "first_seen": "2026-11-21",
-      "last_verified": "2026-11-21"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "oen-pitch-please-2026-12-15",
@@ -566,7 +403,7 @@
       "title": "2027 JPM Reception - Oregon Life Sciences",
       "organizer": "Oregon Life Sciences (OLS)",
       "co_hosts": [],
-      "start": "2027-01-11T00:00:00-07:00",
+      "start": "2027-01-10T16:00:00-08:00",
       "end": null,
       "format": "in_person",
       "venue": "San Francisco",
@@ -581,7 +418,7 @@
       "summary": "Hosted by Oregon Life Sciences and AZBio, Biocom California, BioNJ, Bio Utah, Colorado Bioscience Association, Georgia Life Sciences, Life Sciences Pennsylvania, MichBio, NCLifeSci, New York Bio, Ohio Life Sciences, Oregon Bio, Virginia Bio, and more, the State Bio Friends Reception kicks off the largest annual gathering of Healthcare Innovators and Healthcare Investors in the world.",
       "status": "confirmed",
       "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "ohsu-oregon-drug-discovery-symposiu-2027-04-07",
@@ -632,7 +469,7 @@
       "title": "2027 Oregon Innovation Showcase",
       "organizer": "Innovate Collaborate Oregon",
       "co_hosts": [],
-      "start": "2027-05-10T08:00:00-08:00",
+      "start": "2027-05-10T08:00:00-07:00",
       "end": null,
       "format": "in_person",
       "venue": "Hilton Portland Downtown, Portland, OR",
@@ -649,14 +486,14 @@
       "summary": "2027 Oregon Innovation Showcase takes place from May 10, 2027 to May 11, 2027 at Hilton Portland Downtown, Portland, OR. Organized by Social Enterprises, Inc..",
       "status": "confirmed",
       "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
+      "last_verified": "2026-11-20"
     },
     {
       "id": "innovate-collaborate-2027-oregon-innovation-showcas-2027-05-11",
       "title": "2027 Oregon Innovation Showcase",
       "organizer": "Innovate Collaborate Oregon",
       "co_hosts": [],
-      "start": "2027-05-11T08:00:00-08:00",
+      "start": "2027-05-11T08:00:00-07:00",
       "end": null,
       "format": "in_person",
       "venue": "Hilton Portland Downtown, Portland, OR",
@@ -673,7 +510,7 @@
       "summary": "2027 Oregon Innovation Showcase takes place from May 10, 2027 to May 11, 2027 at Hilton Portland Downtown, Portland, OR. Organized by Social Enterprises, Inc..",
       "status": "confirmed",
       "first_seen": "2026-11-19",
-      "last_verified": "2026-11-19"
+      "last_verified": "2026-11-20"
     }
   ]
 }

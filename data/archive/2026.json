@@ -1,0 +1,167 @@
+{
+  "events": [
+    {
+      "id": "oregon-life-sciences-financial-skills-for-non-2026-11-19",
+      "title": "Financial Skills for Non-Finance People",
+      "organizer": "Oregon Life Sciences (OLS)",
+      "co_hosts": [],
+      "start": "2026-11-19T00:00:00-08:00",
+      "end": null,
+      "format": "in_person",
+      "venue": null,
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.oregonlifesciences.org/events/financial-skills-for-non-finance-people-2026",
+      "source_url": "https://oregonlifesciences.org/events",
+      "summary": "Financial Skills for Non-Finance People",
+      "status": "confirmed",
+      "first_seen": "2026-11-18",
+      "last_verified": "2026-11-20"
+    },
+    {
+      "id": "technology-associati-saif-webinar-course-and-2026-11-19",
+      "title": "Saif Webinar: Course and scope",
+      "organizer": "Technology Association of Oregon (TAO)",
+      "co_hosts": [],
+      "start": "2026-11-19T10:00:00-08:00",
+      "end": null,
+      "format": "virtual",
+      "venue": null,
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.techoregon.org/event/saif-webinar-course-and-scope",
+      "source_url": "https://www.techoregon.org/events",
+      "summary": "Saif Webinar: Course and scope",
+      "status": "confirmed",
+      "first_seen": "2026-11-18",
+      "last_verified": "2026-11-18"
+    },
+    {
+      "id": "onami-onami-innovation-exchange-inte-2026-11-19",
+      "title": "ONAMI Innovation Exchange Interview with Dr. Patricia Buehler, Founder of Osheru ",
+      "organizer": "ONAMI",
+      "co_hosts": [],
+      "start": "2026-11-19T15:00:00-08:00",
+      "end": null,
+      "format": "in_person",
+      "venue": "meet.google.com/mju-zrab-mfe",
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://onami.us/events",
+      "source_url": "https://onami.us/events",
+      "summary": "meet.google.com/mju-zrab-mfe\nJoin us for a live interview with one of our ONAMI Portfolio Companies: OSheru, maker of Ziplyft.\nLearn about building a medical device business and investor readiness for raising funds. \n \nMore about Dr. Patricia Buehler\nhttps://www.linkedin.com/in/pattybuehler/",
+      "status": "confirmed",
+      "first_seen": "2026-11-19",
+      "last_verified": "2026-11-19"
+    },
+    {
+      "id": "oregon-life-sciences-oregon-bio-women-meetup-2026-11-19",
+      "title": "Oregon Bio Women Meetup",
+      "organizer": "Oregon Life Sciences (OLS)",
+      "co_hosts": [],
+      "start": "2026-11-19T16:00:00-08:00",
+      "end": "2026-11-19T17:00:00-08:00",
+      "format": "in_person",
+      "venue": "Corvallis",
+      "city": "Corvallis",
+      "region": "Willamette Valley",
+      "categories": [
+        "life_science",
+        "networking",
+        "underrepresented_founders"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.oregonlifesciences.org/events/obw-corvallis2026",
+      "source_url": "https://oregonlifesciences.org/events",
+      "summary": "Oregon Bio Women Meetup | Corvallis",
+      "status": "confirmed",
+      "first_seen": "2026-11-18",
+      "last_verified": "2026-11-18"
+    },
+    {
+      "id": "rain-florence-coffee-old-town-2026-11-19",
+      "title": "Florence: Coffee and Connection",
+      "organizer": "RAIN",
+      "co_hosts": [],
+      "start": "2026-11-19T16:30:00-08:00",
+      "end": "2026-11-19T18:00:00-08:00",
+      "format": "in_person",
+      "venue": "Old Town Coffee",
+      "city": "Florence",
+      "region": "Coast",
+      "categories": [
+        "startup",
+        "networking"
+      ],
+      "cost": "free",
+      "registration_url": "https://raincatalysts.org/event/florence-coffee-and-connection-old-town-coffee/",
+      "source_url": "https://raincatalysts.org/events/?ical=1",
+      "summary": "Co-working and networking session for entrepreneurs to work on business projects, get accountability, and collaborate in a supportive community setting.",
+      "status": "confirmed",
+      "first_seen": "2026-11-17",
+      "last_verified": "2026-11-17"
+    },
+    {
+      "id": "ols-bio-in-the-valley-2026-11-19",
+      "title": "Bio in the Valley",
+      "organizer": "Oregon Life Sciences",
+      "co_hosts": [],
+      "start": "2026-11-19T17:00:00-08:00",
+      "end": "2026-11-19T20:00:00-08:00",
+      "format": "in_person",
+      "venue": "Horizon Room, Memorial Union",
+      "city": "Corvallis",
+      "region": "Willamette Valley",
+      "categories": [
+        "life_science",
+        "networking"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.oregonlifesciences.org/events/bitv2026/register",
+      "source_url": "https://oregonlifesciences.org/events",
+      "summary": "Life sciences networking event bringing together biotech and bioscience professionals in the Willamette Valley.",
+      "status": "confirmed",
+      "first_seen": "2026-11-17",
+      "last_verified": "2026-11-17"
+    },
+    {
+      "id": "tie-pitch-polish-competition-2026-11-20",
+      "title": "TiE Pitch Polish Pitch Competition",
+      "organizer": "TiE Oregon",
+      "co_hosts": [
+        "OSU Advantage Accelerator",
+        "RAIN"
+      ],
+      "start": "2026-11-20T10:00:00-08:00",
+      "end": "2026-11-20T12:00:00-08:00",
+      "format": "in_person",
+      "venue": "Austin Hall",
+      "city": "Corvallis",
+      "region": "Willamette Valley",
+      "categories": [
+        "startup",
+        "investor",
+        "training"
+      ],
+      "cost": "free",
+      "registration_url": "https://raincatalysts.org/event/tie-pitch-polish-pitch-competition/",
+      "source_url": "https://raincatalysts.org/events/?ical=1",
+      "summary": "Live pitch competition concluding a four-day intensive bootcamp where startups present to TiE Oregon Angels and local executives, competing for investment and in-kind services.",
+      "status": "confirmed",
+      "first_seen": "2026-11-17",
+      "last_verified": "2026-11-17"
+    }
+  ]
+}
