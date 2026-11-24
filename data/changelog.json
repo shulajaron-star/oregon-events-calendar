@@ -1,6 +1,18 @@
 {
   "changes": [
     {
+      "action": "added",
+      "eventId": "technology-associati-data-uncorked-portland-2026-12-08",
+      "eventTitle": "Data Uncorked Portland",
+      "timestamp": "2026-11-24T19:56:58.942Z",
+      "details": {
+        "organizer": "Technology Association of Oregon (TAO)",
+        "date": "2026-12-08",
+        "category": "startup"
+      },
+      "note": "Approved via admin interface"
+    },
+    {
       "action": "edited",
       "eventId": "oen-aobio-investment-announcement-mixer-2026-12-07",
       "eventTitle": "Angel Oregon Life & Bioscience: Investment Announcement Mixer",
