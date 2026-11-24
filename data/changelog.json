@@ -2,6 +2,18 @@
   "changes": [
     {
       "action": "added",
+      "eventId": "oregon-startup-cente-westside-founder-coffee-march-2027-03-02",
+      "eventTitle": "Westside Founder Coffee - March 2027",
+      "timestamp": "2026-11-24T20:15:53.717Z",
+      "details": {
+        "organizer": "Oregon Startup Center",
+        "date": "2027-03-02",
+        "category": "startup"
+      },
+      "note": "Approved via admin interface"
+    },
+    {
+      "action": "added",
       "eventId": "oregon-startup-cente-westside-founder-coffee-february-2027-02-03",
       "eventTitle": "Westside Founder Coffee - February 2027",
       "timestamp": "2026-11-24T20:15:47.519Z",
