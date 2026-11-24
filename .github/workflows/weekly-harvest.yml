@@ -8,6 +8,12 @@ on:
   # Allow manual triggering
   workflow_dispatch:
 
+# The built-in GITHUB_TOKEN is read-only by default. The harvest needs to
+# push a branch and open a pull request with the results.
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   harvest:
     runs-on: ubuntu-latest
@@ -53,7 +59,7 @@ jobs:
 
       - name: Create Pull Request with pending events
         if: steps.check_pending.outputs.has_pending == 'true'
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
