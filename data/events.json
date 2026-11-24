@@ -231,7 +231,7 @@
       "summary": "Join Us for OBI’s December Accelerate Biotech Happy Hour!  Let’s close out the year together!  Join us for our final Accelerate Biotech Happy Hour of 2026! Whether you’re a founder, researcher, studen...",
       "status": "confirmed",
       "first_seen": "2026-11-17",
-      "last_verified": "2026-11-18"
+      "last_verified": "2026-11-24"
     },
     {
       "id": "oen-aobio-investment-announcement-mixer-2026-12-07",
@@ -306,7 +306,7 @@
       "summary": "Join OEN and White Summers on Wednesday, December 9th for a candid end-of-year conversation featuring three founders from Oregon and Southwest Washington who will share what 2026 looked like from thei...",
       "status": "confirmed",
       "first_seen": "2026-11-17",
-      "last_verified": "2026-11-18"
+      "last_verified": "2026-11-24"
     },
     {
       "id": "onami-onami-innovation-exchange-2026-12-09",
@@ -514,6 +514,76 @@
       "status": "confirmed",
       "first_seen": "2026-11-19",
       "last_verified": "2026-11-20"
+    },
+    {
+      "id": "rain-regional-accele-from-idea-product-three-2026-12-02",
+      "title": "From Idea to Product: Three Critical Decisions in Prototyping & Manufacturing",
+      "organizer": "RAIN (Regional Accelerator & Innovation Network)",
+      "co_hosts": [],
+      "start": "2026-12-02T01:30:00+00:00",
+      "end": "2026-12-02T02:30:00+00:00",
+      "format": "in_person",
+      "venue": null,
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup",
+        "training",
+        "networking"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://raincatalysts.org/event/from-idea-to-product-three-critical-decisions-in-prototyping-manufacturing/",
+      "source_url": "https://raincatalysts.org/events/?ical=1",
+      "summary": "Have a product idea you’re ready to bring to life? Or are you wondering what it takes to move from an early concept to a product you can make and sell?  Join the Cascades West Innovation Hub, Regional...",
+      "status": "confirmed",
+      "first_seen": "2026-11-24",
+      "last_verified": "2026-11-24"
+    },
+    {
+      "id": "rain-regional-accele-florence-coffee-and-connection-2026-12-02",
+      "title": "Florence: Coffee and Connection | River Roasters",
+      "organizer": "RAIN (Regional Accelerator & Innovation Network)",
+      "co_hosts": [],
+      "start": "2026-12-02T21:00:00+00:00",
+      "end": "2026-12-02T22:30:00+00:00",
+      "format": "in_person",
+      "venue": "River Roasters",
+      "city": "Florence",
+      "region": "Coast",
+      "categories": [
+        "startup",
+        "networking"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://raincatalysts.org/event/florence-coffee-and-connection-river-roasters-2/",
+      "source_url": "https://raincatalysts.org/events/?ical=1",
+      "summary": "Need some time to devote to getting a project done for your business? Want others to be present to help hold you accountable? This is the time for that! Whether you’re just starting out or looking to...",
+      "status": "confirmed",
+      "first_seen": "2026-11-24",
+      "last_verified": "2026-11-24"
+    },
+    {
+      "id": "rain-regional-accele-florence-coffee-and-connection-2026-12-19",
+      "title": "Florence: Coffee and Connection | Old Town Coffee",
+      "organizer": "RAIN (Regional Accelerator & Innovation Network)",
+      "co_hosts": [],
+      "start": "2026-12-19T00:30:00+00:00",
+      "end": "2026-12-19T02:00:00+00:00",
+      "format": "in_person",
+      "venue": "Old Town Coffee",
+      "city": "125",
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup",
+        "networking"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://raincatalysts.org/event/florence-coffee-and-connection-old-town-coffee-2/",
+      "source_url": "https://raincatalysts.org/events/?ical=1",
+      "summary": "Need some time to devote to getting a project done for your business? Want others to be present to help hold you accountable? This is the time for that! Whether you’re just starting out or looking to...",
+      "status": "confirmed",
+      "first_seen": "2026-11-24",
+      "last_verified": "2026-11-24"
     }
   ]
 }
