@@ -21,6 +21,15 @@ const __dirname = path.dirname(__filename);
 // File paths
 const SOURCES_FILE = path.join(__dirname, '../data/sources.json');
 const EVENTS_FILE = path.join(__dirname, '../data/events.json');
+const PENDING_FILE = path.join(__dirname, '../data/events-pending.json');
+
+// Helper: key for spotting the same event under a slightly different title or id.
+// "Florence: Coffee and Connection | River Roasters" on 2026-12-02 matches
+// "Florence: Coffee and Connection" on the same local date.
+function matchKey(title, start) {
+  const base = (title || '').split('|')[0].toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return `${base}@${(start || '').slice(0, 10)}`;
+}
 
 // Region mapping based on city/location
 const REGION_MAP = {
@@ -198,6 +207,12 @@ async function harvestICSFeeds() {
   const sources = JSON.parse(fs.readFileSync(SOURCES_FILE, 'utf-8'));
   const eventsData = JSON.parse(fs.readFileSync(EVENTS_FILE, 'utf-8'));
   const existingEvents = eventsData.events;
+  // New events go to the pending file for review in the admin page, never
+  // straight onto the public calendar.
+  const pendingData = fs.existsSync(PENDING_FILE)
+    ? JSON.parse(fs.readFileSync(PENDING_FILE, 'utf-8'))
+    : { events: [] };
+  const pendingEvents = pendingData.events || [];
 
   // Find sources with ICS feeds
   const icsSources = sources.sources.filter(s => s.active && s.ics_feed);
@@ -267,11 +282,18 @@ async function harvestICSFeeds() {
         };
 
         // Check if event already exists
-        const existingIndex = existingEvents.findIndex(e => e.id === eventId);
+        const key = matchKey(eventObj.title, eventObj.start);
+        const existingIndex = existingEvents.findIndex(
+          e => e.id === eventId || matchKey(e.title, e.start) === key
+        );
+        const alreadyPending = pendingEvents.some(
+          e => e.id === eventId || matchKey(e.title, e.start) === key
+        );
 
         if (existingIndex === -1) {
+          if (alreadyPending) continue;
           newEvents.push(eventObj);
-          existingEvents.push(eventObj);
+          pendingEvents.push(eventObj);
           console.log(`  ✓ New: ${event.summary} (${startDate.toDateString()})`);
         } else {
           // Update last_verified date
@@ -289,13 +311,14 @@ async function harvestICSFeeds() {
     }
   }
 
-  // Save updated events
+  // Save last_verified updates to the calendar and new events to pending
   fs.writeFileSync(EVENTS_FILE, JSON.stringify({ events: existingEvents }, null, 2));
+  fs.writeFileSync(PENDING_FILE, JSON.stringify({ events: pendingEvents }, null, 2));
 
   // Print summary
   console.log('\n' + '='.repeat(80));
   console.log('\n📊 Harvest Summary:');
-  console.log(`   New events added: ${newEvents.length}`);
+  console.log(`   New events sent to pending review: ${newEvents.length}`);
   console.log(`   Events updated: ${updatedEvents.length}`);
   console.log(`   Total events in calendar: ${existingEvents.length}`);
 
