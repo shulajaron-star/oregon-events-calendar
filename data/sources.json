@@ -198,13 +198,13 @@
       "name": "Economic Development for Central Oregon (EDCO)",
       "type": "organization",
       "url": "https://www.edcoinfo.com",
-      "events_url": "https://www.bendvc.com",
+      "events_url": "https://www.edcoinfo.com/events",
       "region": "Central Oregon",
-      "how_to_read": "html page",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
       "active": true,
       "added_on": "2026-11-17",
-      "last_checked": "2026-11-17",
-      "notes": "Hosts Bend Venture Conference. Harvested 2026-11-17."
+      "last_checked": "2026-11-24",
+      "notes": "Hosts Bend Venture Conference (https://www.bendvc.com). Events page is Webflow cards with dates only, no times or links. Also runs general business luncheons, so events with no startup angle come in as needs_review. Added to the weekly harvest 2026-11-24 at Shula's request."
     },
     {
       "name": "Columbia River Economic Development Council (CREDC)",
@@ -253,6 +253,105 @@
       "added_on": "2026-11-17",
       "last_checked": "2026-11-17",
       "notes": "Biotech startup expos and networking events. Harvested 2026-11-17."
+    },
+    {
+      "name": "Metro Region Innovation Hub",
+      "type": "organization",
+      "url": "https://www.portlandmetrohub.org",
+      "events_url": "https://www.portlandmetrohub.org/events",
+      "region": "Portland Metro",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Business Oregon innovation hub at PSU. Wix Events: the harvest collects /event-details/ links and reads the schema.org Event data on each page, which gives exact start and end times. Runs Startup Cafe."
+    },
+    {
+      "name": "Cascades West Innovation Hub",
+      "type": "organization",
+      "url": "https://innovatecascadeswest.org",
+      "events_url": "https://innovatecascadeswest.org/#event-calendar",
+      "ics_url": "https://calendar.google.com/calendar/ical/innovation%40raincatalysts.org/public/basic.ics",
+      "region": "Willamette Valley",
+      "how_to_read": "ics feed (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Run by RAIN. The page embeds a public Google Calendar; the harvest reads its ICS feed and expands repeating events. Daily \"1:1 Entrepreneur and Innovator Advising\" placeholders are skipped. Some events may also appear in the main RAIN feed. Uses ics_url, not ics_feed, so the generic ICS harvester does not read it twice."
+    },
+    {
+      "name": "South Coast Development Council (SCDC)",
+      "type": "organization",
+      "url": "https://scdcinc.org",
+      "events_url": "https://scdcinc.org/about-scdc/events/",
+      "region": "Coast",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Coos Bay. Runs the South Coast Accelerator and Southwest Oregon Innovation Hub. No calendar plugin or feed; the harvest reads the event list on the page. Also runs general business events, so events with no startup angle come in as needs_review."
+    },
+    {
+      "name": "Northwest Innovation Hub",
+      "type": "organization",
+      "url": "https://nwinnovationhub.com",
+      "events_url": "https://nwinnovationhub.com/?page_id=30",
+      "region": "Coast",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "On 2026-11-24 the events page listed no events (\"check back regularly\", points to socials). The harvest checks it for structured event data and logs any event links it finds; a site-specific reader may be needed once events appear."
+    },
+    {
+      "name": "Mid-Columbia Innovation Hub",
+      "type": "organization",
+      "url": "https://midcolumbiainnovationhub.org",
+      "events_url": "https://midcolumbiainnovationhub.org/events/",
+      "api_url": "https://midcolumbiainnovationhub.org/wp-json/tribe/events/v1/events",
+      "region": "Eastern Oregon",
+      "how_to_read": "api (The Events Calendar REST, scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Hood River and The Dalles. Monthly HubTalks and Gorge Pitch Fest. No upcoming events were listed on 2026-11-24; last event was in September 2026."
+    },
+    {
+      "name": "Oregon Frontier Innovation Hub",
+      "type": "organization",
+      "url": "https://www.oregonfrontier.org",
+      "events_url": "https://www.oregonfrontier.org/news-events",
+      "region": "Eastern Oregon",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Squarespace page with a hand-edited list (Date:, Time:, Location:, Cost: lines) and Eventbrite links. Fragile if they change the wording. On 2026-11-24 the \"upcoming\" list only had October 2026 events."
+    },
+    {
+      "name": "Southern Oregon Innovation Hub",
+      "type": "organization",
+      "url": "https://southernoregoninnovationhub.org",
+      "events_url": "https://southernoregoninnovationhub.org/events/",
+      "api_url": "https://southernoregoninnovationhub.org/wp-json/tribe/events/v1/events",
+      "region": "Southern Oregon",
+      "how_to_read": "api (The Events Calendar REST, scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Grants Pass. Very busy calendar with weekly open labs, ideation sessions and 1 Million Cups, so it produces many recurring entries."
+    },
+    {
+      "name": "Klamath & Lake Counties Innovation Hub",
+      "type": "organization",
+      "url": "https://www.innovationhub.solutions",
+      "events_url": "https://www.innovationhub.solutions/resources/events",
+      "region": "Southern Oregon",
+      "how_to_read": "html page (scripts/hub-scrapers.js)",
+      "active": true,
+      "added_on": "2026-11-24",
+      "last_checked": "2026-11-24",
+      "notes": "Static event cards with date, time and place. Lists many partner events (OEN, SBDC, Klamath IDEA), so expect overlap with other sources."
     }
   ]
 }
