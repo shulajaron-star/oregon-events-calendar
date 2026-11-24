@@ -1153,7 +1153,7 @@
       }
     }
 
-    function renderPendingEvent(event) {
+    function renderPendingEvent(event, idx) {
       const eventDate = new Date(event.start);
       const formattedDate = eventDate.toLocaleDateString('en-US', {
         weekday: 'short',
@@ -1218,12 +1218,154 @@
             <button class="btn btn-sm btn-success" onclick="approvePendingEvent('${escapeHtml(event.id)}')">
               ✓ Approve & Add to Calendar
             </button>
+            <button class="btn btn-sm btn-secondary" onclick="showPendingEdit(${idx})">
+              ✏️ Edit
+            </button>
             <button class="btn btn-sm btn-danger" onclick="rejectPendingEvent('${escapeHtml(event.id)}')">
               ✕ Reject
             </button>
           </div>
+
+          <div id="pending-edit-${idx}" class="edit-form" style="display: none;">
+            <h4>Edit before approving</h4>
+            <form onsubmit="savePendingEdit(event, ${idx})">
+              <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" id="pending-title-${idx}" class="form-control" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="pending-date-${idx}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Start Time</label>
+                  <input type="time" id="pending-time-${idx}" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>End Time</label>
+                  <input type="time" id="pending-end-time-${idx}" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Venue/Location</label>
+                  <input type="text" id="pending-venue-${idx}" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>City</label>
+                  <input type="text" id="pending-city-${idx}" class="form-control">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Region</label>
+                  <select id="pending-region-${idx}" class="form-control">
+                    ${['Portland Metro', 'Southwest Washington', 'Willamette Valley', 'Eugene/Lane', 'Central Oregon', 'Southern Oregon', 'Coast', 'Eastern Oregon', 'Statewide/Virtual']
+                      .map(r => `<option value="${r}">${r}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Format</label>
+                  <select id="pending-format-${idx}" class="form-control">
+                    <option value="in_person">In Person</option>
+                    <option value="virtual">Virtual</option>
+                    <option value="hybrid">Hybrid</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Cost</label>
+                  <select id="pending-cost-${idx}" class="form-control">
+                    <option value="unknown">Unknown</option>
+                    <option value="free">Free</option>
+                    <option value="paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Registration URL</label>
+                <input type="url" id="pending-url-${idx}" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Categories (comma-separated)</label>
+                <input type="text" id="pending-categories-${idx}" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Summary</label>
+                <textarea id="pending-summary-${idx}" class="form-control" rows="3"></textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-success">💾 Save Edits</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('pending-edit-${idx}').style.display = 'none'">Cancel</button>
+              </div>
+              <small style="color: var(--text-light);">Edits are kept on this page until you click Approve, which adds the edited event to the calendar.</small>
+            </form>
+          </div>
         </div>
       `;
+    }
+
+    function renderPendingList() {
+      document.getElementById('pending-count').textContent = pendingItems.events.length;
+      document.getElementById('pending-list').innerHTML = pendingItems.events.map(renderPendingEvent).join('');
+    }
+
+    function showPendingEdit(idx) {
+      const ev = pendingItems.events[idx];
+      if (!ev) return;
+      const start = splitPacific(ev.start);
+      const end = splitPacific(ev.end);
+      const set = (field, value) => { document.getElementById(`pending-${field}-${idx}`).value = value || ''; };
+      set('title', ev.title);
+      set('date', start.date);
+      set('time', start.time);
+      set('end-time', end.time);
+      set('venue', ev.venue);
+      set('city', ev.city);
+      set('region', ev.region || 'Statewide/Virtual');
+      set('format', ev.format || 'in_person');
+      set('cost', ['free', 'paid'].includes(ev.cost) ? ev.cost : 'unknown');
+      set('url', ev.registration_url);
+      set('categories', (ev.categories || []).join(', '));
+      set('summary', ev.summary);
+      document.getElementById(`pending-edit-${idx}`).style.display = 'block';
+    }
+
+    function savePendingEdit(e, idx) {
+      e.preventDefault();
+      const ev = pendingItems.events[idx];
+      if (!ev) return;
+      const get = field => document.getElementById(`pending-${field}-${idx}`).value.trim();
+      const date = get('date');
+      const time = get('time');
+      const endTime = get('end-time');
+      const categories = get('categories').split(',').map(c => c.trim()).filter(Boolean);
+      if (categories.length === 0) {
+        alert('Please provide at least one category');
+        return;
+      }
+      if (endTime && !time) {
+        alert('Please add a Start Time, or clear the End Time.');
+        return;
+      }
+
+      Object.assign(ev, {
+        title: get('title'),
+        start: pacificISO(date, time),
+        end: endTime ? pacificISO(date, endTime) : null,
+        venue: get('venue') || null,
+        city: get('city') || null,
+        region: get('region'),
+        format: get('format'),
+        cost: get('cost'),
+        registration_url: get('url') || ev.registration_url,
+        categories,
+        summary: get('summary')
+      });
+      // The id includes the date, so rebuild it in case the date or title changed
+      ev.id = generateEventId(ev.organizer, ev.title, date);
+
+      renderPendingList();
     }
 
     // loadEvents function - uses allEvents declared above
@@ -2758,15 +2900,9 @@
           throw new Error(result.message || 'Failed to approve event');
         }
 
-        // Remove card from view
-        card.remove();
-
-        // Update count
-        const count = document.getElementById('pending-count');
-        count.textContent = parseInt(count.textContent) - 1;
-
-        // Update pendingItems array
+        // Remove from the list and redraw (keeps each Edit button on the right event)
         pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+        renderPendingList();
 
         // Refresh the Manage Events tab to show the new event
         loadEvents();
@@ -2785,15 +2921,8 @@
 
       // Note: This just removes from view. The actual removal from events-pending.json
       // should be handled by the harvest workflow or manually
-      const card = window.event.target.closest('.submission-card');
-      card.remove();
-
-      // Update count
-      const count = document.getElementById('pending-count');
-      count.textContent = parseInt(count.textContent) - 1;
-
-      // Update pendingItems array
       pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+      renderPendingList();
 
       alert('Event rejected and removed from view.\n\nNote: To permanently remove, delete from data/events-pending.json in GitHub.');
     }
