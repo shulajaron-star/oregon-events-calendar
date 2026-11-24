@@ -264,6 +264,28 @@
       "virtual_meeting_url": null
     },
     {
+      "id": "technology-associati-data-uncorked-portland-2026-12-08",
+      "title": "Data Uncorked Portland",
+      "organizer": "Technology Association of Oregon (TAO)",
+      "co_hosts": [],
+      "start": "2026-12-08T00:00:00-08:00",
+      "end": null,
+      "format": "in_person",
+      "venue": null,
+      "city": null,
+      "region": "Statewide/Virtual",
+      "categories": [
+        "startup"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.techoregon.org/event/data-uncorked-portland",
+      "source_url": "https://www.techoregon.org/events",
+      "summary": "Data Uncorked Portland",
+      "status": "confirmed",
+      "first_seen": "2026-11-24",
+      "last_verified": "2026-11-24"
+    },
+    {
       "id": "technology-associati-innovation-summit-2026-the-2026-12-09",
       "title": "AI Innovation Summit 2026: The Agentic Era",
       "organizer": "Technology Association of Oregon (TAO)",
@@ -283,29 +305,6 @@
       "summary": "AI Innovation Summit 2026: The Agentic Era",
       "status": "confirmed",
       "first_seen": "2026-11-18",
-      "last_verified": "2026-11-18"
-    },
-    {
-      "id": "otradi-oregon-transl-oen-pubtalk-2026-12-10",
-      "title": "OEN PubTalk",
-      "organizer": "OTRADI (Oregon Translational Research and Development Institute)",
-      "co_hosts": [],
-      "start": "2026-12-09T17:00:00-08:00",
-      "end": "2026-12-09T19:30:00-08:00",
-      "format": "in_person",
-      "venue": "Miller Nash",
-      "city": "Portland",
-      "region": "Portland Metro",
-      "categories": [
-        "startup",
-        "training"
-      ],
-      "cost": "unknown",
-      "registration_url": "https://www.otradi.org/event/oen-pubtalk-11/",
-      "source_url": "https://www.otradi.org/?post_type=tribe_events&ical=1&eventDisplay=list",
-      "summary": "Join OEN and White Summers on Wednesday, December 9th for a candid end-of-year conversation featuring three founders from Oregon and Southwest Washington who will share what 2026 looked like from thei...",
-      "status": "confirmed",
-      "first_seen": "2026-11-17",
       "last_verified": "2026-11-18"
     },
     {
@@ -330,6 +329,29 @@
       "first_seen": "2026-11-21",
       "last_verified": "2026-11-21",
       "virtual_meeting_url": null
+    },
+    {
+      "id": "otradi-oregon-transl-oen-pubtalk-2026-12-10",
+      "title": "OEN PubTalk",
+      "organizer": "OTRADI (Oregon Translational Research and Development Institute)",
+      "co_hosts": [],
+      "start": "2026-12-09T17:00:00-08:00",
+      "end": "2026-12-09T19:30:00-08:00",
+      "format": "in_person",
+      "venue": "Miller Nash",
+      "city": "Portland",
+      "region": "Portland Metro",
+      "categories": [
+        "startup",
+        "training"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.otradi.org/event/oen-pubtalk-11/",
+      "source_url": "https://www.otradi.org/?post_type=tribe_events&ical=1&eventDisplay=list",
+      "summary": "Join OEN and White Summers on Wednesday, December 9th for a candid end-of-year conversation featuring three founders from Oregon and Southwest Washington who will share what 2026 looked like from thei...",
+      "status": "confirmed",
+      "first_seen": "2026-11-17",
+      "last_verified": "2026-11-18"
     },
     {
       "id": "oen-pitch-please-2026-12-15",
