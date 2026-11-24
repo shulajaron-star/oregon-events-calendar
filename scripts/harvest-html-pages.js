@@ -155,10 +155,10 @@ function formatDateToPacific(dateString) {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    // Pacific timezone offset (PST -08:00 or PDT -07:00)
-    const month_num = date.getMonth();
-    const isDST = month_num >= 2 && month_num <= 10;
-    const tzOffset = isDST ? '-07:00' : '-08:00';
+    // Pacific offset for this exact date (the workflow runs with
+    // TZ=America/Los_Angeles, so the local offset is Pacific time)
+    const offsetMin = date.getTimezoneOffset();
+    const tzOffset = `${offsetMin > 0 ? '-' : '+'}${String(Math.floor(Math.abs(offsetMin) / 60)).padStart(2, '0')}:${String(Math.abs(offsetMin) % 60).padStart(2, '0')}`;
 
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${tzOffset}`;
   } catch (error) {
@@ -624,48 +624,63 @@ async function scrapeOregonStartupCenter(page) {
     await page.waitForTimeout(8000);
 
     const events = await page.evaluate(() => {
+      // The page lists each event as a block of lines ending in "RSVP":
+      //   JANUARY 13TH / 9am - 10:30am / Venue / Title / Description / RSVP
+      // Read each block on its own so every event keeps its own date.
+      // (The old version used the first date on the whole page for every event.)
+      const months = 'january|february|march|april|may|june|july|august|september|october|november|december';
+      const dateRe = new RegExp(`^(${months})\\s+(\\d{1,2})(?:st|nd|rd|th)?$`, 'i');
+      const timeRe = /^(\d{1,2}(?::\d{2})?)\s*(am|pm)\s*[-–]\s*(\d{1,2}(?::\d{2})?)\s*(am|pm)$/i;
+      const to24 = (t, ap) => {
+        let [h, m] = t.split(':');
+        return `${h}:${m || '00'} ${ap.toUpperCase()}`;
+      };
+
+      // RSVP links in page order, one per event (the page repeats some links)
+      const links = [];
+      const seenIds = new Set();
+      document.querySelectorAll('a[href*="eventbrite.com/e/"]').forEach(a => {
+        if (a.innerText.trim().toUpperCase() !== 'RSVP') return;
+        const id = (a.href.match(/(\d{9,})/) || [])[1] || a.href;
+        if (seenIds.has(id)) return;
+        seenIds.add(id);
+        links.push(a.href);
+      });
+
+      const root = document.querySelector('article') || document.body;
+      const blocks = root.innerText.split(/\n\s*RSVP\s*(?:\n|$)/);
       const eventElements = [];
 
-      // Oregon Startup Center uses a custom events layout
-      // Look for Eventbrite links and surrounding content
-      const eventLinks = document.querySelectorAll('a[href*="eventbrite.com"]');
+      blocks.forEach(block => {
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+        const i = lines.findIndex(l => dateRe.test(l));
+        if (i === -1) return;
+        const [, month, day] = lines[i].match(dateRe);
+        const timeMatch = (lines[i + 1] || '').match(timeRe);
+        const rest = lines.slice(timeMatch ? i + 2 : i + 1);
+        const location = rest.length > 2 ? rest[0] : '';
+        const title = rest.length > 2 ? rest[1] : rest[0];
+        const description = rest.slice(rest.length > 2 ? 2 : 1).join(' ');
+        if (!title) return;
 
-      eventLinks.forEach(link => {
-        const url = link.href;
-
-        // Extract title from Eventbrite URL (e.g., "westside-founder-coffee-december-2026")
-        const urlMatch = url.match(/eventbrite\.com\/e\/([^-]+-[^-]+(?:-[^-]+)*)-tickets/);
-        let title = urlMatch ? urlMatch[1].replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : link.textContent?.trim();
-
-        // Look for date information in the page body
-        const bodyText = document.body.innerText;
-
-        // Try to extract date patterns like "December 2nd at 9am"
-        const dateMatch = bodyText.match(/([A-Z][a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?\s+(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm|AM|PM)?)/i);
-
-        let dateText = '';
-        if (dateMatch) {
-          const month = dateMatch[1];
-          const day = dateMatch[2];
-          const time = dateMatch[3] || '';
-
-          // Determine year
-          const currentYear = new Date().getFullYear();
-          const testDate = new Date(`${month} ${day} ${currentYear}`);
-          const year = testDate < new Date() ? currentYear + 1 : currentYear;
-
-          dateText = `${month} ${day} ${year} ${time}`;
+        // Year: from the title ("... - January 2027"), else the next time this date comes up
+        let year = (title.match(/\b(20\d{2})\b/) || [])[1];
+        if (!year) {
+          const now = new Date();
+          year = now.getFullYear();
+          if (new Date(`${month} ${day}, ${year}`) < new Date(now.toDateString())) year += 1;
         }
 
-        if (title && title.length > 10 && url && dateText) {
-          eventElements.push({
-            title,
-            dateText,
-            location: '',
-            description: title,
-            url
-          });
-        }
+        const startTime = timeMatch ? to24(timeMatch[1], timeMatch[2]) : '';
+        const endTime = timeMatch ? to24(timeMatch[3], timeMatch[4]) : '';
+        eventElements.push({
+          title,
+          dateText: `${month} ${day}, ${year} ${startTime}`.trim(),
+          endText: endTime ? `${month} ${day}, ${year} ${endTime}` : '',
+          location,
+          description,
+          url: links[eventElements.length] || ''
+        });
       });
 
       return eventElements;
@@ -723,7 +738,7 @@ function processScrapedEvents(scrapedEvents, sourceName, sourceUrl) {
         organizer: sourceName,
         co_hosts: [],
         start: formattedStart,
-        end: null,
+        end: event.endText ? formatDateToPacific(parseDate(event.endText)) : null,
         format: isVirtual ? 'virtual' : 'in_person',
         venue: event.location || null,
         city: city,
