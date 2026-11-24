@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'url';
+import { getHubScrapers } from './hub-scrapers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -787,7 +788,9 @@ async function harvestHTMLPages(specificSource = null) {
       name: 'Oregon Startup Center',
       fn: scrapeOregonStartupCenter,
       url: 'https://www.oregonstartupcenter.org/events'
-    }
+    },
+    // Innovation hubs and regional development councils (scripts/hub-scrapers.js)
+    ...getHubScrapers()
   ];
 
   let newEvents = [];
@@ -816,7 +819,9 @@ async function harvestHTMLPages(specificSource = null) {
 
       try {
         const scrapedEvents = await scraper.fn(page);
-        const processedEvents = processScrapedEvents(scrapedEvents, scraper.name, scraper.url);
+        const processedEvents = scraper.prebuilt
+          ? scrapedEvents
+          : processScrapedEvents(scrapedEvents, scraper.name, scraper.url);
 
         for (const eventObj of processedEvents) {
           const existingIndex = existingEvents.findIndex(e => e.id === eventObj.id);
