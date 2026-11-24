@@ -537,6 +537,29 @@
       "virtual_meeting_url": null
     },
     {
+      "id": "oregon-startup-cente-westside-founder-coffee-april-2027-04-07",
+      "title": "Westside Founder Coffee - April 2027",
+      "organizer": "Oregon Startup Center",
+      "co_hosts": [],
+      "start": "2027-04-07T09:00:00-07:00",
+      "end": "2027-04-07T10:30:00-07:00",
+      "format": "in_person",
+      "venue": "Oregon Startup Center",
+      "city": "Beaverton",
+      "region": "Portland Metro",
+      "categories": [
+        "startup",
+        "networking"
+      ],
+      "cost": "unknown",
+      "registration_url": "https://www.eventbrite.com/e/founder-coffee-april-2027-tickets-2005055439795",
+      "source_url": "https://www.oregonstartupcenter.org/events",
+      "summary": "Morning coffee and networking for founders and startup and nonprofit leaders at the Oregon Startup Center office in Beaverton.",
+      "status": "confirmed",
+      "first_seen": "2026-11-24",
+      "last_verified": "2026-11-24"
+    },
+    {
       "id": "technology-associati-oregon-largest-hackathon-back-2027-04-17",
       "title": "Oregon’s Largest Hackathon is back! Are you in?",
       "organizer": "Technology Association of Oregon (TAO)",
