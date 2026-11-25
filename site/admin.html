@@ -2907,7 +2907,7 @@
         // Refresh the Manage Events tab to show the new event
         loadEvents();
 
-        alert(`✓ Event approved!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar. It will also be removed from pending on the next harvest run.`);
+        alert(`✓ Event approved!\n\nEvent ID: ${result.event.id}\n\nThe event has been added to the calendar and removed from Pending.`);
 
       } catch (error) {
         alert(`Error approving event: ${error.message}`);
@@ -2917,15 +2917,30 @@
     }
 
     async function rejectPendingEvent(eventId) {
-      if (!confirm('Reject this pending event? It will be removed from the pending list.')) return;
+      const ev = pendingItems.events.find(e => e.id === eventId);
+      if (!ev) return;
+      if (!confirm(`Reject "${ev.title}"?\n\nIt will be removed from Pending and future harvests will skip it.`)) return;
 
-      // Note: This just removes from view. The actual removal from events-pending.json
-      // should be handled by the harvest workflow or manually
-      pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
-      renderPendingList();
+      const button = window.event && window.event.target;
+      if (button) { button.disabled = true; button.textContent = '⏳ Rejecting...'; }
 
-      alert('Event rejected and removed from view.\n\nNote: To permanently remove, delete from data/events-pending.json in GitHub.');
+      try {
+        const response = await fetch('/.netlify/functions/reject-pending', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ eventId })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || result.error || 'Failed to reject event');
+
+        pendingItems.events = pendingItems.events.filter(e => e.id !== eventId);
+        renderPendingList();
+      } catch (error) {
+        alert(`Error rejecting event: ${error.message}`);
+        if (button) { button.disabled = false; button.textContent = '✕ Reject'; }
+      }
     }
+
   </script>
 </body>
 </html>

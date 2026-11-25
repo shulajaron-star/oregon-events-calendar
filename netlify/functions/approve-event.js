@@ -5,6 +5,8 @@
 // 4. Triggering a rebuild
 // 5. Deleting the form submission
 
+const { removeFromPending } = require('./_shared/pending-store');
+
 exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return {
@@ -152,6 +154,15 @@ exports.handler = async (event, context) => {
     } catch (logError) {
       // Log error but don't fail the whole operation
       console.error('Failed to log change:', logError);
+    }
+
+    // Step 3.6: An approved harvested event leaves the pending list
+    if (fullEvent && fullEvent.id) {
+      try {
+        await removeFromPending(fullEvent.id, 'approved');
+      } catch (pendingError) {
+        console.error('Failed to remove from pending:', pendingError);
+      }
     }
 
     // Step 4: Delete the Netlify form submission (if token available)
