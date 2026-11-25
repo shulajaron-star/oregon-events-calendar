@@ -49,6 +49,9 @@ jobs:
         run: node scripts/harvest-ics-feeds.js
         continue-on-error: true
 
+      - name: Skip events already on the calendar or rejected
+        run: node scripts/filter-pending.js
+
       - name: Validate calendar data
         run: npm run validate
 

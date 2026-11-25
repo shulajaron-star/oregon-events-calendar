@@ -1,4 +1,5 @@
 // This function fetches pending events and sources for admin review
+const { readJson, matchKey } = require('./_shared/pending-store');
 
 exports.handler = async (event, context) => {
   if (event.httpMethod !== 'GET') {
@@ -55,13 +56,30 @@ exports.handler = async (event, context) => {
       pendingSources = JSON.parse(content);
     }
 
+    // Hide anything already on the calendar or already rejected, even if the
+    // pending file still lists it
+    let pending = pendingEvents.events || [];
+    try {
+      const [calendar, rejected] = await Promise.all([
+        readJson('data/events.json', { events: [] }),
+        readJson('data/events-rejected.json', { events: [] })
+      ]);
+      const ids = new Set();
+      const keys = new Set();
+      for (const e of calendar.data.events || []) { ids.add(e.id); keys.add(matchKey(e.title, e.start)); }
+      for (const r of rejected.data.events || []) { ids.add(r.id); keys.add(r.key); }
+      pending = pending.filter(e => !ids.has(e.id) && !keys.has(matchKey(e.title, e.start)));
+    } catch (filterError) {
+      console.error('Could not filter pending events:', filterError);
+    }
+
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        events: pendingEvents.events || [],
+        events: pending,
         sources: pendingSources.sources || []
       })
     };
